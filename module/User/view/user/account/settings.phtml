@@ -21,13 +21,12 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
     <div class="separator-small"></div>
 
-    <style type="text/css">
-        .symbolic-user { padding-left: 32px; background-position: 4px 0px; }
-        .symbolic-email { padding-left: 32px; background-position: 4px 0px; }
-        .symbolic-pw { padding-left: 32px; background-position: 4px 0px; }
-        .symbolic-phone { padding-left: 32px; background-position: 4px 0px; }
-        .symbolic-info { padding-left: 32px; background-position: 4px 0px; }
-        .symbolic-cross { padding-left: 32px; background-position: 4px 0px; }
+    <style>
+        .symbolic-user { padding-left: 32px; background-position: 6px 1px; }
+        .symbolic-email { padding-left: 32px; background-position: 4px 3px; }
+        .symbolic-pw { padding-left: 32px; background-position: 8px 2px; }
+        .symbolic-phone { padding-left: 32px; background-position: 5px 0; }
+        .symbolic-cross { padding-left: 32px; background-position: 5px 1px; }
 
         .dark-gray { color: #666; }
         .phantom { display: none; }
@@ -70,22 +69,6 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
             echo '</p>';
 
-            /* Print member status */
-
-            if ($this->user->getMeta('member')) {
-                echo $this->t('Member');
-            }
-
-            echo '</p>';
-
-            /* Print budget */
-
-            if ($this->user->getMeta('budget') && $this->user->getMeta('budget') > 0) {
-                echo 'Budget : ' . $this->user->getMeta('budget') . ' ' . $this->configManager->get('i18n.currency');
-            }    
-
-            echo '</p>';
-
             ?>
         </div>
     </div>
@@ -110,7 +93,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
                 ?>
 
-                <table class="default-table" style="margin: 0px;">
+                <table class="default-table" style="margin: 0;">
                     <tr>
                         <td>
                             <?= $this->formElement($form->get('epf-phone')) ?>
@@ -127,85 +110,6 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
             </div>
         </div>
     </div>
-
-<!--
-    <div class="separator-small"></div>
-
-    <div class="sandbox">
-        <div class="symbolic symbolic-info">
-            <div class="edit-label dark-gray"><?= $foo = 1; // $this->t('Update IBAN') ?></div>
-
-            <div class="edit-panel">
-                <div class="separator-small"></div>
-
-                <?php
-                $foo = 1;
-                /*
-                $form = $this->editIbanForm;
-                $form->setAttribute('method', 'post');
-                $form->setAttribute('action', $this->url('user/settings', array(), array('query' => array('edit' => 'iban'))));
-                $form->prepare();
-
-                echo $this->form()->openTag($form);
-                */
-                ?>
-
-                <table class="default-table" style="margin: 0px;">
-                    <tr>
-                        <td>
-                            <?= $foo = 1; // $this->formElement($form->get('eif-iban')) ?>
-                            <?= $foo = 1; // $this->formElementErrors($form->get('eif-iban')) ?>
-                            <?= $foo = 1; // $this->formElementNotes($form->get('eif-iban')) ?>
-                        </td>
-                        <td>
-                            <?= $foo = 1; // $this->formElement($form->get('eif-submit')) ?>
-                        </td>
-                    </tr>
-                </table>
-
-                <?= $foo = 1; // $this->form()->closeTag() ?>
-            </div>
-        </div>
-    </div>
--->
-
-    <div class="separator-small"></div>
-
-    <div class="sandbox">
-        <div class="symbolic symbolic-info">
-            <div class="edit-label dark-gray"><?= $this->t('Update IBAN') ?></div>
-
-            <div class="edit-panel">
-                <div class="separator-small"></div>
-
-                <?php
-                $foo = 1;
-                
-                $form = $this->editIbanForm;
-                $form->setAttribute('method', 'post');
-                $form->setAttribute('action', $this->url('user/settings', array(), array('query' => array('edit' => 'iban'))));
-                $form->prepare();
-
-                echo $this->form()->openTag($form);
-                ?>
-
-                <table class="default-table" style="margin: 0px;">
-                    <tr>
-                        <td>
-                            <?= $this->formElement($form->get('eif-iban')) ?>
-                            <?= $this->formElementErrors($form->get('eif-iban')) ?>
-                            <?= $this->formElementNotes($form->get('eif-iban')) ?>
-                        </td>
-                        <td>
-                            <?= $this->formElement($form->get('eif-submit')) ?>
-                        </td>
-                    </tr>
-                </table>
-
-                <?= $this->form()->closeTag() ?>
-            </div>
-        </div>
-    </div> 
 
     <div class="separator-small"></div>
 
@@ -231,7 +135,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
                 ?>
 
-                <table class="default-table" style="margin: 0px;">
+                <table class="default-table" style="margin: 0;">
                     <tr>
                         <td>
                             <?= $this->formElement($form->get('eef-email1')) ?>
@@ -274,7 +178,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
                 ?>
 
-                <table class="default-table" style="margin: 0px;">
+                <table class="default-table" style="margin: 0;">
                     <tr>
                         <td>
                             <?= $this->formElement($form->get('enf-booking-notifications')) ?>
@@ -313,7 +217,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
                 ?>
 
-                <table class="default-table" style="margin: 0px;">
+                <table class="default-table" style="margin: 0;">
                     <tr>
                         <td colspan="3">
                             <?= $this->formElement($form->get('epf-pw-current')) ?>
@@ -363,7 +267,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/user/settings.min
 
                 ?>
 
-                <table class="default-table" style="margin: 0px;">
+                <table class="default-table" style="margin: 0;">
                     <tr>
                         <td colspan="2">
                             <?= $this->formElement($form->get('daf-why')) ?>

@@ -133,7 +133,7 @@ class CalendarController extends AbstractActionController
 
         if ($user && $user->can('calendar.see-data')) {
             $getBookingUsers = true;
-            $dateNow->setTime(0, 0, 0);
+            $dateNow->setTime(0, 0);
         }
 
         if ($user && $squareManager->hasOneWithPrivateNames()) {

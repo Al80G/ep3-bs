@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     'Booking' => 'Buchung',
     '%s-Booking' => '%s-Buchung',
@@ -47,4 +47,4 @@ return array(
     '%sPayment and admittance temporarily at %s!%s' => '%sBezahlung und Einlass vorübergehend bei %s!%s',
     '%sSorry online booking not possible at the moment!%s' => '%sEntschuldigung im Augenblick ist keine online Buchung möglich!%s'
 
-);
+];

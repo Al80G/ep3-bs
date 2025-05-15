@@ -12,7 +12,6 @@ use Event\Manager\EventManager;
 use Exception;
 use RuntimeException;
 use Square\Manager\SquareManager;
-use User\Manager\UserManager;
 use User\Manager\UserSessionManager;
 
 class SquareValidator extends AbstractService
@@ -23,19 +22,17 @@ class SquareValidator extends AbstractService
     protected $eventManager;
     protected $squareManager;
     protected $optionManager;
-    protected $userManager;
     protected $user;
 
     public function __construct(BookingManager $bookingManager, ReservationManager $reservationManager,
         EventManager $eventManager, SquareManager $squareManager, UserSessionManager $userSessionManager,
-        OptionManager $optionManager, UserManager $userManager)
+        OptionManager $optionManager)
     {
         $this->bookingManager = $bookingManager;
         $this->reservationManager = $reservationManager;
         $this->eventManager = $eventManager;
         $this->squareManager = $squareManager;
         $this->optionManager = $optionManager;
-        $this->userManager = $userManager;
         $this->user = $userSessionManager->getSessionUser();
     }
 
@@ -220,11 +217,11 @@ class SquareValidator extends AbstractService
 
             $dayExceptions = $dayExceptionsCleaned;
 
-            if (in_array($dateStart->format('Y-m-d'), $dayExceptions) ||
-                in_array($dateStart->format('l'), $dayExceptions)) {
+            if (in_array($dateStart->format($this->t('Y-m-d')), $dayExceptions) ||
+                in_array($this->t($dateStart->format('l')), $dayExceptions)) {
 
-                if (! in_array($dateStart->format('Y-m-d'), $dayExceptionsExceptions)) {
-                    throw new \RuntimeException('The passed date has been hidden from the calendar');
+                if (! in_array($dateStart->format($this->t('Y-m-d')), $dayExceptionsExceptions)) {
+                    throw new RuntimeException('The passed date has been hidden from the calendar');
                 }
             }
         }
@@ -335,76 +332,10 @@ class SquareValidator extends AbstractService
 
                 if ($activeBookingsCount >= $maxActiveBookings) {
                     $bookable = false;
-                    $notBookableReason = sprintf($this->t('You can only have <b>%s active bookings</b> at the same time at the moment.'), $maxActiveBookings);
+                    $notBookableReason = 'Sie können derzeit nur <b>' . $maxActiveBookings . ' aktive Buchung/en</b> gleichzeitig offen haben.';
                 }
             }
         }
-
-        /* Check for club reserved time blocks in club-exception days*/
-
-        $clubExceptions = $this->optionManager->get('service.calendar.club-exceptions');
-
-        if ($clubExceptions) {
-            if ($this->user && !$this->user->getMeta('member')) {
-            $clubExceptions = preg_split('~(\\n|,)~', $clubExceptions);
-            $clubExceptionsExceptions = [];
-
-            $clubExceptionsCleaned = [];
-
-            foreach ($clubExceptions as $clubException) {
-                $clubException = trim($clubException);
-
-                if ($clubException) {
-                    if ($clubException[0] === '+') {
-                        $clubExceptionsExceptions[] = trim($clubException, '+');
-                    } else {
-                        $clubExceptionsCleaned[] = $clubException;
-                    }
-                }
-            }
-
-            $clubExceptions = $clubExceptionsCleaned;
-
-            // syslog(LOG_EMERG,"clubException");
-            // syslog(LOG_EMERG,$dateStart->format('Y-m-d'));
-            // syslog(LOG_EMERG,$dateStart->format('l'));
-
-            if (in_array($dateStart->format('Y-m-d'), $clubExceptions) ||
-                in_array($dateStart->format('l'), $clubExceptions)) {
-
-                if (! in_array($dateStart->format('Y-m-d'), $clubExceptionsExceptions)) {
-                        // syslog(LOG_EMERG,"no member");
-                        
-                        $resTimeStart = $square->getMeta('club_reserved_time_start');
-                        $resTimeEnd = $square->getMeta('club_reserved_time_end');
-                        $resTimeStartParts = explode(':', $resTimeStart);
-                        $resTimeEndParts = explode(':', $resTimeEnd);
-
-                        $resTimeStart = clone $dateStart;
-                        $resTimeEnd = clone $dateEnd;
-
-                        $resTimeStart->setTime($resTimeStartParts[0], $resTimeStartParts[1]);
-                        $resTimeEnd->setTime($resTimeEndParts[0], $resTimeEndParts[1]);
-
-                        $timeStartParts = explode(':', $timeStart);
-                        $timeStart = clone $dateStart;
-                        $timeStart->setTime($timeStartParts[0], $timeStartParts[1]);
-                        $timeEndParts = explode(':', $timeEnd);
-                        $timeEnd = clone $dateEnd;
-                        $timeEnd->setTime($timeEndParts[0], $timeEndParts[1]);
-
-                        if ( (($timeStart >= $resTimeStart) && ($timeStart < $resTimeEnd))
-                                || (($timeEnd > $resTimeStart) && ($timeEnd <= $resTimeEnd)) ) {
-                             // syslog(LOG_EMERG,"not bookable");       
-                             $bookable = false;
-                             $notBookableReason = $this->t('These booking times are reserved for the club.');
-                        }
-                }
-                
-            }
-            }
-        }
-
 
         /* Check for blocking events */
 
@@ -417,10 +348,6 @@ class SquareValidator extends AbstractService
         }
 
         /* Gather byproducts */
-
-        if ($bookings) {
-            $this->userManager->getByBookings($bookings);
-        }
 
         $byproducts['bookings'] = $bookings;
         $byproducts['bookingsFromUser'] = $bookingsFromUser;
@@ -442,43 +369,26 @@ class SquareValidator extends AbstractService
      */
     public function isCancellable(Booking $booking)
     {
-        // admin / assist right 
         if ($this->user && $this->user->can('calendar.cancel-single-bookings')) {
             if ($booking->need('status') == 'single') {
                 return true;
             }
         }
 
-        // admin / assist right
         if ($this->user && $this->user->can('calendar.cancel-subscription-bookings')) {
             if ($booking->need('status') == 'subscription') {
                 return true;
             }
         }
 
-        // users can only cancel own bookings 
         if (! ($this->user && $this->user->need('uid') == $booking->need('uid'))) {
             return false;
         }
 
-        // broken directpays can be cancelled - asynchrounous online payments have status directpay = false
-        if ($this->user && $booking->getMeta('directpay') == 'true' && $booking->get('status_billing')!= 'paid') {
-            if ($booking->need('status') == 'single') {
-                return true;
-            }
-        }
-
-        // asynchronuous payment with status pending can not be cancelled
-        if ($this->user && $booking->getMeta('directpay_pending') == 'true') {
-            return false;
-        }
-         
-        // users can not cancel subscription bookings
         if ($booking->need('status') == 'subscription') {
             return false;
         }
 
-        // checking cancelrange 
         $square = $this->squareManager->get($booking->need('sid'));
         $squareCancelRange = $square->get('range_cancel');
 

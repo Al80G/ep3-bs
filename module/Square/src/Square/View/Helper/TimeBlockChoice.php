@@ -49,7 +49,7 @@ class TimeBlockChoice extends AbstractHelper
         $dateTimeCheck->modify('+' . $bookableMaxRounded . ' sec');
 
         if ($dateTimeCheck->format('Y-m-d') != $dateTimeStart->format('Y-m-d')) {
-            $dateTimeCheck->setTime(0, 0, 0);
+            $dateTimeCheck->setTime(0, 0);
         }
 
         $timeCheckParts = explode(':', $dateTimeCheck->format('H:i'));

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     'You are not logged in (anymore)' => 'Sie sind nicht (mehr) angemeldet',
     'You have no permission for this' => 'Das dürfen Sie leider nicht',
@@ -269,4 +269,4 @@ return array(
     'other players' => 'angegebene Mitspieler',
     'Kosten' => 'costs',
 
-);
+];

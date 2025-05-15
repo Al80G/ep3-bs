@@ -8,8 +8,8 @@ if (! ($this->dateStart || $this->dateEnd)) {
 
 ?>
 
-<div style="padding: 10px 0px 16px 0px;">
-    <form id="esf" name="esf" method="get" action="<?= $this->url('backend/event') ?>">
+<div style="padding: 10px 0 16px 0;">
+    <form method="get" action="<?= $this->url('backend/event') ?>">
         <table class="default-table">
             <tr>
                 <td>
@@ -24,7 +24,7 @@ if (! ($this->dateStart || $this->dateEnd)) {
                     </div>
                 </td>
 
-                <td style="vertical-align: bottom; padding: 7px;">
+                <td style="vertical-align: bottom; padding-bottom: 7px;">
                     <?= $this->t('to') ?>
                 </td>
 

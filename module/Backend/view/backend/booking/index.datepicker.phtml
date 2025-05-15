@@ -10,8 +10,8 @@ if (! ($this->dateStart || $this->dateEnd)) {
 
 ?>
 
-<div style="padding: 10px 0px 16px 0px;">
-    <form id="bsf" name="bsf" method="get" action="<?= $this->url('backend/booking') ?>">
+<div style="padding: 10px 0 16px 0;">
+    <form method="get" action="<?= $this->url('backend/booking') ?>">
         <table class="default-table">
             <tr>
                 <td>
@@ -26,7 +26,7 @@ if (! ($this->dateStart || $this->dateEnd)) {
                     </div>
                 </td>
 
-                <td style="vertical-align: bottom; padding: 7px;">
+                <td style="vertical-align: bottom; padding-bottom: 7px;">
                     <?= $this->t('to') ?>
                 </td>
 
@@ -57,7 +57,7 @@ if (! ($this->dateStart || $this->dateEnd)) {
         </table>
     </form>
 
-    <div id="bs-filters-help-box" class="sandbox" style="display: none; margin: 26px auto 0px auto;">
+    <div id="bs-filters-help-box" class="sandbox" style="display: none; margin: 26px auto 0 auto;">
         <div class="sandbox-arrow" style="right: 82px"></div>
 
         <p><?= $this->t('You can use filters like these to narrow your search:') ?></p>

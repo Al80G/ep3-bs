@@ -1,6 +1,4 @@
 <?php
-namespace Application\Model;
-
 /**
  * Application configuration bootstrap
  */
@@ -17,27 +15,10 @@ if (defined('EP3_BS_DEV_TAG')) {
 }
 
 /**
- * Payum integration
- */
-use Payum\Core\Model\ArrayObject;
-
-class PaymentDetails extends \ArrayObject
-{
-    protected $id;
-}
-
-use Payum\Core\Model\Token;
-
-class PaymentSecurityToken extends Token
-{
-}
-
-
-/**
  * Application configuration array
  */
-return array(
-    'modules' => array_merge(array(
+return [
+    'modules' => array_merge([
 
         /**
          * Application core modules
@@ -53,9 +34,6 @@ return array(
         'Frontend',
         'Service',
         'Square',
-        'SquareControl',
-        'Payment',
-        'Payum\PayumModule',
         'User',
 
         /**
@@ -64,25 +42,25 @@ return array(
          * Place your own, custom or third party modules in the modulex/ directory
          * and they will be loaded automatically.
          */
-    ), include 'modulexes.php'),
+    ], include 'modulexes.php'),
 
     /**
      * Some further internal settings,
      * don't worry about these.
      */
-    'module_listener_options' => array(
-        'config_glob_paths' => array(
+    'module_listener_options' => [
+        'config_glob_paths' => [
             'config/autoload/{,*.}{global,local}.php',
-        ),
-        'module_paths' => array(
+        ],
+        'module_paths' => [
             'module',
             'modulex',
             'vendor',
-        ),
-        'config_cache_enabled' => false,
+        ],
+        'config_cache_enabled' => ! EP3_BS_DEV,
         'config_cache_key' => 'ep3-bs',
-        'module_map_cache_enabled' =>  false,
+        'module_map_cache_enabled' => ! EP3_BS_DEV,
         'module_map_cache_key' => 'ep3-bs',
         'cache_dir' => getcwd() . '/data/cache/',
-    ),
-);
+    ],
+];

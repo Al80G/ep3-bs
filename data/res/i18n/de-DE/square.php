@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     'This %s is already occupied' => 'Dieser %s ist bereits belegt',
     '%sNote:%s Please read and accept the "%s".' => '%sHinweis:%s Bitte lesen und akzeptieren Sie die "%s".',
@@ -41,13 +41,6 @@ return array(
     'including' => 'inkl.',
     'plus' => 'zzgl.',
     'VAT' => 'USt',
-  
-    'no member' => 'kein Mitglied',
-    'member' => 'Mitglied', 
-
-    'budget' => 'Guthaben',
-    'new budget' => 'neues Guthaben', 
-    'payment from open budget' => 'Zahlung aus verfügbarem Guthaben',
 
     'Summary of your booking:' => 'Übersicht über Ihre Buchung:',
     '%s items' => '%s Stück',
@@ -66,7 +59,7 @@ return array(
 	'Your booking will be binding.' => 'Ihre Buchung ist verbindlich.',
     'Your booking will be binding, however, you can cancel it up to %s before it takes place.'
         => 'Ihre Buchung ist verbindlich. Sie können sie jedoch bis zu %s vorher stornieren.',
-    'Complete booking' => 'Buchung bestätigen',
+    'Complete booking' => 'Buchung abschließen',
 
     'Cancel this booking' => 'Buchung stornieren',
     'Cancel booking' => 'Buchung stornieren',
@@ -102,7 +95,7 @@ return array(
     'Check' => 'Prüfen',
 
     'You need to activate %sJavaScript%s in your web browser to proceed. If in doubt, switch to another web browser (e.g. Mozilla Firefox).'
-        => '%sJavaScript%s muss in Ihrem Webbrowser aktiviert sein um fortzufahren. Im Zweifelsfall benutzen Sie einfach einen anderen Webbrowser (z.B. Mozilla Firefox).',
+        => '%sJavaScript%s muss in Ihrem Webbrowser aktiviert sein um fortzufahren. Im Zweifelsfall benutzen Sie einfach einen anderen Webbrowser (z. B. Mozilla Firefox).',
 
     'until' => 'bis',
     'with' => 'mit',
@@ -110,20 +103,10 @@ return array(
     'Change period:' => 'Zeitraum anpassen:',
     'Check new period' => 'Neuen Zeitraum prüfen',
 
-    'Change rule:' => 'Regel anpassen:',
-    'Check new rule' => 'Neue Regel prüfen',
-
     'The names of the other players are <b>optional</b>' => 'Die Namen der anderen Spieler sind <b>optional</b>',
     'The names of the other players are <b>required</b>' => 'Die <b>Vor- und Nachnamen</b> der anderen Spieler sind <b>erforderlich</b>',
     'Player\'s name' => 'Spieler Vor-/Nachname',
     'and email address' => 'und E-Mail Adresse',
     'and phone number' => 'und Telefonnummer',
-    
-    '%sError during payment: Your booking has been cancelled.%s' => '%sFehler während Bezahlvorgang: Die Buchung wurde abgebrochen.%s', 
-    'Your %s has been booked! The doorcode is: %s' => 'Ihr %s wurde für Sie gebucht! Der Türcode ist: %s',
-    'Your %s has been booked! But the doorcode could not be send. Please contact admin by phone - %s' => 'Ihr %s wurde für Sie gebucht! Jedoch konnte der Türcode nicht gesendet werden. Bitte rufen Sie an - %s',   
-    'go to payment' => 'weiter zur Zahlung', 
-    'Timeblock choice:' => 'Zeitraum wählen:',
-    'These booking times are reserved for the club.' => 'Diese Buchungszeiten sind für Vereinsmitglieder reserviert.',
-    'You can only have <b>%s active bookings</b> at the same time at the moment.' => 'Sie können derzeit nur <b>%s aktive Buchung/en</b> gleichzeitig offen haben.',
-);
+
+];
