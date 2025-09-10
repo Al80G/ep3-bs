@@ -8,3 +8,7 @@ Desktop.ini
 Thumbs.db
 
 .DS_Store
+.htaccess
+config/autoload/local.php
+/public
+config/autoload/project.php

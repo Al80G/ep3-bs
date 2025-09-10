@@ -1,4 +1,44 @@
+#branding { display: none !important; }
+#topbar-separator { display: none !important; }
+#topbar-phone { display: none !important; }
+#topbar-infos { display: none !important; }
+#topbar-contact { display: none !important; }
+#topbar-i18n { display: none !important; }
+#label-service-phone { display: none !important; }
+#label-service { font-size: 24px !important;}
+
+@media (max-width: 1024px) {
+    #topbar { display: none !important; }
+}
+
+
+@media screen and (max-width: 512px) {
+    .responsive-pass-5 { display:none; }
+	#footer { display: none } 
+}
+
 h2, h3, h4, h5, h6 { color: #547B97; }
+
+body.tennis-rudolstadt {
+    background: #001d00 !important;
+}
+
+#logo {
+    background: url(../imgs-client/layout/logo_48.png) no-repeat center center !important;
+}
+
+#calendar-toolbar-userpanel table td:last-child,
+#calendar-toolbar-userpanel table th:last-child {
+  display: none !important;
+}
+
+a.default-button[href="/service/help"] {
+  display: none !important;
+}
+
+a.default-button[href="/backend/squarecontrol"] {
+  display: none !important;
+}
 
 /* Layout - Calendar */
 
