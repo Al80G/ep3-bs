@@ -1,11 +1,11 @@
 {
-    "name": "TVaS court booking dev",
-    "short_name": "TVaS Booking dev",
+    "name": "ATSV Schaerding Buchungssystem",
+    "short_name": "ATSV Platzreservierung",
     "start_url": "./",
     "display": "fullscreen",
     "theme_color": "#4a3827",
     "background_color": "#4a3827",
-    "description": "book indoor Tennis court at TV am Saalebogen Rudolstadt",
+    "description": "Tennisplätze bei ATSV Schärding Tennis buchen",
     "icons": [
         {
             "src": "imgs-client/layout/logo_48.png",
