@@ -1,3 +1,5 @@
+/* Diverse Anpassungen */
+
 #branding { display: none !important; }
 #topbar-separator { display: none !important; }
 #topbar-phone { display: none !important; }
@@ -6,6 +8,25 @@
 #topbar-i18n { display: none !important; }
 #label-service-phone { display: none !important; }
 #label-service { font-size: 24px !important;}
+#calendar-toolbar-userpanel table td:last-child,
+#calendar-toolbar-userpanel table th:last-child { display: none !important; }
+#logo { background: url(../imgs-client/layout/logo_48.png) no-repeat center center !important; }
+
+body.tennis-rudolstadt {
+    background: #001d00 !important;
+}
+
+a.default-button[href="/service/help"] {
+  display: none !important;
+}
+
+a.default-button[href="/backend/squarecontrol"] {
+  display: none !important;
+}
+
+#sb-quantity option[value="3"] {
+  display: none;
+}
 
 @media (max-width: 1024px) {
     #topbar { display: none !important; }
@@ -19,48 +40,50 @@
 
 h2, h3, h4, h5, h6 { color: #547B97; }
 
-body.tennis-rudolstadt {
-    background: #001d00 !important;
-}
-
-#logo {
-    background: url(../imgs-client/layout/logo_48.png) no-repeat center center !important;
-}
-
-#calendar-toolbar-userpanel table td:last-child,
-#calendar-toolbar-userpanel table th:last-child {
-  display: none !important;
-}
-
-a.default-button[href="/service/help"] {
-  display: none !important;
-}
-
-a.default-button[href="/backend/squarecontrol"] {
-  display: none !important;
-}
-
 /* Layout - Calendar */
 
+/*
 a.cc-event:link,
 a.cc-event:visited { background-color: #975459; }
 a.cc-event:hover { background-color: #6A3333; }
+*/
 
+a.cc-event:link,
+a.cc-event:visited { background-color: #ff3336; background-image:none !important;}
+a.cc-event:hover { background-color: #800002; }
+
+/*
 a.cc-own:link,
 a.cc-own:visited { background-color: #8BB243; }
 a.cc-own:hover { background-color: #5F8024; }
+*/
+a.cc-own:link,
+a.cc-own:visited { background-color: #808D96; }
+a.cc-own:hover { background-color: #4C5359; }
 
 a.cc-try:link,
 a.cc-try:visited { background-color: #e5e68b; }
 a.cc-try:hover { background-color: #e5e68b; }
 
+/*
 a.cc-single:link,
 a.cc-single:visited { background-color: #808D96; }
 a.cc-single:hover { background-color: #4C5359; }
+*/
 
+a.cc-single:link,
+a.cc-single:visited { background-color: #8BB243; }
+a.cc-single:hover { background-color: #506628; }
+
+/*
 a.cc-multiple:link,
 a.cc-multiple:visited { background-color: #547B97; }
 a.cc-multiple:hover { background-color: #334F6A; }
+*/
+
+a.cc-multiple:link,
+a.cc-multiple:visited { background-color: #298ed6; }
+a.cc-multiple:hover { background-color: #154a70; }
 
 a.cc-conflict:link,
 a.cc-conflict:visited { background-color: #334F6A; }
