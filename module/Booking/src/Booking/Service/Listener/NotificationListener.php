@@ -131,7 +131,10 @@ class NotificationListener extends AbstractListenerAggregate
         }
 	    
         # price notice
-        $message .= "\n\n" . $this->t('Bill'). ":\n";
+        /* Information
+		$message .= "\n\n" . $this->t('Bill'). ":\n";
+		*/
+		$message .= "\n\n" . $this->t('Please do not forget to pay'). ":";
 
         $total = 0;
         $bills = $this->bookingBillManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
@@ -156,10 +159,10 @@ class NotificationListener extends AbstractListenerAggregate
                 $message .= " -> ";
                 $message .= $priceFormatHelper($bill->get('price'), $bill->get('rate'), $bill->get('gross'));
         }
-        $message .= "\n\n";
-        $message .= $this->t('Total');
+        /*$message .= "\n\n";
+        $message .= $this->t('Total'); 
         $message .= " -> ";
-        $message .= $priceFormatHelper($total);    
+        $message .= $priceFormatHelper($total);*/
 
         $message .= "\n\n"; 
 
