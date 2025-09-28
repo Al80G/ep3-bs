@@ -4,9 +4,9 @@
             <td style="padding-right: 12px;">
                 <?php
 
-                echo sprintf($this->t('To book %s, %splease register first%s'),
-                    $this->option('subject.square.type.plural'),
-                    '<br><a href="' . $this->url('user/registration') . '" class="symbolic symbolic-plus-link">', '</a>');
+                echo sprintf($this->t('Forgot Password? %s %sReset Password here%s'),
+                    $this->t(''),
+                    '<br><a href="' . $this->url('user/password') . '" class="symbolic symbolic-plus-link">', '</a>');
 
                 ?>
             </td>
