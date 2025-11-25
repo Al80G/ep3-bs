@@ -137,6 +137,11 @@ class NotificationListener extends AbstractListenerAggregate
 		$message .= "\n\n" . $this->t('Please do not forget to pay'). ":";
 
         $total = 0;
+		
+		// Gesamtdauer in Stunden berechnen:
+		$diff = $reservationEnd->diff($reservationStart);
+		$hours = ($diff->days * 24) + $diff->h + ($diff->i / 60);
+		
         $bills = $this->bookingBillManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
 
         foreach ($bills as $bill) {
@@ -157,7 +162,7 @@ class NotificationListener extends AbstractListenerAggregate
                 $message .= "\n"; 
                 $message .= $bill->get('description') . " (" . $bill->get('quantity') . " " . $items . ")";
                 $message .= " -> ";
-                $message .= $priceFormatHelper($bill->get('price'), $bill->get('rate'), $bill->get('gross'));
+                $message .= $priceFormatHelper($bill->get('price')*$hours, $bill->get('rate'), $bill->get('gross'));
         }
         /*$message .= "\n\n";
         $message .= $this->t('Total'); 
