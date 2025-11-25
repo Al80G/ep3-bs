@@ -134,10 +134,16 @@ class NotificationListener extends AbstractListenerAggregate
         /* Information
 		$message .= "\n\n" . $this->t('Bill'). ":\n";
 		*/
+		
+		$bills = $this->bookingBillManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
+		
+		if ($bills) {
 		$message .= "\n\n" . $this->t('Please do not forget to pay'). ":";
-
         $total = 0;
-        $bills = $this->bookingBillManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
+		
+		// Calculate Hours:
+		$diff = $reservationEnd->diff($reservationStart);
+		$hours = ($diff->days * 24) + $diff->h + ($diff->i / 60);
 
         foreach ($bills as $bill) {
                 $total += $bill->get('price');
@@ -155,14 +161,16 @@ class NotificationListener extends AbstractListenerAggregate
                 }    
 
                 $message .= "\n"; 
-                $message .= $bill->get('description') . " (" . $bill->get('quantity') . " " . $items . ")";
+                //$message .= $bill->get('description') . " (" . $bill->get('quantity') . " " . $items . ")";
+				$message .= $bill->get('description') . " ( " . $hours . "h )";
                 $message .= " -> ";
-                $message .= $priceFormatHelper($bill->get('price'), $bill->get('rate'), $bill->get('gross'));
+                $message .= $priceFormatHelper($bill->get('price')*$hours, $bill->get('rate'), $bill->get('gross'));
         }
         /*$message .= "\n\n";
         $message .= $this->t('Total'); 
         $message .= " -> ";
         $message .= $priceFormatHelper($total);*/
+		}
 
         $message .= "\n\n"; 
 
