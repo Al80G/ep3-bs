@@ -16,6 +16,13 @@
             "minLength": 1,
             "source": urlProvider.data("user-autocomplete-url")
         });
+		
+		/* Autocomplete for additional players */
+
+		$(".player-autocomplete").autocomplete({
+			"minLength": 1,
+			"source": urlProvider.data("user-autocomplete-url")
+		});
 
         /* Datepicker */
 

@@ -9,3 +9,22 @@ if ($this->notBookableReason) {
 }
 
 echo sprintf('<p><span class="red">' . $reason . '</span></p>', $squareType);
+
+if ($this->user && $this->bookings) {
+    foreach ($this->bookings as $booking) {
+        $raw = $booking->getMeta('player-names');
+        if (!$raw) continue;
+        $players = @unserialize($raw);
+        if (!$players || !is_array($players)) continue;
+        $names = [];
+        foreach ($players as $entry) {
+            $name = isset($entry['value']) ? trim($entry['value']) : '';
+            if ($name !== '') {
+                $names[] = $this->escapeHtml($name);
+            }
+        }
+        if (!empty($names)) {
+            echo '<p class="gray"><em>' . $this->t('Players') . ': ' . implode(', ', $names) . '</em></p>';
+        }
+    }
+}

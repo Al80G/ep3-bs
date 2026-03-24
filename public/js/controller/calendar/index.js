@@ -147,10 +147,10 @@
     {
         if (! squareboxOverlay) {
             squareboxOverlay = $('<div id="squarebox-overlay"></div>').css({
-                "position": "absolute",
+                "position": "fixed",
                 "z-index": 1532,
                 "opacity": 0.00,
-                "width": $(document).width(), "height": $(document).height(),
+                "width": "100%", "height": "100%",
                 "left": 0, "top": 0,
                 "background": "#333"
             });
@@ -160,8 +160,15 @@
 
         if (! squarebox) {
             squarebox = $('<div class="panel"></div>').css({
-                "position": "absolute",
-                "z-index": 1536
+                "position": "fixed",
+                "z-index": 1536,
+                "width": "80vw",
+                "max-width": "80vw",
+                "box-sizing": "border-box",
+                "overflow-x": "hidden",
+                "top": "50%",
+                "left": "50%",
+                "transform": "translate(-50%, -50%)"
             });
 
             $("body").prepend(squarebox);
@@ -186,18 +193,10 @@
     function updateSquarebox()
     {
         if (squarebox) {
-            var orientation;
-
-            if ($("body").height() > $(window).height()) {
-                orientation = window;
-            } else {
-                orientation = calendar;
-            }
-
-            squarebox.position({
-                "my": "center",
-                "at": "center",
-                "of": orientation
+            squarebox.css({
+                "top": "50%",
+                "left": "50%",
+                "transform": "translate(-50%, -50%)"
             });
         }
     }

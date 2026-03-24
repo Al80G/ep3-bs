@@ -2,9 +2,27 @@
 
 $squareType = $this->option('subject.square.type');
 
+$renderPlayerNames = function($booking, $view) {
+    $raw = $booking->getMeta('player-names');
+    if (!$raw) return '';
+    $players = @unserialize($raw);
+    if (!$players || !is_array($players)) return '';
+    $names = [];
+    foreach ($players as $entry) {
+        $name = isset($entry['value']) ? trim($entry['value']) : '';
+        if ($name !== '') {
+            $names[] = $view->escapeHtml($name);
+        }
+    }
+    if (empty($names)) return '';
+    return '<p class="gray"><em>' . $view->t('Players') . ': ' . implode(', ', $names) . '</em></p>';
+};
+
 foreach ($this->bookingsFromUser as $bid => $booking) {
     echo sprintf('<p><span class="green">' . $this->t('This %s has been %sbooked to you%s.') . '</span></p>',
         $squareType, '<b>', '</b>');
+
+    echo $renderPlayerNames($booking, $this);
 
     if ($this->validator->isCancellable($booking)) {
         echo sprintf('<p><a href="%s" class="default-button squarebox-internal-link"><span class="symbolic symbolic-cross">%s</span></a></p>',
