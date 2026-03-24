@@ -11,6 +11,8 @@ $this->setup(array(
 
 echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js');
 
+?><div id="sb-url-provider" data-player-autocomplete-url="<?= $this->url('square/booking/player-autocomplete') ?>"></div><?php
+
 ?>
 
 <div id="sb-customization-panel-warning" class="padded centered-text">
@@ -53,7 +55,7 @@ echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js')
         'ts' => $this->dateStart->format('H:i'),
         'te' => $this->dateEnd->format('H:i'),
         's' => $square->need('sid'),
-        'q' => 1,
+        'q' => 2,
         'p' => 0,
         'pn' => 0]]);
 

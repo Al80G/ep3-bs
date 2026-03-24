@@ -29,7 +29,7 @@ class QuantityChoice extends AbstractHelper
 
         $quantityChoiceSelect = "visible";
 
-        if ($quantityAvailable == 1) { $quantityChoiceSelect = "hidden"; } 
+        if ($quantityAvailable < 2) { $quantityChoiceSelect = "hidden"; } 
 
         $html .= '<label for="sb-quantity" style="margin-right: 8px; visibility:' . $quantityChoiceSelect  . '" >';
         $html .= sprintf($view->t('How many %s?'), $this->optionManager->need('subject.square.unit.plural'));
@@ -37,8 +37,10 @@ class QuantityChoice extends AbstractHelper
 
         $html .= '<select id="sb-quantity" style="min-width: 64px;  visibility:' . $quantityChoiceSelect  . '" >';
 
-        for ($i = 1; $i <= $quantityAvailable; $i++) {
-            $html .= sprintf('<option value="%1$s">%1$s</option>', $i);
+        foreach ([2, 4] as $i) {
+            if ($i <= $quantityAvailable) {
+                $html .= sprintf('<option value="%1$s">%1$s</option>', $i);
+            }
         }
 
         $html .= '</select>';
@@ -71,7 +73,7 @@ class QuantityChoice extends AbstractHelper
             for ($i = 2; $i <= $quantityAvailable; $i++) {
                 $html .= sprintf('<div class="sb-player-name sb-player-name-%s" style="margin-bottom: 4px;">', $i);
 
-                $html .= sprintf('<input type="text" name="sb-player-name-%1$s" id="sb-name-%1$s" value="" placeholder="%1$s. %2$s" style="min-width: 160px;">',
+                $html .= sprintf('<input type="text" name="sb-player-name-%1$s" id="sb-name-%1$s" value="" placeholder="%1$s. %2$s" style="min-width: 160px;" class="sb-player-autocomplete">',
                     $i, $this->view->translate('Player\'s name'));
 
                 if (isset($askNamesSegments[2]) && $askNamesSegments[2] == 'email') {

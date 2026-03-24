@@ -1,9 +1,14 @@
 (function() {
 
+    var playerAutocompleteUrl;
+    var validatedFields = {};  /* fieldId -> true/false */
+
     $(document).ready(function() {
 
         $("#sb-customization-panel-warning").remove();
         $("#sb-customization-panel").show();
+
+        playerAutocompleteUrl = $("#sb-url-provider").data("player-autocomplete-url");
 
         $("#sb-quantity").on("change keyup focusout", onQuantityChange);
 
@@ -37,6 +42,9 @@
                 }
 
                 askNamesPanel.show();
+
+                bindPlayerAutocomplete();
+
             } else {
                 askNamesPanel.hide();
             }
@@ -45,6 +53,72 @@
         }
 
         onPlayerNameUpdate();
+    }
+
+    function bindPlayerAutocomplete() {
+        if (!playerAutocompleteUrl) return;
+
+        $(".sb-player-autocomplete:visible").each(function() {
+            if (!$(this).data("ui-autocomplete")) {
+                $(this).autocomplete({
+                    minLength: 2,
+                    source: playerAutocompleteUrl,
+                    select: function(event, ui) {
+                        $(this).val(ui.item.value);
+                        setFieldValid($(this), true);
+                        onPlayerNameUpdate();
+                        return false;
+                    }
+                });
+            }
+            /* Reset validation when user types manually */
+            $(this).off("input.playerval").on("input.playerval", function() {
+                setFieldValid($(this), false);
+                onPlayerNameUpdate();
+            });
+            $(this).off("focusout.playerval").on("focusout.playerval", function() {
+                validateFieldByName($(this));
+            });
+        });
+    }
+
+    function setFieldValid($input, valid) {
+        var id = $input.attr("id");
+        validatedFields[id] = valid;
+        $input.css("border-color", valid ? "" : (($input.val() === "") ? "" : "#c00"));
+    }
+
+    function validateFieldByName($input) {
+        var name = $.trim($input.val());
+        if (!name || !playerAutocompleteUrl) {
+            setFieldValid($input, false);
+            onPlayerNameUpdate();
+            return;
+        }
+        $.getJSON(playerAutocompleteUrl, { term: name }, function(results) {
+            var exact = false;
+            $.each(results, function(i, alias) {
+                if (alias === name) { exact = true; return false; }
+            });
+            setFieldValid($input, exact);
+            onPlayerNameUpdate();
+        });
+    }
+
+    function allVisiblePlayerFieldsValid() {
+        var allValid = true;
+        $(".sb-player-autocomplete:visible").each(function() {
+            var id = $(this).attr("id");
+            var val = $.trim($(this).val());
+            if (val === "") {
+                return;
+            }
+            if (!validatedFields[id]) {
+                allValid = false;
+                return false;
+            }
+        });
+        return allValid;
     }
 
     function onPlayerNameUpdate() {
@@ -64,14 +138,20 @@
                 var playerNameQuery = "pn=0";
             }
 
-            sbButton.css({ opacity: 1 });
+            sbButton.css({ opacity: 1, "pointer-events": "" });
 
+            /* Hide button if required fields are empty */
             if (playerNameMode == "required") {
                 playerNameInputs.each(function() {
                     if (! $(this).val()) {
-                        sbButton.css({ opacity: 0 });
+                        sbButton.css({ opacity: 0, "pointer-events": "none" });
                     }
                 });
+            }
+
+            /* Hide button if any filled field contains an unregistered name */
+            if (!allVisiblePlayerFieldsValid()) {
+                sbButton.css({ opacity: 0, "pointer-events": "none" });
             }
 
             var oldHref = sbButton.attr("href");

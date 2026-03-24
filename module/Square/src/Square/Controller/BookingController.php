@@ -13,6 +13,31 @@ use Zend\View\Model\JsonModel;
 class BookingController extends AbstractActionController
 {
 
+    public function playerAutocompleteAction()
+    {
+        $serviceManager = $this->getServiceLocator();
+        $userSessionManager = $serviceManager->get('User\Manager\UserSessionManager');
+        $user = $userSessionManager->getSessionUser();
+
+        if (!$user) {
+            return new JsonModel([]);
+        }
+
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+        $term = $this->params()->fromQuery('term');
+        $usersMax = 10;
+
+        $users = $userManager->interpret($term, $usersMax);
+
+        $usersList = [];
+
+        foreach ($users as $uid => $u) {
+            $usersList[] = $u->need('alias');
+        }
+
+        return new JsonModel($usersList);
+    }
+
     public function customizationAction()
     {
         $dateStartParam = $this->params()->fromQuery('ds');

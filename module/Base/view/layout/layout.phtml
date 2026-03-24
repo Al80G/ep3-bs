@@ -110,9 +110,11 @@ if (typeof(nextdateelement) != 'undefined' && nextdateelement != null)
 var Swipe = new Hammer.Swipe();
 mc.add(Swipe);
 mc.on('swiperight', function () {
+   if (document.getElementById('squarebox-overlay')) return;
    document.getElementById('prevdatearrow').click();
 });
 mc.on('swipeleft', function () {
+   if (document.getElementById('squarebox-overlay')) return;
    document.getElementById('nextdatearrow').click();
 });
 }

@@ -51,6 +51,15 @@ return array(
                                     ),
                                 ),
                             ),
+                            'player-autocomplete' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/player-autocomplete',
+                                    'defaults' => array(
+                                        'action' => 'playerAutocomplete',
+                                    ),
+                                ),
+                            ),
                         ),
                     ),
                 ),
