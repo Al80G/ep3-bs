@@ -20,4 +20,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /bstest/   # Zielpfad am Server
-          local-dir: ./               # Quellpfad im Repo
+          local-dir: ./          # Quellpfad im Repo
