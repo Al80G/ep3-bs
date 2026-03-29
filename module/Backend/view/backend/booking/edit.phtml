@@ -215,7 +215,14 @@ $this->setup(array(
     <div class="sandbox" style="margin-bottom:10px;">
         <?= $this->formElement($form->get('bf-rid')) ?>
         <table class="default-table">
-            <?= $this->formRowCompact($form, 'bf-user') ?>
+            <tr><td>
+                <div class="default-form-label-top small-text gray">
+                    <label for="bf-user-mobile"><?= $this->t('Booked on') ?></label>
+                </div>
+                <input type="text" name="bf-user" id="bf-user-mobile" style="width: auto;"
+                    value="<?= $this->escapeHtmlAttr($this->editForm->get('bf-user')->getValue()) ?>"
+                    class="ui-autocomplete-input" autocomplete="off">
+            </td></tr>
         </table>
         <?php if ($this->booking && $this->booking->getExtra('user')): ?>
             <?php $user = $this->booking->getExtra('user') ?>

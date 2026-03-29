@@ -16,6 +16,16 @@
             "minLength": 1,
             "source": urlProvider.data("user-autocomplete-url")
         });
+
+        $("#bf-user-mobile").autocomplete({
+            "minLength": 1,
+            "source": urlProvider.data("user-autocomplete-url"),
+            "select": function(event, ui) {
+                $(this).val(ui.item.value);
+                $("#bf-user").val(ui.item.value);
+                return false;
+            }
+        });
 		
 		/* Autocomplete for additional players */
 
