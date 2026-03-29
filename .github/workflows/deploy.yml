@@ -1,9 +1,9 @@
-name: Deploy via SFTP (test)
+name: Deploy via FTP (TEST)
 
 on:
   push:
     branches:
-      - test
+      - main
 
 jobs:
   deploy:
@@ -11,13 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 2  # Für Delta-Erkennung (nur geänderte Dateien)
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          username: ${{ secrets.FTP_USERNAME }}
           server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_path: './*'
-          remote_path: '/bstest/'
+          server-dir: /bstest/   # Zielpfad am Server
+          local-dir: ./               # Quellpfad im Repo
