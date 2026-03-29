@@ -193,6 +193,11 @@
     function updateSquarebox()
     {
         if (squarebox) {
+            if (squarebox.find(".giant-sized").length) {
+                squarebox.css({ "width": "96vw", "max-width": "96vw" });
+            } else {
+                squarebox.css({ "width": "80vw", "max-width": "480px" });
+            }
             squarebox.css({
                 "top": "50%",
                 "left": "50%",
