@@ -191,7 +191,7 @@
     function updateSquarebox()
     {
         if (squarebox) {
-            if (squarebox.find(".bf-table").length) {
+            if (squarebox.find(".bf-table").length && $(window).width() > 600) {
                 squarebox.css({ "width": "auto", "max-width": "none" });
                 var naturalWidth = squarebox.outerWidth();
                 var maxW = Math.min(naturalWidth, $(window).width() * 0.96);
