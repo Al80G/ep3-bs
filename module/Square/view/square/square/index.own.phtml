@@ -3,18 +3,21 @@
 $squareType = $this->option('subject.square.type');
 
 $renderPlayerNames = function($booking, $view) {
+    $bookerUser = $booking->getExtra('user');
+    $names = $bookerUser ? [$view->escapeHtml($bookerUser->need('alias'))] : [];
     $raw = $booking->getMeta('player-names');
-    if (!$raw) return '';
-    $players = @unserialize($raw);
-    if (!$players || !is_array($players)) return '';
-    $names = [];
-    foreach ($players as $entry) {
-        $name = isset($entry['value']) ? trim($entry['value']) : '';
-        if ($name !== '') {
-            $names[] = $view->escapeHtml($name);
+    if ($raw) {
+        $players = @unserialize($raw);
+        if ($players && is_array($players)) {
+            foreach ($players as $entry) {
+                $name = isset($entry['value']) ? trim($entry['value']) : '';
+                if ($name !== '') {
+                    $names[] = $view->escapeHtml($name);
+                }
+            }
         }
     }
-    if (empty($names)) return '';
+    if (count($names) <= 1 && !$raw) return '';
     return '<p class="gray"><em>' . $view->t('Players') . ': ' . implode(', ', $names) . '</em></p>';
 };
 

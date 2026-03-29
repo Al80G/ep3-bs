@@ -106,3 +106,17 @@ a.cc-conflict:hover { background-color: #334F6A; }
 /* Links */
 
 a:link, a:visited { color: #334F6A; }
+
+/* Hide player names in calendar cells on small screens */
+/* Changed: alwys hide player names */
+
+.cc-players {
+    display: none;
+    font-size: 8px;
+}
+
+@media screen and (max-width: 600px) {
+    .cc-players {
+        display: none;
+    }
+}
