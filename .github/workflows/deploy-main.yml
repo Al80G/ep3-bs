@@ -25,8 +25,8 @@ jobs:
 
       - name: Get changed files
         run: |
-          git diff --name-only --diff-filter=ACM ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > changed_files.txt
-          git diff --name-only --diff-filter=D ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > deleted_files.txt
+          git diff --name-only --diff-filter=ACM ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > changed_files.txt || true
+          git diff --name-only --diff-filter=D ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > deleted_files.txt || true
           cat changed_files.txt
           cat deleted_files.txt
 
