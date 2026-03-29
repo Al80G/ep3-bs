@@ -162,8 +162,6 @@
             squarebox = $('<div class="panel"></div>').css({
                 "position": "fixed",
                 "z-index": 1536,
-                "width": "80vw",
-                "max-width": "480px",
                 "box-sizing": "border-box",
                 "overflow-x": "hidden",
                 "top": "50%",
@@ -194,7 +192,7 @@
     {
         if (squarebox) {
             if (squarebox.find(".giant-sized").length) {
-                squarebox.css({ "width": "96vw", "max-width": "96vw" });
+                squarebox.css({ "width": "", "max-width": "" });
             } else {
                 squarebox.css({ "width": "80vw", "max-width": "480px" });
             }
