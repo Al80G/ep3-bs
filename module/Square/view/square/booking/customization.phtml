@@ -11,7 +11,7 @@ $this->setup(array(
 
 echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js');
 
-?><div id="sb-url-provider" data-player-autocomplete-url="<?= $this->url('square/booking/player-autocomplete') ?>"></div><?php
+?><div id="sb-url-provider" data-player-autocomplete-url="<?= $this->url('square/booking/player-autocomplete') ?>" data-current-user="<?= $this->user ? $this->escapeHtmlAttr($this->user->need('alias')) : '' ?>"></div><?php
 
 ?>
 

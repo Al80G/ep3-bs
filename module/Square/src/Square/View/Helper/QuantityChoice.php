@@ -76,7 +76,7 @@ class QuantityChoice extends AbstractHelper
                 $html .= sprintf('<input type="text" name="sb-player-name-%1$s" id="sb-name-%1$s" value="" placeholder="%1$s. %2$s" style="min-width: 160px;" class="sb-player-autocomplete">',
                     $i, $this->view->translate('Player\'s name'));
 
-                $html .= sprintf(' <button type="button" onclick="var f=document.getElementById(\'sb-name-%1$s\');f.value=\'%2$s\';f.dispatchEvent(new Event(\'change\'));" style="margin-left:4px;">%3$s</button>',
+                $html .= sprintf(' <button type="button" onclick="$(\'#sb-name-%1$s\').val(\'%2$s\').trigger(\'focusout\');" style="margin-left:4px;">%3$s</button>',
                     $i,
                     $this->view->translate('Guest'),
                     $this->view->translate('Guest'));

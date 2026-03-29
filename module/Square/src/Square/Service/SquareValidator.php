@@ -12,6 +12,7 @@ use Event\Manager\EventManager;
 use Exception;
 use RuntimeException;
 use Square\Manager\SquareManager;
+use User\Manager\UserManager;
 use User\Manager\UserSessionManager;
 
 class SquareValidator extends AbstractService
@@ -22,17 +23,19 @@ class SquareValidator extends AbstractService
     protected $eventManager;
     protected $squareManager;
     protected $optionManager;
+    protected $userManager;
     protected $user;
 
     public function __construct(BookingManager $bookingManager, ReservationManager $reservationManager,
         EventManager $eventManager, SquareManager $squareManager, UserSessionManager $userSessionManager,
-        OptionManager $optionManager)
+        OptionManager $optionManager, UserManager $userManager)
     {
         $this->bookingManager = $bookingManager;
         $this->reservationManager = $reservationManager;
         $this->eventManager = $eventManager;
         $this->squareManager = $squareManager;
         $this->optionManager = $optionManager;
+        $this->userManager = $userManager;
         $this->user = $userSessionManager->getSessionUser();
     }
 
@@ -414,6 +417,10 @@ class SquareValidator extends AbstractService
         }
 
         /* Gather byproducts */
+
+        if ($bookings) {
+            $this->userManager->getByBookings($bookings);
+        }
 
         $byproducts['bookings'] = $bookings;
         $byproducts['bookingsFromUser'] = $bookingsFromUser;

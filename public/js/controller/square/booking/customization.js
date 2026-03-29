@@ -2,6 +2,7 @@
 
     var playerAutocompleteUrl;
     var validatedFields = {};  /* fieldId -> true/false */
+    var currentUser;
 
     $(document).ready(function() {
 
@@ -9,6 +10,7 @@
         $("#sb-customization-panel").show();
 
         playerAutocompleteUrl = $("#sb-url-provider").data("player-autocomplete-url");
+        currentUser = $("#sb-url-provider").data("current-user");
 
         $("#sb-quantity").on("change keyup focusout", onQuantityChange);
 
@@ -91,6 +93,12 @@
     function validateFieldByName($input) {
         var name = $.trim($input.val());
         if (!name || !playerAutocompleteUrl) {
+            setFieldValid($input, false);
+            onPlayerNameUpdate();
+            return;
+        }
+        /* Prevent adding yourself as a player */
+        if (currentUser && name === currentUser) {
             setFieldValid($input, false);
             onPlayerNameUpdate();
             return;

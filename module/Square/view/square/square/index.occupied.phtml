@@ -12,15 +12,19 @@ echo sprintf('<p><span class="red">' . $reason . '</span></p>', $squareType);
 
 if ($this->user && $this->bookings) {
     foreach ($this->bookings as $booking) {
+        $bookerUser = $booking->getExtra('user');
+        $bookerName = $bookerUser ? $this->escapeHtml($bookerUser->need('alias')) : null;
+        $names = $bookerName ? [$bookerName] : [];
         $raw = $booking->getMeta('player-names');
-        if (!$raw) continue;
-        $players = @unserialize($raw);
-        if (!$players || !is_array($players)) continue;
-        $names = [];
-        foreach ($players as $entry) {
-            $name = isset($entry['value']) ? trim($entry['value']) : '';
-            if ($name !== '') {
-                $names[] = $this->escapeHtml($name);
+        if ($raw) {
+            $players = @unserialize($raw);
+            if ($players && is_array($players)) {
+                foreach ($players as $entry) {
+                    $name = isset($entry['value']) ? trim($entry['value']) : '';
+                    if ($name !== '') {
+                        $names[] = $this->escapeHtml($name);
+                    }
+                }
             }
         }
         if (!empty($names)) {
