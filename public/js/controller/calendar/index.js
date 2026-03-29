@@ -162,8 +162,6 @@
             squarebox = $('<div class="panel"></div>').css({
                 "position": "fixed",
                 "z-index": 1536,
-                "width": "80vw",
-                "max-width": "480px",
                 "box-sizing": "border-box",
                 "overflow-x": "hidden",
                 "top": "50%",
@@ -193,8 +191,11 @@
     function updateSquarebox()
     {
         if (squarebox) {
-            if (squarebox.find(".giant-sized").length) {
-                squarebox.css({ "width": "96vw", "max-width": "96vw" });
+            if (squarebox.find(".bf-table").length && $(window).width() > 600) {
+                squarebox.css({ "width": "auto", "max-width": "none" });
+                var naturalWidth = squarebox.outerWidth();
+                var maxW = Math.min(naturalWidth, $(window).width() * 0.96);
+                squarebox.css({ "width": maxW, "max-width": maxW });
             } else {
                 squarebox.css({ "width": "80vw", "max-width": "480px" });
             }
