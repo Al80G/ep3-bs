@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
         with:
-          fetch-depth: 2  # Letzten 2 Commits
+          fetch-depth: 0
 
       - name: Install lftp
         run: sudo apt-get install -y lftp
