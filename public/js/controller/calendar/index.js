@@ -163,7 +163,7 @@
                 "position": "fixed",
                 "z-index": 1536,
                 "width": "80vw",
-                "max-width": "80vw",
+                "max-width": "480px",
                 "box-sizing": "border-box",
                 "overflow-x": "hidden",
                 "top": "50%",
