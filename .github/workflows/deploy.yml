@@ -11,13 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Für Delta-Erkennung (nur geänderte Dateien)
+          fetch-depth: 2
 
       - name: Deploy via SFTP
-			uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-			with:
-				username: ${{ secrets.FTP_USERNAME }}
-				server: ${{ secrets.FTP_HOST }}
-				password: ${{ secrets.FTP_PASSWORD }}
-				local_path: './*'
-				remote_path: '/bstest/'
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: ${{ secrets.FTP_USERNAME }}
+          server: ${{ secrets.FTP_HOST }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_path: './*'
+          remote_path: '/bstest/'
