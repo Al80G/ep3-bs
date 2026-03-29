@@ -1,0 +1,53 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: [ master, test ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 2  # Letzten 2 Commits
+
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
+
+      - name: Set remote path
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "REMOTE_PATH=/bs/" >> $GITHUB_ENV
+          else
+            echo "REMOTE_PATH=/bstest/" >> $GITHUB_ENV
+          fi
+
+      - name: Get changed files
+        run: |
+          git diff --name-only --diff-filter=ACM ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > changed_files.txt || true
+          git diff --name-only --diff-filter=D ${{ github.event.before }} ${{ github.sha }} | grep -v '^\.github/' > deleted_files.txt || true
+          cat changed_files.txt
+          cat deleted_files.txt
+
+      - name: Deploy changed files
+        env:
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+        run: |
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              lftp -u "$FTP_USER","$FTP_PASS" ftp://$FTP_HOST <<EOF
+              put "$file" -o "$REMOTE_PATH$file"
+              quit
+          EOF
+            fi
+          done < changed_files.txt
+
+          while IFS= read -r file; do
+            lftp -u "$FTP_USER","$FTP_PASS" ftp://$FTP_HOST <<EOF
+            rm "$REMOTE_PATH$file"
+            quit
+          EOF
+          done < deleted_files.txt
