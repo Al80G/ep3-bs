@@ -192,7 +192,10 @@
     {
         if (squarebox) {
             if (squarebox.find(".giant-sized").length) {
-                squarebox.css({ "width": "", "max-width": "" });
+                squarebox.css({ "width": "auto", "max-width": "none" });
+                var naturalWidth = squarebox.outerWidth();
+                var maxW = Math.min(naturalWidth, $(window).width() * 0.96);
+                squarebox.css({ "width": maxW, "max-width": maxW });
             } else {
                 squarebox.css({ "width": "80vw", "max-width": "480px" });
             }
