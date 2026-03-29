@@ -12,3 +12,4 @@ Thumbs.db
 config/autoload/local.php
 /public
 config/autoload/project.php
+module/Square/src/Square/View/Helper/QuantityChoice.php.bak
