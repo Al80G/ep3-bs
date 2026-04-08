@@ -58,7 +58,8 @@
             "Zend\\Stdlib\\": "src/Zend/Stdlib/src/",
             "Zend\\Uri\\": "src/Zend/Uri/src/",
             "Zend\\Validator\\": "src/Zend/Validator/src/",
-            "Zend\\View\\": "src/Zend/View/src/"
+            "Zend\\View\\": "src/Zend/View/src/",
+            "Payment\\": "module/Payment/src/Payment/"
         }
     },
 

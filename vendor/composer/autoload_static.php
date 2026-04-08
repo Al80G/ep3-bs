@@ -121,8 +121,9 @@ class ComposerStaticInit80187b261285ce6ecce57578ecc7afb2
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
             'Payum\\ISO4217\\' => 14,
+            'Payment\\' => 8,
         ),
-        'L' => 
+        'L' =>
         array (
             'League\\Uri\\' => 11,
         ),
@@ -463,9 +464,13 @@ class ComposerStaticInit80187b261285ce6ecce57578ecc7afb2
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'Payum\\ISO4217\\' => 
+        'Payum\\ISO4217\\' =>
         array (
             0 => __DIR__ . '/..' . '/payum/iso4217',
+        ),
+        'Payment\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/module/Payment/src/Payment',
         ),
         'League\\Uri\\' => 
         array (
@@ -1627,6 +1632,7 @@ class ComposerStaticInit80187b261285ce6ecce57578ecc7afb2
         'Payum\\Extension\\ExtensionCollection' => __DIR__ . '/..' . '/payum/payum/src/Payum/Extension/ExtensionCollection.php',
         'Payum\\Extension\\ExtensionInterface' => __DIR__ . '/..' . '/payum/payum/src/Payum/Extension/ExtensionInterface.php',
         'Payum\\Extension\\StorageExtension' => __DIR__ . '/..' . '/payum/payum/src/Payum/Extension/StorageExtension.php',
+        'Payment\\Storage\\CacheableFilesystemStorage' => __DIR__ . '/../..' . '/module/Payment/src/Payment/Storage/CacheableFilesystemStorage.php',
         'Payum\\ISO4217\\Currency' => __DIR__ . '/..' . '/payum/iso4217/Currency.php',
         'Payum\\ISO4217\\ISO4217' => __DIR__ . '/..' . '/payum/iso4217/ISO4217.php',
         'Payum\\Klarna\\Checkout\\Action\\Api\\BaseApiAwareAction' => __DIR__ . '/..' . '/payum/klarna-checkout/Payum/Klarna/Checkout/Action/Api/BaseApiAwareAction.php',

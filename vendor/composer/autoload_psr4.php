@@ -74,6 +74,7 @@ return array(
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
+    'Payment\\' => array($baseDir . '/module/Payment/src/Payment'),
     'Payum\\ISO4217\\' => array($vendorDir . '/payum/iso4217'),
     'League\\Uri\\' => array($vendorDir . '/league/uri-components/src', $vendorDir . '/league/uri-hostname-parser/src', $vendorDir . '/league/uri-interfaces/src', $vendorDir . '/league/uri-manipulations/src', $vendorDir . '/league/uri-parser/src', $vendorDir . '/league/uri-schemes/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
