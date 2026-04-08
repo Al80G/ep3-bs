@@ -71,18 +71,6 @@ $this->setup(array(
                                 </div>
                             <?php endif; ?>
                         </div>
-                    <?php elseif ($this->sessionUser->can('admin.user')): ?>
-                        <div style="margin-top: 8px;">
-                            <div>
-                                <label class="small-text gray">
-                                </label>
-                            </div>
-
-                            <div>
-                                <label class="small-text gray">
-                                </label>
-                            </div>
-                        </div>
                     <?php endif; ?>
                 </div>
             </td>
@@ -160,18 +148,18 @@ $this->setup(array(
 
                             <?php if ($this->booking->getMeta('creator')): ?>
                                 <?= sprintf($this->t('Booking created:<br>%s by %s'),
-                                    $this->prettyDate(new \DateTime($this->booking->get('created'))),
+                                    $this->prettyDate(new DateTime($this->booking->get('created'))),
                                     $this->booking->getMeta('creator')) ?>
                             <?php else: ?>
                                 <?= sprintf($this->t('Booking created:<br>%s'),
-                                    $this->prettyDate(new \DateTime($this->booking->get('created')))) ?>
+                                    $this->prettyDate(new DateTime($this->booking->get('created')))) ?>
                             <?php endif; ?>
 
                             <?php if ($this->booking->getMeta('cancellor') && $this->booking->getMeta('cancelled')): ?>
                                 <br>
 
                                 <?= sprintf($this->t('Booking cancelled:<br>%s by %s'),
-                                    $this->prettyDate(new \DateTime($this->booking->get('cancelled'))),
+                                    $this->prettyDate(new DateTime($this->booking->get('cancelled'))),
                                     $this->booking->getMeta('cancellor')) ?>
                             <?php endif; ?>
                         </div>
@@ -285,12 +273,12 @@ $this->setup(array(
             <div class="default-form-notes">
                 <div class="separator-small separator-line"></div>
                 <?php if ($this->booking->getMeta('creator')): ?>
-                    <?= sprintf($this->t('Booking created:<br>%s by %s'), $this->prettyDate(new \DateTime($this->booking->get('created'))), $this->booking->getMeta('creator')) ?>
+                    <?= sprintf($this->t('Booking created:<br>%s by %s'), $this->prettyDate(new DateTime($this->booking->get('created'))), $this->booking->getMeta('creator')) ?>
                 <?php else: ?>
-                    <?= sprintf($this->t('Booking created:<br>%s'), $this->prettyDate(new \DateTime($this->booking->get('created')))) ?>
+                    <?= sprintf($this->t('Booking created:<br>%s'), $this->prettyDate(new DateTime($this->booking->get('created')))) ?>
                 <?php endif; ?>
                 <?php if ($this->booking->getMeta('cancellor') && $this->booking->getMeta('cancelled')): ?>
-                    <br><?= sprintf($this->t('Booking cancelled:<br>%s by %s'), $this->prettyDate(new \DateTime($this->booking->get('cancelled'))), $this->booking->getMeta('cancellor')) ?>
+                    <br><?= sprintf($this->t('Booking cancelled:<br>%s by %s'), $this->prettyDate(new DateTime($this->booking->get('cancelled'))), $this->booking->getMeta('cancellor')) ?>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
