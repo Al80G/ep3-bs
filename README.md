@@ -1,6 +1,6 @@
 
 # ep-3 Bookingsystem with direct payment via payum  
-fork of 1.8.1 from tkrebs/ep3-bs
+fork of 1.8.1 from hschiebold/ep3-bs merged with 1.9.0 from tkrebs/ep3-bs (for PHP 8.4)
 
 modified with payum / payumModule (https://github.com/Payum/PayumModule) for direct payment via paypal and stripe (credit cards, ( apple pay, google pay via PaymentRequest API), SEPA direct debit, iDEAL, Giropay) 
 
