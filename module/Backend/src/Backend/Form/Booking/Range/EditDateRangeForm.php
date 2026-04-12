@@ -82,13 +82,7 @@ class EditDateRangeForm extends Form
                         'name' => 'Callback',
                         'options' => array(
                             'callback' => function($value) {
-                                try {
-                                    new \DateTime($value);
-
-                                    return true;
-                                } catch (\Exception $e) {
-                                    return false;
-                                }
+                                return \DateTime::createFromFormat('d.m.Y', $value) !== false;
                             },
                             'message' => 'Invalid date',
                         ),
@@ -112,13 +106,7 @@ class EditDateRangeForm extends Form
                         'name' => 'Callback',
                         'options' => array(
                             'callback' => function($value) {
-                                try {
-                                    new \DateTime($value);
-
-                                    return true;
-                                } catch (\Exception $e) {
-                                    return false;
-                                }
+                                return \DateTime::createFromFormat('d.m.Y', $value) !== false;
                             },
                             'message' => 'Invalid date',
                         ),
