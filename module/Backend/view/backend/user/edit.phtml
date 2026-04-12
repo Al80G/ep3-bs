@@ -53,10 +53,23 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/user/edit
 
         ?>
 
+        <style>
+        @media (max-width: 600px) {
+            .euf-table input[type="text"],
+            .euf-table input[type="password"],
+            .euf-table select,
+            .euf-table textarea {
+                max-width: 100%;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+        }
+        </style>
+
         <?= $this->form()->openTag($form) ?>
 
         <div>
-            <table class="default-table half-table" style="float: left;">
+            <table class="default-table half-table euf-table" style="float: left;">
                 <tr>
                     <td colspan="2" class="centered-text">
                         <div class="badge">1</div> <span class="badge-label"><?= $this->t('Account data') ?></span>
@@ -115,7 +128,7 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/user/edit
                 </tr>
             </table>
 
-            <table class="default-table half-table" style="float: right;">
+            <table class="default-table half-table euf-table" style="float: right;">
                 <tr>
                     <td colspan="2" class="centered-text">
                         <div class="badge">2</div> <span class="badge-label"><?= $this->t('Personal data') ?></span>
