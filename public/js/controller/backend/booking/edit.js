@@ -34,8 +34,6 @@
             "source": urlProvider.data("user-autocomplete-url")
         });
 
-        /* Timepicker: native type="time" on all devices (24:00 stays as text) */
-
         /* Timepicker: replace time text inputs with 30-minute interval selects */
 
         function makeTimeSelect(currentVal, name, id, style) {
@@ -72,12 +70,9 @@
             $input.attr('type', 'date');
         });
 
-        /* Update Form */
+        /* Update Form — bind only to the active section's repeat select */
 
-        $("[name='bf-repeat']").on("change", function() {
-            $("[name='bf-repeat']").val($(this).val());
-            updateForm();
-        });
+        $("[name='bf-repeat']").on("change", updateForm);
 
         updateForm();
 
@@ -112,13 +107,12 @@
         var form = formSubmit.closest("form");
 
         form.on("submit", function() {
-            /* Re-enable any fields disabled by updateForm() within the visible section */
             if (window.innerWidth >= 601) {
-                /* Desktop: re-enable disabled desktop fields, then disable entire mobile section */
+                /* Desktop: re-enable disabled desktop fields, disable mobile section */
                 form.find(".bf-table :disabled").removeAttr("disabled");
                 form.find(".bf-mobile input, .bf-mobile select, .bf-mobile textarea").prop("disabled", true);
             } else {
-                /* Mobile: re-enable disabled mobile fields, then disable entire desktop section */
+                /* Mobile: re-enable disabled mobile fields, disable desktop section */
                 form.find(".bf-mobile :disabled").removeAttr("disabled");
                 form.find(".bf-table input, .bf-table select, .bf-table textarea").prop("disabled", true);
             }
@@ -126,23 +120,30 @@
 
     });
 
+    function activeRepeat() {
+        return window.innerWidth >= 601
+            ? $(".bf-table [name='bf-repeat']").first()
+            : $(".bf-mobile [name='bf-repeat']").first();
+    }
+
     function updateForm()
     {
-        /* Datepicker on demand for date end */
+        /* Show/hide date-end row based on repeat value */
 
-        var repeat = $("[name='bf-repeat']");
+        var repeatVal = activeRepeat().val();
+        var $dateEndRows = $("[name='bf-date-end']").closest("tr");
 
-        if (repeat.first().val() === "0") {
-            disableFormElement($("[name='bf-date-end']"));
+        if (repeatVal === "0") {
+            $dateEndRows.hide();
         } else {
-            enableFormElement($("[name='bf-date-end']"));
+            $dateEndRows.show();
         }
 
         var editMode = tagProvider.data("edit-mode-tag");
 
         if (editMode == "no_subscr") {
-            disableFormElement(repeat);
-            disableFormElement($("[name='bf-date-end']"));
+            disableFormElement(activeRepeat());
+            $dateEndRows.hide();
         }
 
         /* Lock specific fields in edit mode */
@@ -150,13 +151,13 @@
         var rid = $("#bf-rid");
 
         if (rid.val()) {
-            disableFormElement(repeat);
+            disableFormElement(activeRepeat());
 
             if (editMode == "booking") {
                 disableFormElement($("[name='bf-time-start']"));
                 disableFormElement($("[name='bf-time-end']"));
                 disableFormElement($("[name='bf-date-start']"));
-                disableFormElement($("[name='bf-date-end']"));
+                $dateEndRows.hide();
             } else if (editMode == "reservation") {
                 disableFormElement($("[name='bf-user']"));
                 disableFormElement($("[name='bf-sid']"));
