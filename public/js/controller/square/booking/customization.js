@@ -150,8 +150,10 @@
 
             sbButton.css({ opacity: 1, "pointer-events": "" });
 
-            /* Hide button if required fields are empty */
-            if (playerNameMode == "required") {
+            var ballmaschineChecked = $("#sb-ballmaschine").is(":checked");
+
+            /* Hide button if required fields are empty (unless Ballmaschine is selected) */
+            if (playerNameMode == "required" && !ballmaschineChecked) {
                 playerNameInputs.each(function() {
                     if (! $(this).val()) {
                         sbButton.css({ opacity: 0, "pointer-events": "none" });
@@ -209,6 +211,8 @@
 
             sbButton.attr("href", newHref);
         }
+
+        onPlayerNameUpdate();
     }
 
 })();
