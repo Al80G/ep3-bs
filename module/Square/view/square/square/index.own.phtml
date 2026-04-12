@@ -3,8 +3,7 @@
 $squareType = $this->option('subject.square.type');
 
 $renderPlayerNames = function($booking, $view) {
-    $bookerUser = $booking->getExtra('user');
-    $names = $bookerUser ? [$view->escapeHtml($bookerUser->need('alias'))] : [];
+    $names = [];
     $raw = $booking->getMeta('player-names');
     if ($raw) {
         $players = @unserialize($raw);
@@ -17,7 +16,7 @@ $renderPlayerNames = function($booking, $view) {
             }
         }
     }
-    if (count($names) <= 1 && !$raw) return '';
+    if (empty($names)) return '';
     return '<p class="gray"><em>' . $view->t('Players') . ': ' . implode(', ', $names) . '</em></p>';
 };
 
@@ -26,6 +25,10 @@ foreach ($this->bookingsFromUser as $bid => $booking) {
         $squareType, '<b>', '</b>');
 
     echo $renderPlayerNames($booking, $this);
+
+    if ($booking->getMeta('ballmaschine')) {
+        echo '<p class="gray"><em>Ballmaschine: gebucht</em></p>';
+    }
 
     if ($this->validator->isCancellable($booking)) {
         echo sprintf('<p><a href="%s" class="default-button squarebox-internal-link"><span class="symbolic symbolic-cross">%s</span></a></p>',
