@@ -167,6 +167,13 @@ class BookingController extends AbstractActionController
          
                 }
 
+                /* Handle Ballmaschine meta */
+
+                $bookingManagerBm = $serviceManager->get('Booking\Manager\BookingManager');
+                $ballmaschineChecked = ($this->params()->fromPost('bf-ballmaschine') == '1');
+                $savedBooking->setMeta('ballmaschine', $ballmaschineChecked ? '1' : null);
+                $bookingManagerBm->save($savedBooking);
+
                 $this->flashMessenger()->addSuccessMessage('Booking has been saved');
 
                 if ($this->params()->fromPost('bf-edit-user')) {
@@ -247,6 +254,36 @@ class BookingController extends AbstractActionController
             $editForm->get('bf-quantity')->setOption('notes', $playerNameNotes);
         }
 
+        /* Ballmaschine availability for this time slot */
+
+        $ballmaschineAvailable = true;
+        $reservationManagerBm = $serviceManager->get('Booking\Manager\ReservationManager');
+        $bookingManagerBmView = $serviceManager->get('Booking\Manager\BookingManager');
+
+        if ($reservation) {
+            $checkDate = $reservation->get('date');
+            $checkTimeStart = $reservation->get('time_start');
+            $checkTimeEnd = $reservation->get('time_end');
+        } elseif (isset($params['dateTimeStart'], $params['dateTimeEnd'])) {
+            $checkDate = $params['dateTimeStart']->format('Y-m-d');
+            $checkTimeStart = $params['dateTimeStart']->format('H:i');
+            $checkTimeEnd = $params['dateTimeEnd']->format('H:i');
+        } else {
+            $checkDate = null;
+        }
+
+        if ($checkDate) {
+            $bmReservations = $reservationManagerBm->getByRange($checkDate, $checkDate, $checkTimeStart, $checkTimeEnd);
+            foreach ($bmReservations as $bmRes) {
+                if ($booking && $bmRes->need('bid') == $booking->get('bid')) continue;
+                $bmBooking = $bookingManagerBmView->get($bmRes->need('bid'), false);
+                if ($bmBooking && $bmBooking->getMeta('ballmaschine') && $bmBooking->need('status') != 'cancelled') {
+                    $ballmaschineAvailable = false;
+                    break;
+                }
+            }
+        }
+
         if (! $sessionUser->can(['calendar.create-subscription-bookings'])) {
             return $this->ajaxViewModel(array_merge($params, array(
             'editMode' => 'no_subscr',
@@ -254,6 +291,7 @@ class BookingController extends AbstractActionController
             'booking' => $booking,
             'reservation' => $reservation,
             'sessionUser' => $sessionUser,
+            'ballmaschineAvailable' => $ballmaschineAvailable,
             )));
         }
 
@@ -262,6 +300,7 @@ class BookingController extends AbstractActionController
             'booking' => $booking,
             'reservation' => $reservation,
             'sessionUser' => $sessionUser,
+            'ballmaschineAvailable' => $ballmaschineAvailable,
         )));
     }
 

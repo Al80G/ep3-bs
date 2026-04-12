@@ -44,6 +44,16 @@
 
         updateForm();
 
+        /* Sync Ballmaschine checkboxes between desktop and mobile */
+
+        $("#bf-ballmaschine").on("change", function() {
+            $("#bf-ballmaschine-mobile").prop("checked", $(this).is(":checked"));
+        });
+
+        $("#bf-ballmaschine-mobile").on("change", function() {
+            $("#bf-ballmaschine").prop("checked", $(this).is(":checked"));
+        });
+
         /* Exclusive edit fields */
 
         var $editUser = $('#bf input[name="bf-edit-user"]');

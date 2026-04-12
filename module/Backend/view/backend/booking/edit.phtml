@@ -120,6 +120,16 @@ $this->setup(array(
                         <?= $this->formRowCompact($form, 'bf-sid') ?>
                         <?= $this->formRowCompact($form, 'bf-quantity') ?>
                     </table>
+
+                    <div class="default-form-notes" style="margin-top: 8px;">
+                        <div class="separator-small separator-line"></div>
+                        <input type="checkbox" name="bf-ballmaschine" id="bf-ballmaschine" value="1"
+                            <?= ($this->booking && $this->booking->getMeta('ballmaschine')) ? 'checked="checked"' : '' ?>>
+                        <label for="bf-ballmaschine">Ballmaschine</label>
+                        <?php if (! $this->ballmaschineAvailable && ! ($this->booking && $this->booking->getMeta('ballmaschine'))): ?>
+                            <span class="gray small-text">(bereits gebucht)</span>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </td>
 
@@ -255,6 +265,16 @@ $this->setup(array(
             <?= $this->formRowCompact($form, 'bf-sid') ?>
             <?= $this->formRowCompact($form, 'bf-quantity') ?>
         </table>
+
+        <div class="default-form-notes" style="margin-top: 8px;">
+            <div class="separator-small separator-line"></div>
+            <input type="checkbox" name="bf-ballmaschine" id="bf-ballmaschine-mobile" value="1"
+                <?= ($this->booking && $this->booking->getMeta('ballmaschine')) ? 'checked="checked"' : '' ?>>
+            <label for="bf-ballmaschine-mobile">Ballmaschine</label>
+            <?php if (! $this->ballmaschineAvailable && ! ($this->booking && $this->booking->getMeta('ballmaschine'))): ?>
+                <span class="gray small-text">(bereits gebucht)</span>
+            <?php endif; ?>
+        </div>
     </div>
 
     <div class="sandbox" style="margin-bottom:10px;">
