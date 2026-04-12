@@ -26,17 +26,17 @@
                 return false;
             }
         });
-		
-		/* Autocomplete for additional players */
 
-		$(".player-autocomplete").autocomplete({
-			"minLength": 1,
-			"source": urlProvider.data("user-autocomplete-url")
-		});
+        /* Autocomplete for additional players */
 
-        /* Datepicker */
+        $(".player-autocomplete").autocomplete({
+            "minLength": 1,
+            "source": urlProvider.data("user-autocomplete-url")
+        });
 
-        $("#bf-date-start, #bf-date-end").datepicker();
+        /* Datepicker - target by name so both desktop and mobile fields get it */
+
+        $("[name='bf-date-start'], [name='bf-date-end']").datepicker();
 
         /* Update Form */
 
@@ -69,35 +69,21 @@
             });
         }
 
-        /* Enable form on submit */
+        /* Submit handler */
 
         var formSubmit = $("#bf-submit");
         var form = formSubmit.closest("form");
 
         form.on("submit", function() {
-            /* Sync user field: desktop value wins, copy to mobile to prevent empty override */
-            var desktopUser = $("#bf-user").val();
-            var mobileUser  = $("#bf-user-mobile").val();
-
-            if (desktopUser) {
-                $("#bf-user-mobile").val(desktopUser);
-            } else if (mobileUser) {
-                $("#bf-user").val(mobileUser);
-            }
-
-            form.find(":disabled").removeAttr("disabled");
-
-            /* Sync duplicate fields: desktop wins on desktop, mobile wins on mobile.
-               PHP takes the last occurrence of each name; mobile fields come last in HTML. */
+            /* Re-enable any fields disabled by updateForm() within the visible section */
             if (window.innerWidth >= 601) {
-                form.find(".bf-mobile input, .bf-mobile select, .bf-mobile textarea").each(function() {
-                    var name = $(this).attr("name");
-                    if (!name || name === "bf-user") { return; }
-                    var $desktop = form.find(".bf-table [name='" + name + "']").first();
-                    if ($desktop.length) {
-                        $(this).val($desktop.val());
-                    }
-                });
+                /* Desktop: re-enable disabled desktop fields, then disable entire mobile section */
+                form.find(".bf-table :disabled").removeAttr("disabled");
+                form.find(".bf-mobile input, .bf-mobile select, .bf-mobile textarea").prop("disabled", true);
+            } else {
+                /* Mobile: re-enable disabled mobile fields, then disable entire desktop section */
+                form.find(".bf-mobile :disabled").removeAttr("disabled");
+                form.find(".bf-table input, .bf-table select, .bf-table textarea").prop("disabled", true);
             }
         });
 
@@ -105,24 +91,22 @@
 
     function updateForm()
     {
-
         /* Datepicker on demand for date end */
 
-        var dateEnd = $("#bf-date-end");
         var repeat = $("#bf-repeat");
 
         if (repeat.val() === "0") {
-            disableFormElement(dateEnd);
+            disableFormElement($("[name='bf-date-end']"));
         } else {
-            enableFormElement(dateEnd);
+            enableFormElement($("[name='bf-date-end']"));
         }
 
         var editMode = tagProvider.data("edit-mode-tag");
 
         if (editMode == "no_subscr") {
             disableFormElement(repeat);
-            disableFormElement("#bf-date-end"); 
-        }   
+            disableFormElement($("[name='bf-date-end']"));
+        }
 
         /* Lock specific fields in edit mode */
 
@@ -132,16 +116,16 @@
             disableFormElement(repeat);
 
             if (editMode == "booking") {
-                disableFormElement("#bf-time-start");
-                disableFormElement("#bf-time-end");
-                disableFormElement("#bf-date-start");
-                disableFormElement("#bf-date-end");
+                disableFormElement($("[name='bf-time-start']"));
+                disableFormElement($("[name='bf-time-end']"));
+                disableFormElement($("[name='bf-date-start']"));
+                disableFormElement($("[name='bf-date-end']"));
             } else if (editMode == "reservation") {
-                disableFormElement("#bf-user");
-                disableFormElement("#bf-sid");
-                disableFormElement("#bf-status-billing");
-                disableFormElement("#bf-quantity");
-                disableFormElement("#bf-notes");
+                disableFormElement($("[name='bf-user']"));
+                disableFormElement($("[name='bf-sid']"));
+                disableFormElement($("#bf-status-billing"));
+                disableFormElement($("[name='bf-quantity']"));
+                disableFormElement($("[name='bf-notes']"));
             }
         }
     }
