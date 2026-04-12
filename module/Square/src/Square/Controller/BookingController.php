@@ -66,6 +66,29 @@ class BookingController extends AbstractActionController
             throw new RuntimeException(sprintf($this->t('This %s is already occupied'), $this->option('subject.square.type')));
         }
 
+        /* Check Ballmaschine availability for this time slot (across all squares) */
+
+        $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
+        $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
+        $ballmaschineAvailable = true;
+
+        $reservationsInRange = $reservationManager->getByRange(
+            $byproducts['dateStart']->format('Y-m-d'),
+            $byproducts['dateEnd']->format('Y-m-d'),
+            $byproducts['dateStart']->format('H:i'),
+            $byproducts['dateEnd']->format('H:i')
+        );
+
+        foreach ($reservationsInRange as $reservation) {
+            $existingBooking = $bookingManager->get($reservation->need('bid'), false);
+            if ($existingBooking && $existingBooking->getMeta('ballmaschine') && $existingBooking->need('status') != 'cancelled') {
+                $ballmaschineAvailable = false;
+                break;
+            }
+        }
+
+        $byproducts['ballmaschineAvailable'] = $ballmaschineAvailable;
+
         return $this->ajaxViewModel($byproducts);
     }
 
@@ -157,6 +180,11 @@ class BookingController extends AbstractActionController
         }
 
         $byproducts['products'] = $products;
+
+        /* Check Ballmaschine parameter */
+
+        $ballmaschineParam = $this->params()->fromQuery('bm', 0);
+        $byproducts['ballmaschineChoosen'] = ($ballmaschineParam == '1');
 
         /* Check passed player names */
 
@@ -272,6 +300,26 @@ class BookingController extends AbstractActionController
                     '<b>', '</b>');
             }
 
+            /* Ballmaschine: re-check availability to prevent race conditions */
+
+            if ($byproducts['ballmaschineChoosen'] && ! isset($byproducts['message'])) {
+                $reservationManagerBm = $serviceManager->get('Booking\Manager\ReservationManager');
+                $bookingManagerBm = $serviceManager->get('Booking\Manager\BookingManager');
+                $conflictReservations = $reservationManagerBm->getByRange(
+                    $byproducts['dateStart']->format('Y-m-d'),
+                    $byproducts['dateEnd']->format('Y-m-d'),
+                    $byproducts['dateStart']->format('H:i'),
+                    $byproducts['dateEnd']->format('H:i')
+                );
+                foreach ($conflictReservations as $conflictReservation) {
+                    $conflictBooking = $bookingManagerBm->get($conflictReservation->need('bid'), false);
+                    if ($conflictBooking && $conflictBooking->getMeta('ballmaschine') && $conflictBooking->need('status') != 'cancelled') {
+                        $byproducts['message'] = 'Die Ballmaschine ist für diesen Zeitraum bereits vergeben.';
+                        break;
+                    }
+                }
+            }
+
           if (! isset($byproducts['message'])) {
 
             $bookingService = $serviceManager->get('Booking\Service\BookingService');
@@ -284,8 +332,12 @@ class BookingController extends AbstractActionController
             } 
 
             $payservice = $this->params()->fromPost('paymentservice');
-            $meta = array('player-names' => serialize($playerNames), 'notes' => $notes); 
-            
+            $meta = array('player-names' => serialize($playerNames), 'notes' => $notes);
+
+            if ($byproducts['ballmaschineChoosen']) {
+                $meta['ballmaschine'] = '1';
+            }
+
             if (($payservice == 'paypal' || $payservice == 'stripe' || $payservice == 'klarna') && $payable) {
                    $meta['directpay'] = 'true';
             }

@@ -20,6 +20,8 @@
 
         $(".sb-product").on("change", onProductChange);
 
+        $("#sb-ballmaschine").on("change", onBallmaschineChange);
+
     });
 
     function onQuantityChange() {
@@ -192,6 +194,18 @@
 
             var oldHref = sbButton.attr("href");
             var newHref = oldHref.replace(/p=[0-9\:\,]+/, "p=" + products);
+
+            sbButton.attr("href", newHref);
+        }
+    }
+
+    function onBallmaschineChange() {
+        var sbButton = $("#sb-button");
+
+        if (sbButton.length) {
+            var bm = $("#sb-ballmaschine").is(":checked") ? "1" : "0";
+            var oldHref = sbButton.attr("href");
+            var newHref = oldHref.replace(/bm=[01]/, "bm=" + bm);
 
             sbButton.attr("href", newHref);
         }
