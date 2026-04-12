@@ -76,3 +76,28 @@ $this->headScript()->appendFile($this->basePath('js/tinymce/tinymce.setup.medium
         <?= $this->form()->closeTag() ?>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    function makeTimeSelect(currentVal, name, id, style) {
+        var $select = $('<select>').attr('name', name).attr('id', id).attr('style', style || 'width: 110px;');
+        for (var h = 0; h <= 24; h++) {
+            var steps = (h === 24) ? [0] : [0, 30];
+            for (var s = 0; s < steps.length; s++) {
+                var time = ('0' + h).slice(-2) + ':' + ('0' + steps[s]).slice(-2);
+                $('<option>').val(time).text(time).prop('selected', time === currentVal).appendTo($select);
+            }
+        }
+        if ($select.val() !== currentVal) {
+            $('<option>').val(currentVal).text(currentVal).prop('selected', true).prependTo($select);
+        }
+        return $select;
+    }
+
+    $("[name='ef-time-start'], [name='ef-time-end']").each(function() {
+        var $input = $(this);
+        var $select = makeTimeSelect($input.val(), $input.attr('name'), $input.attr('id'), $input.attr('style'));
+        $input.replaceWith($select);
+    });
+});
+</script>
