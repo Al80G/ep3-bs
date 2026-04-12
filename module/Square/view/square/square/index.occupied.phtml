@@ -10,6 +10,19 @@ if ($this->notBookableReason) {
 
 echo sprintf('<p><span class="red">' . $reason . '</span></p>', $squareType);
 
+if ($this->bookings) {
+    $ballmaschineBooked = false;
+    foreach ($this->bookings as $booking) {
+        if ($booking->getMeta('ballmaschine')) {
+            $ballmaschineBooked = true;
+            break;
+        }
+    }
+    if ($ballmaschineBooked) {
+        echo '<p class="gray"><em>Ballmaschine: gebucht</em></p>';
+    }
+}
+
 if ($this->user && $this->bookings) {
     foreach ($this->bookings as $booking) {
         $bookerUser = $booking->getExtra('user');
