@@ -58,7 +58,10 @@
 
         /* Update Form */
 
-        $("#bf-repeat").on("change", updateForm);
+        $("[name='bf-repeat']").on("change", function() {
+            $("[name='bf-repeat']").val($(this).val());
+            updateForm();
+        });
 
         updateForm();
 
@@ -111,9 +114,9 @@
     {
         /* Datepicker on demand for date end */
 
-        var repeat = $("#bf-repeat");
+        var repeat = $("[name='bf-repeat']");
 
-        if (repeat.val() === "0") {
+        if (repeat.first().val() === "0") {
             disableFormElement($("[name='bf-date-end']"));
         } else {
             enableFormElement($("[name='bf-date-end']"));
