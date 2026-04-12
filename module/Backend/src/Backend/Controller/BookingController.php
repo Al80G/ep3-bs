@@ -3,6 +3,7 @@
 namespace Backend\Controller;
 
 use Booking\Entity\Booking;
+use Booking\Table\BookingMetaTable;
 use Booking\Table\BookingTable;
 use Booking\Table\ReservationTable;
 use DateTime;
@@ -169,10 +170,18 @@ class BookingController extends AbstractActionController
 
                 /* Handle Ballmaschine meta */
 
-                $bookingManagerBm = $serviceManager->get('Booking\Manager\BookingManager');
-                $ballmaschineChecked = ($this->params()->fromPost('bf-ballmaschine') == '1');
-                $savedBooking->setMeta('ballmaschine', $ballmaschineChecked ? '1' : null);
-                $bookingManagerBm->save($savedBooking);
+                $bid = (int) $savedBooking->get('bid');
+                $db = $serviceManager->get('Zend\Db\Adapter\Adapter');
+                $db->query(
+                    sprintf('DELETE FROM %s WHERE bid = %d AND `key` = "ballmaschine"', BookingMetaTable::NAME, $bid),
+                    Adapter::QUERY_MODE_EXECUTE
+                );
+                if ($this->params()->fromPost('bf-ballmaschine') == '1') {
+                    $db->query(
+                        sprintf('INSERT INTO %s (bid, `key`, value) VALUES (%d, "ballmaschine", "1")', BookingMetaTable::NAME, $bid),
+                        Adapter::QUERY_MODE_EXECUTE
+                    );
+                }
 
                 $this->flashMessenger()->addSuccessMessage('Booking has been saved');
 
