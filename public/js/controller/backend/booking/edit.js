@@ -86,6 +86,19 @@
             }
 
             form.find(":disabled").removeAttr("disabled");
+
+            /* Sync duplicate fields: desktop wins on desktop, mobile wins on mobile.
+               PHP takes the last occurrence of each name; mobile fields come last in HTML. */
+            if (window.innerWidth >= 601) {
+                form.find(".bf-mobile input, .bf-mobile select, .bf-mobile textarea").each(function() {
+                    var name = $(this).attr("name");
+                    if (!name || name === "bf-user") { return; }
+                    var $desktop = form.find(".bf-table [name='" + name + "']").first();
+                    if ($desktop.length) {
+                        $(this).val($desktop.val());
+                    }
+                });
+            }
         });
 
     });
