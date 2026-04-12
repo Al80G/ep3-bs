@@ -139,6 +139,17 @@ class BookingController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $editForm->setData($this->params()->fromPost());
 
+            /* TEMP DEBUG - remove after diagnosis */
+            if (!$editForm->isValid()) {
+                echo '<pre style="background:#fff;color:#000;padding:20px;font-size:13px;">';
+                echo "<strong>POST DATA:</strong>\n";
+                var_dump($this->params()->fromPost());
+                echo "<strong>VALIDATION ERRORS:</strong>\n";
+                var_dump($editForm->getMessages());
+                echo '</pre>';
+                exit;
+            }
+
             if ($editForm->isValid()) {
                 $d = $editForm->getData();
 
