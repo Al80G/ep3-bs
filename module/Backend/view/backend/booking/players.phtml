@@ -22,7 +22,8 @@ $this->setup(array(
 
     echo '<div class="separator separator-line"></div>';
 
-    echo '<table class="default-table middle-table" style="margin-left: 0;">';
+    echo '<div style="overflow-x: auto;">';
+    echo '<table class="default-table middle-table" style="margin-left: 0; min-width: 400px;">';
 
     $i = 1;
 
@@ -72,6 +73,7 @@ $this->setup(array(
     }
 
     echo '</table>';
+    echo '</div>';
 
     ?>
 </div>

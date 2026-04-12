@@ -23,8 +23,8 @@ $last_vat_rate = 19;
             '<select name="ebf-status">' . $this->formSelect()->renderOptions(
                 $this->bookingStatusService->getStatusTitles(), array($this->booking->getBillingStatus())) . '</select>')) ?></p>
 
-        <div class="sandbox">
-            <table class="default-table middle-table">
+        <div class="sandbox" style="overflow-x: auto;">
+            <table class="default-table middle-table" style="min-width: 520px;">
                 <tr>
                     <td><?= $this->t('Description') ?></td>
                     <td class="right-text"><?= $this->t('Time (in minutes)') ?></td>
