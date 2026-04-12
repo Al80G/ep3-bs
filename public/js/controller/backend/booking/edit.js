@@ -36,11 +36,27 @@
 
         /* Timepicker: native type="time" on all devices (24:00 stays as text) */
 
+        /* Timepicker: replace time text inputs with 30-minute interval selects */
+
+        function makeTimeSelect(currentVal, name, id, style) {
+            var $select = $('<select>').attr('name', name).attr('id', id).attr('style', style || 'width: 80px;');
+            for (var h = 0; h <= 24; h++) {
+                var steps = (h === 24) ? [0] : [0, 30];
+                for (var s = 0; s < steps.length; s++) {
+                    var time = ('0' + h).slice(-2) + ':' + ('0' + steps[s]).slice(-2);
+                    $('<option>').val(time).text(time).prop('selected', time === currentVal).appendTo($select);
+                }
+            }
+            if ($select.val() !== currentVal) {
+                $('<option>').val(currentVal).text(currentVal).prop('selected', true).prependTo($select);
+            }
+            return $select;
+        }
+
         $("[name='bf-time-start'], [name='bf-time-end']").each(function() {
             var $input = $(this);
-            if ($input.val() !== '24:00') {
-                $input.attr('type', 'time').attr('step', 1800);
-            }
+            var $select = makeTimeSelect($input.val(), $input.attr('name'), $input.attr('id'), $input.attr('style'));
+            $input.replaceWith($select);
         });
 
         /* Datepicker: jQuery UI on desktop, native type="date" on mobile */
