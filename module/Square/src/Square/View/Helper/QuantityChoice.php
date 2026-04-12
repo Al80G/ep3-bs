@@ -37,9 +37,12 @@ class QuantityChoice extends AbstractHelper
 
         $html .= '<select id="sb-quantity" style="min-width: 64px;  visibility:' . $quantityChoiceSelect  . '" >';
 
+        $quantityLabels = [2 => 'Einzel', 4 => 'Doppel'];
+
         foreach ([2, 4] as $i) {
             if ($i <= $quantityAvailable) {
-                $html .= sprintf('<option value="%1$s">%1$s</option>', $i);
+                $label = isset($quantityLabels[$i]) ? $quantityLabels[$i] : $i;
+                $html .= sprintf('<option value="%s">%s</option>', $i, $label);
             }
         }
 
