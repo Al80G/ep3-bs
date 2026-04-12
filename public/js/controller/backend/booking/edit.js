@@ -39,7 +39,7 @@
         $("[name='bf-time-start'], [name='bf-time-end']").each(function() {
             var $input = $(this);
             if ($input.val() !== '24:00') {
-                $input.attr('type', 'time');
+                $input.attr('type', 'time').attr('step', 1800);
             }
         });
 
