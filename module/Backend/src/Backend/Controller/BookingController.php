@@ -3,6 +3,7 @@
 namespace Backend\Controller;
 
 use Booking\Entity\Booking;
+use Booking\Table\BookingMetaTable;
 use Booking\Table\BookingTable;
 use Booking\Table\ReservationTable;
 use DateTime;
@@ -131,7 +132,6 @@ class BookingController extends AbstractActionController
         $serviceManager = @$this->getServiceLocator();
         $formElementManager = $serviceManager->get('FormElementManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
 
         $editForm = $formElementManager->get('Backend\Form\Booking\EditForm');
 
@@ -155,7 +155,8 @@ class BookingController extends AbstractActionController
                     $square = $squareManager->get($savedBooking->get('sid'));
 
                     if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
-                            $squareControlService->updateDoorCode($bid);
+                        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
+                        $squareControlService->updateDoorCode($bid);
                     }
 
                 } else {
@@ -165,6 +166,21 @@ class BookingController extends AbstractActionController
                     $savedBooking = $this->backendBookingCreate($d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'], $d['bf-date-end'],
                         $d['bf-repeat'], $d['bf-sid'], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $sessionUser->get('alias'));
          
+                }
+
+                /* Handle Ballmaschine meta */
+
+                $bid = (int) $savedBooking->get('bid');
+                $db = $serviceManager->get('Zend\Db\Adapter\Adapter');
+                $db->query(
+                    sprintf('DELETE FROM %s WHERE bid = %d AND `key` = "ballmaschine"', BookingMetaTable::NAME, $bid),
+                    Adapter::QUERY_MODE_EXECUTE
+                );
+                if ($this->params()->fromPost('bf-ballmaschine') == '1') {
+                    $db->query(
+                        sprintf('INSERT INTO %s (bid, `key`, value) VALUES (%d, "ballmaschine", "1")', BookingMetaTable::NAME, $bid),
+                        Adapter::QUERY_MODE_EXECUTE
+                    );
                 }
 
                 $this->flashMessenger()->addSuccessMessage('Booking has been saved');
@@ -247,6 +263,36 @@ class BookingController extends AbstractActionController
             $editForm->get('bf-quantity')->setOption('notes', $playerNameNotes);
         }
 
+        /* Ballmaschine availability for this time slot */
+
+        $ballmaschineAvailable = true;
+        $reservationManagerBm = $serviceManager->get('Booking\Manager\ReservationManager');
+        $bookingManagerBmView = $serviceManager->get('Booking\Manager\BookingManager');
+
+        if ($reservation) {
+            $checkDate = $reservation->get('date');
+            $checkTimeStart = $reservation->get('time_start');
+            $checkTimeEnd = $reservation->get('time_end');
+        } elseif (isset($params['dateTimeStart'], $params['dateTimeEnd'])) {
+            $checkDate = $params['dateTimeStart']->format('Y-m-d');
+            $checkTimeStart = $params['dateTimeStart']->format('H:i');
+            $checkTimeEnd = $params['dateTimeEnd']->format('H:i');
+        } else {
+            $checkDate = null;
+        }
+
+        if ($checkDate) {
+            $bmReservations = $reservationManagerBm->getByRange($checkDate, $checkDate, $checkTimeStart, $checkTimeEnd);
+            foreach ($bmReservations as $bmRes) {
+                if ($booking && $bmRes->need('bid') == $booking->get('bid')) continue;
+                $bmBooking = $bookingManagerBmView->get($bmRes->need('bid'), false);
+                if ($bmBooking && $bmBooking->getMeta('ballmaschine') && $bmBooking->need('status') != 'cancelled') {
+                    $ballmaschineAvailable = false;
+                    break;
+                }
+            }
+        }
+
         if (! $sessionUser->can(['calendar.create-subscription-bookings'])) {
             return $this->ajaxViewModel(array_merge($params, array(
             'editMode' => 'no_subscr',
@@ -254,6 +300,7 @@ class BookingController extends AbstractActionController
             'booking' => $booking,
             'reservation' => $reservation,
             'sessionUser' => $sessionUser,
+            'ballmaschineAvailable' => $ballmaschineAvailable,
             )));
         }
 
@@ -262,6 +309,7 @@ class BookingController extends AbstractActionController
             'booking' => $booking,
             'reservation' => $reservation,
             'sessionUser' => $sessionUser,
+            'ballmaschineAvailable' => $ballmaschineAvailable,
         )));
     }
 
@@ -288,7 +336,6 @@ class BookingController extends AbstractActionController
         $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
         $formElementManager = $serviceManager->get('FormElementManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
 
         $bid = $this->params()->fromRoute('bid');
 
@@ -326,6 +373,7 @@ class BookingController extends AbstractActionController
                         $bookingManager->save($booking);
 
                         if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                            $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                             $squareControlService->updateDoorCode($bid);
                         }
                     }
@@ -360,6 +408,7 @@ class BookingController extends AbstractActionController
                         $bookingManager->save($booking);
 
                         if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                            $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                             $squareControlService->updateDoorCode($bid);
                         }
                     }
@@ -401,7 +450,6 @@ class BookingController extends AbstractActionController
         $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
         $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
         $bookingService = $serviceManager->get('Booking\Service\BookingService');
 
         $rid = $this->params()->fromRoute('rid');
@@ -442,6 +490,7 @@ class BookingController extends AbstractActionController
                     $bookingManager->save($booking);
 
                     if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                         $squareControlService->deactivateDoorCode($bid);
                     }                    
 

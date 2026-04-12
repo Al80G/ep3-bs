@@ -6,6 +6,12 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/user/inde
 
 <div style="padding: 10px 0 16px 0;">
     <form method="get" action="<?= $this->url('backend/user') ?>">
+        <style>
+        @media (max-width: 600px) {
+            .usf-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px; }
+            #usf-search { width: 100%; box-sizing: border-box; }
+        }
+        </style>
         <table class="default-table">
             <tr>
                 <td>
@@ -13,15 +19,11 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/user/inde
                         <label for="usf-search"><?= $this->t('Name or number') ?>:</label>
                     </div>
 
-                    <input type="text" name="usf-search" id="usf-search" value="<?= $this->search ?>" data-autocomplete-url="<?= $this->url('backend/user/interpret') ?>" style="width: 320px;">
-                </td>
-
-                <td style="vertical-align: bottom;">
-                    <input type="submit" value="<?= $this->t('Search') ?>" class="default-button">
-                </td>
-
-                <td style="vertical-align: bottom; padding-bottom: 7px;">
-                    <a href="#" id="usf-filters-link" class="unlined gray"><?= $this->t('Advanced search') ?></a>
+                    <div class="usf-row">
+                        <input type="text" name="usf-search" id="usf-search" value="<?= $this->search ?>" data-autocomplete-url="<?= $this->url('backend/user/interpret') ?>" style="max-width: 320px; width: 100%;">
+                        <input type="submit" value="<?= $this->t('Search') ?>" class="default-button">
+                        <a href="#" id="usf-filters-link" class="unlined gray"><?= $this->t('Advanced search') ?></a>
+                    </div>
                 </td>
             </tr>
         </table>

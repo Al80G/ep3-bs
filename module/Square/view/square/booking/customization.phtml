@@ -57,7 +57,24 @@ echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js')
         's' => $square->need('sid'),
         'q' => 2,
         'p' => 0,
-        'pn' => 0]]);
+        'pn' => 0,
+        'bm' => 0]]);
+
+    ?>
+
+    <div class="sandbox" id="sb-ballmaschine-container">
+        <?php if ($this->ballmaschineAvailable): ?>
+            <input type="checkbox" id="sb-ballmaschine" value="1">
+            <label for="sb-ballmaschine">Ballmaschine hinzuf&uuml;gen</label>
+        <?php else: ?>
+            <input type="checkbox" id="sb-ballmaschine" disabled="disabled">
+            <label for="sb-ballmaschine" style="color: #999;">Ballmaschine (bereits gebucht)</label>
+        <?php endif; ?>
+    </div>
+
+    <div class="separator separator-line"></div>
+
+    <?php
 
     echo sprintf('<a href="%s" id="sb-button" class="default-button squarebox-internal-link">%s</a>',
         $url, $this->t('Continue to summary'));

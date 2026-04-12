@@ -8,6 +8,14 @@ $this->setup(array(
 
 ?>
 
+<style>
+.erf-row,
+.erf-row tbody,
+.erf-row tr { display: block; }
+.erf-row tr { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.erf-row td { display: block; padding: 0; }
+</style>
+
 <div class="padded">
     <p><?= $this->t('Change the time range of all unmodified reservations of this booking:') ?></p>
 
@@ -23,7 +31,7 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table" style="margin: 0;">
+        <table class="default-table erf-row" style="margin: 0;">
             <tr>
                 <td>
                     <table class="default-table">
@@ -62,7 +70,7 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table" style="margin: 0;">
+        <table class="default-table erf-row" style="margin: 0;">
             <tr>
                 <td>
                     <table class="default-table">

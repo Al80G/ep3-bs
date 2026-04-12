@@ -74,25 +74,15 @@
                 targetPanelMarginLeft = 0;
             }
 
-            /* Determine back links */
+            /* Determine back links - measure width BEFORE any positioning */
 
             var linksBack = linksPanel.find(".links-back").first();
-            var linksBackWidth = 0;
+            var linksBackWidth = linksBack.length ? linksBack.outerWidth(true) : 0;
 
-            if (linksBack.length) {
-                linksBack.css("position", "absolute");
-                linksBackWidth = linksBack.outerWidth(true);
-            }
-
-            /* Determine forth links */
+            /* Determine forth links - measure width BEFORE any positioning */
 
             var linksForth = linksPanel.find(".links-forth").first();
-            var linksForthWidth = 0;
-
-            if (linksForth.length) {
-                linksForth.css("position", "absolute");
-                linksForthWidth = linksForth.outerWidth(true);
-            }
+            var linksForthWidth = linksForth.length ? linksForth.outerWidth(true) : 0;
 
             /* Determine overall reference width */
 
@@ -100,10 +90,7 @@
 
             /* Determine links panel display mode */
 
-            if (referenceWidth >= $(window).width()) {
-                linksBack.removeAttr("style");
-                linksForth.removeAttr("style");
-            } else {
+            if (referenceWidth < $(window).width()) {
                 var targetPanelLeft;
 
                 if (targetPanelMarginLeft > 0) {
@@ -118,15 +105,22 @@
                     targetPanelLeft = Math.floor(targetPanel.position().left);
                 }
 
-                linksBack.css({
-                    "left": targetPanelLeft - linksBackWidth,
-                    "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksBack.outerHeight() / 2), 384)
-                });
+                var backLeft = targetPanelLeft - linksBackWidth;
+                var forthLeft = targetPanelLeft + targetPanelWidth;
 
-                linksForth.css({
-                    "left": targetPanelLeft + targetPanelWidth,
-                    "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksForth.outerHeight() / 2), 384)
-                });
+                if (backLeft >= 0 && forthLeft + linksForthWidth <= $(window).width()) {
+                    linksBack.css({
+                        "position": "absolute",
+                        "left": backLeft,
+                        "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksBack.outerHeight() / 2), 384)
+                    });
+
+                    linksForth.css({
+                        "position": "absolute",
+                        "left": forthLeft,
+                        "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksForth.outerHeight() / 2), 384)
+                    });
+                }
             }
         }
     }

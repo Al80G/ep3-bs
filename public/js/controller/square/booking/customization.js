@@ -20,6 +20,8 @@
 
         $(".sb-product").on("change", onProductChange);
 
+        $("#sb-ballmaschine").on("change", onBallmaschineChange);
+
     });
 
     function onQuantityChange() {
@@ -148,8 +150,10 @@
 
             sbButton.css({ opacity: 1, "pointer-events": "" });
 
-            /* Hide button if required fields are empty */
-            if (playerNameMode == "required") {
+            var ballmaschineChecked = $("#sb-ballmaschine").is(":checked");
+
+            /* Hide button if required fields are empty (unless Ballmaschine is selected) */
+            if (playerNameMode == "required" && !ballmaschineChecked) {
                 playerNameInputs.each(function() {
                     if (! $(this).val()) {
                         sbButton.css({ opacity: 0, "pointer-events": "none" });
@@ -195,6 +199,20 @@
 
             sbButton.attr("href", newHref);
         }
+    }
+
+    function onBallmaschineChange() {
+        var sbButton = $("#sb-button");
+
+        if (sbButton.length) {
+            var bm = $("#sb-ballmaschine").is(":checked") ? "1" : "0";
+            var oldHref = sbButton.attr("href");
+            var newHref = oldHref.replace(/bm=[01]/, "bm=" + bm);
+
+            sbButton.attr("href", newHref);
+        }
+
+        onPlayerNameUpdate();
     }
 
 })();

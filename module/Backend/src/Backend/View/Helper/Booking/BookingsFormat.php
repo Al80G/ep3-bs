@@ -18,8 +18,8 @@ class BookingsFormat extends AbstractHelper
         $html .= '<th>&nbsp;</th>';
         $html .= '<th>' . $view->t('No.') . '</th>';
         $html .= '<th>' . $view->t('Name') . '</th>';
-        $html .= '<th>' . $view->t('Member') . '</th>';
-        $html .= '<th>' . $view->t('Day') . '</th>';
+        $html .= '<th class="member-col">' . $view->t('Member') . '</th>';
+        $html .= '<th class="day-col">' . $view->t('Day') . '</th>';
         $html .= '<th>' . $view->t('Date') . '</th>';
         $html .= '<th>' . $view->t('Time') . '</th>';
         $html .= '<th>' . $view->option('subject.square.type') . '</th>';

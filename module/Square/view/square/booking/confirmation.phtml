@@ -45,6 +45,11 @@ function showHide() {
 
 ?>
 
+        <?php if ($this->ballmaschineChoosen): ?>
+        <p class="symbolic symbolic-info"><b>Ballmaschine:</b> Zur Buchung hinzugef&uuml;gt</p>
+        <div class="separator separator-line"></div>
+        <?php endif; ?>
+
         <?php if ($this->hasBudget): ?>
         <p class="symbolic symbolic-warning"><b><font color="red"><?= $this->t('payment from open budget') ?>:</font></b></p>
         <div style="margin-left: 22px;margin-bottom: 22px;"><b><font color="red"><?= $this->t('budget') ?>: <?= $this->budget ?> -> <?= $this->t('new budget') ?> : <?= $this->newbudget ?></font></b></div>   

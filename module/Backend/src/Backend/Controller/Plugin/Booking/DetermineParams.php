@@ -45,10 +45,6 @@ class DetermineParams extends AbstractPlugin
             $dateTimeStart = new \DateTime();
         }
 
-        if (! $dateStartParam) {
-            $dateTimeStart->modify('+1 month');
-        }
-
 
         if ($dateEndParam) {
             $dateTimeEnd = new \DateTime($dateEndParam);

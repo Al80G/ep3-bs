@@ -12,7 +12,9 @@ class Occupied extends AbstractHelper
     {
         $view = $this->getView();
 
-        if ($user && $user->can('calendar.see-data')) {
+        $isSubscription = count($reservations) == 1 && current($reservations)->needExtra('booking')->need('status') == 'subscription';
+
+        if ($user && ($user->need('status') == 'admin' || ($isSubscription && $user->can('calendar.create-subscription-bookings')))) {
             return $view->calendarCellRenderOccupiedForPrivileged($reservations, $cellLinkParams);
         } else if ($user) {
             if ($userBooking) {

@@ -34,12 +34,11 @@ $booking = $reservation->getExtra('booking');
 
     <p><?= $this->t('What do you want to edit?') ?></p>
 
-    <div class="sandbox">
+    <div class="sandbox" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
         <a href="<?= $this->url('backend/booking/edit', [], ['query' => array_merge($this->query, ['em' => 'reservation'])]) ?>" class="default-button squarebox-internal-link">
             <span class="symbolic symbolic-booking"><?= $this->t('Only this one reservation') ?></span>
         </a>
-        &nbsp;
-        
+
         <a href="<?= $this->url('backend/booking/edit', [], ['query' => array_merge($this->query, ['em' => 'booking'])]) ?>" class="default-button squarebox-internal-link">
             <span class="symbolic symbolic-booking"><?= $this->t('The entire booking') ?></span>
         </a>

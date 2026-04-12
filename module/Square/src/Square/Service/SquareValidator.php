@@ -160,6 +160,9 @@ class SquareValidator extends AbstractService
 
         /* Validate square time block bookable */
 
+        $timeBlockExceeded = false;
+        $squareTimeBlockMax = null;
+
         $timeBlockBookable = $square->get('time_block_bookable');
 
         if ($timeBlockBookable) {
@@ -178,16 +181,15 @@ class SquareValidator extends AbstractService
                 $timeBlockRequested -= ($idleSquareTimeStart + $idleSquareTimeEnd) * $timeBlockDays;
             }
 
-            /* Validate square time block maximum */
+            /* Check square time block maximum - deferred to isBookable() so that
+               viewing an already-occupied cell does not trigger this error */
 
             $squareTimeBlockMax = $square->get('time_block_bookable_max');
 
             if ($squareTimeBlockMax) {
                 if ($squareTimeBlockMax < $timeBlockRequested) {
                     if (! ($this->user && $this->user->can('calendar.create-single-bookings, calendar.create-subscription-bookings'))) {
-                        $squareTimeBlockMaxRound = round($squareTimeBlockMax / 60);
-
-                        throw new RuntimeException(sprintf($this->t('You cannot book more than %s minutes at once'), $squareTimeBlockMaxRound));
+                        $timeBlockExceeded = true;
                     }
                 }
             }
@@ -233,6 +235,8 @@ class SquareValidator extends AbstractService
             'dateEnd' => $timeEnd,
             'square' => $square,
             'user' => $this->user,
+            'timeBlockExceeded' => $timeBlockExceeded,
+            'squareTimeBlockMax' => $squareTimeBlockMax,
         );
     }
 
@@ -345,6 +349,14 @@ class SquareValidator extends AbstractService
             if (is_null($event->get('sid')) || $event->get('sid') == $square->need('sid')) {
                 $bookable = false;
             }
+        }
+
+        /* Check max time block - only throw when slot is actually free to book.
+           Viewing an already-occupied cell must not produce this error. */
+
+        if ($bookable && $byproducts['timeBlockExceeded']) {
+            $squareTimeBlockMaxRound = round($byproducts['squareTimeBlockMax'] / 60);
+            throw new RuntimeException(sprintf($this->t('You cannot book more than %s minutes at once'), $squareTimeBlockMaxRound));
         }
 
         /* Gather byproducts */

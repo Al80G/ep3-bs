@@ -14,7 +14,7 @@ class Reserved extends AbstractHelper
 
 	    $labelReserved = $square->getMeta('label.reserved', $this->view->t('Reserved'));
 
-        if ($user && $user->can('calendar.see-data, calendar.create-single-bookings, calendar.create-subscription-bookings')) {
+        if ($user && $user->need('status') == 'admin') {
             return $view->calendarCellRenderReservedForPrivileged($reservations, $cellLinkParams, $square);
         } else if ($user) {
             if ($userBooking) {

@@ -37,7 +37,7 @@ class Links extends AbstractHelper
         }
 
         if ($html) {
-            $html = '<div class="links centered-text no-print">' . $html . '</div>';
+            $html = '<div class="links centered-text no-print" style="max-width: 1024px; margin-left: auto; margin-right: auto;">' . $html . '</div>';
         }
 
         return $html;

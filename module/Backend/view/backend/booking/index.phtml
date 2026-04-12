@@ -22,6 +22,13 @@ $this->setup(array(
 
     <div class="separator separator-line"></div>
 
+    <style>
+    @media (max-width: 600px) {
+        .member-col, .day-col, .notes-col { display: none; }
+        .bordered-table tr td, .bordered-table tr th { padding: 4px 2px; font-size: 11px; }
+    }
+    </style>
+
     <?= $this->partial('backend/booking/index.datepicker.phtml', ['dateStart' => $this->dateStart, 'dateEnd' => $this->dateEnd, 'search' => $this->search]) ?>
 
     <div class="separator separator-line"></div>

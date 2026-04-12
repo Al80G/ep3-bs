@@ -14,7 +14,7 @@ class Free extends AbstractHelper
 
 	    $labelFree = $square->getMeta('label.free', $this->view->t('Free'));
 
-        if ($user && $user->can('calendar.see-data, calendar.create-single-bookings, calendar.create-subscription-bookings')) {
+        if ($user && $user->need('status') == 'admin') {
             return $view->calendarCellRenderFreeForPrivileged($reservations, $cellLinkParams, $square);
         } else if ($user) {
             if ($userBooking) {

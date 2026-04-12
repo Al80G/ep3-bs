@@ -63,11 +63,11 @@ class BookingFormat extends AbstractHelper
         }
 
         if ($member) {
-        $html .= sprintf('<td>%s</td>',
+        $html .= sprintf('<td class="member-col">%s</td>',
             $view->t('Yes'));
         }
         else {
-        $html .= sprintf('<td>%s</td>',
+        $html .= sprintf('<td class="member-col">%s</td>',
             $view->t('No'));
         }
 
@@ -78,7 +78,7 @@ class BookingFormat extends AbstractHelper
         $fullDate = $view->dateFormat($date, \IntlDateFormatter::FULL);
         $fullDateParts = explode(', ', $fullDate);
 
-        $html .= sprintf('<td>%s</td>',
+        $html .= sprintf('<td class="day-col">%s</td>',
             $fullDateParts[0]);
 
         $html .= sprintf('<td>%s</td>',
