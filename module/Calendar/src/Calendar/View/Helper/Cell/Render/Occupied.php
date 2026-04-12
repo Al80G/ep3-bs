@@ -12,7 +12,7 @@ class Occupied extends AbstractHelper
     {
         $view = $this->getView();
 
-        if ($user && $user->can('calendar.see-data')) {
+        if ($user && $user->need('status') == 'admin') {
             return $view->calendarCellRenderOccupiedForPrivileged($reservations, $cellLinkParams);
         } else if ($user) {
             if ($userBooking) {
