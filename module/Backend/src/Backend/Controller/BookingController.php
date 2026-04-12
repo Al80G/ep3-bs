@@ -293,7 +293,7 @@ class BookingController extends AbstractActionController
             }
         }
 
-        if (! $sessionUser->can(['calendar.create-subscription-bookings'])) {
+        if (! $sessionUser->can(['calendar.create-subscription-bookings']) || ! $booking) {
             return $this->ajaxViewModel(array_merge($params, array(
             'editMode' => 'no_subscr',
             'editForm' => $editForm,
