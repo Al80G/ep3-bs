@@ -75,6 +75,16 @@
         var form = formSubmit.closest("form");
 
         form.on("submit", function() {
+            /* Sync user field: desktop value wins, copy to mobile to prevent empty override */
+            var desktopUser = $("#bf-user").val();
+            var mobileUser  = $("#bf-user-mobile").val();
+
+            if (desktopUser) {
+                $("#bf-user-mobile").val(desktopUser);
+            } else if (mobileUser) {
+                $("#bf-user").val(mobileUser);
+            }
+
             form.find(":disabled").removeAttr("disabled");
         });
 
