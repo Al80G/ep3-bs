@@ -102,7 +102,7 @@ class Update extends AbstractPlugin
 
                 /* Determine date */
 
-                $newDate = \DateTime::createFromFormat('d.m.Y', $newDate);
+                $newDate = new \DateTime($newDate);
 
                 /* Save reservation */
 
