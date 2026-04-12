@@ -34,9 +34,18 @@
             "source": urlProvider.data("user-autocomplete-url")
         });
 
-        /* Datepicker - target by name so both desktop and mobile fields get it */
+        /* Datepicker: jQuery UI on desktop, native type="date" on mobile */
 
-        $("[name='bf-date-start'], [name='bf-date-end']").datepicker();
+        $(".bf-table [name='bf-date-start'], .bf-table [name='bf-date-end']").datepicker();
+
+        $(".bf-mobile [name='bf-date-start'], .bf-mobile [name='bf-date-end']").each(function() {
+            var $input = $(this);
+            var parts = $input.val().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+            if (parts) {
+                $input.val(parts[3] + '-' + ('0' + parts[2]).slice(-2) + '-' + ('0' + parts[1]).slice(-2));
+            }
+            $input.attr('type', 'date');
+        });
 
         /* Update Form */
 
