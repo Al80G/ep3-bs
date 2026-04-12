@@ -18,13 +18,13 @@ if (! ($this->dateStart || $this->dateEnd)) {
     #bs-filter { flex: 1; min-width: 0; }
 }
 @media (min-width: 601px) {
-    .bsf-row { display: table-row; }
+    .bsf-row { display: flex; }
 }
 </style>
 
 <div style="padding: 10px 0 16px 0;">
     <form method="get" action="<?= $this->url('backend/booking') ?>">
-        <div class="bsf-row">
+        <div class="bsf-row" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 8px;">
             <div class="bsf-date-group">
                 <div>
                     <div class="default-form-label-top gray">
