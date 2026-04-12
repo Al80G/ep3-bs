@@ -34,6 +34,15 @@
             "source": urlProvider.data("user-autocomplete-url")
         });
 
+        /* Timepicker: native type="time" on all devices (24:00 stays as text) */
+
+        $("[name='bf-time-start'], [name='bf-time-end']").each(function() {
+            var $input = $(this);
+            if ($input.val() !== '24:00') {
+                $input.attr('type', 'time');
+            }
+        });
+
         /* Datepicker: jQuery UI on desktop, native type="date" on mobile */
 
         $(".bf-table [name='bf-date-start'], .bf-table [name='bf-date-end']").datepicker();
