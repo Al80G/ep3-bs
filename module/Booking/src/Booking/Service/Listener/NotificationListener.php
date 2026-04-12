@@ -130,6 +130,11 @@ class NotificationListener extends AbstractListenerAggregate
             }
         }
 	    
+        # ball machine
+        if ($booking->getMeta('ballmaschine') == '1') {
+            $message .= "\n\nBallmaschine: gebucht";
+        }
+
         # price notice
         /* Information
 		$message .= "\n\n" . $this->t('Bill'). ":\n";
