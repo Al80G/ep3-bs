@@ -131,7 +131,6 @@ class BookingController extends AbstractActionController
         $serviceManager = @$this->getServiceLocator();
         $formElementManager = $serviceManager->get('FormElementManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
 
         $editForm = $formElementManager->get('Backend\Form\Booking\EditForm');
 
@@ -155,7 +154,8 @@ class BookingController extends AbstractActionController
                     $square = $squareManager->get($savedBooking->get('sid'));
 
                     if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
-                            $squareControlService->updateDoorCode($bid);
+                        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
+                        $squareControlService->updateDoorCode($bid);
                     }
 
                 } else {
@@ -288,7 +288,6 @@ class BookingController extends AbstractActionController
         $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
         $formElementManager = $serviceManager->get('FormElementManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
 
         $bid = $this->params()->fromRoute('bid');
 
@@ -326,6 +325,7 @@ class BookingController extends AbstractActionController
                         $bookingManager->save($booking);
 
                         if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                            $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                             $squareControlService->updateDoorCode($bid);
                         }
                     }
@@ -360,6 +360,7 @@ class BookingController extends AbstractActionController
                         $bookingManager->save($booking);
 
                         if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                            $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                             $squareControlService->updateDoorCode($bid);
                         }
                     }
@@ -401,7 +402,6 @@ class BookingController extends AbstractActionController
         $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
         $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
         $bookingService = $serviceManager->get('Booking\Service\BookingService');
 
         $rid = $this->params()->fromRoute('rid');
@@ -442,6 +442,7 @@ class BookingController extends AbstractActionController
                     $bookingManager->save($booking);
 
                     if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
+                        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
                         $squareControlService->deactivateDoorCode($bid);
                     }                    
 
