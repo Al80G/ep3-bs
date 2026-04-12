@@ -118,15 +118,23 @@
                     targetPanelLeft = Math.floor(targetPanel.position().left);
                 }
 
-                linksBack.css({
-                    "left": targetPanelLeft - linksBackWidth,
-                    "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksBack.outerHeight() / 2), 384)
-                });
+                var backLeft = targetPanelLeft - linksBackWidth;
+                var forthLeft = targetPanelLeft + targetPanelWidth;
 
-                linksForth.css({
-                    "left": targetPanelLeft + targetPanelWidth,
-                    "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksForth.outerHeight() / 2), 384)
-                });
+                if (backLeft < 0 || forthLeft + linksForthWidth > $(window).width()) {
+                    linksBack.removeAttr("style");
+                    linksForth.removeAttr("style");
+                } else {
+                    linksBack.css({
+                        "left": backLeft,
+                        "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksBack.outerHeight() / 2), 384)
+                    });
+
+                    linksForth.css({
+                        "left": forthLeft,
+                        "top": Math.min(targetPanel.position().top + targetPanelMarginTop + Math.round(targetPanel.outerHeight() / 2) - Math.round(linksForth.outerHeight() / 2), 384)
+                    });
+                }
             }
         }
     }
