@@ -70,9 +70,12 @@
             $input.attr('type', 'date');
         });
 
-        /* Update Form — bind only to the active section's repeat select */
+        /* Update Form */
 
-        $("[name='bf-repeat']").on("change", updateForm);
+        $("[name='bf-repeat']").on("change", function() {
+            $("[name='bf-repeat']").val($(this).val());
+            updateForm();
+        });
 
         updateForm();
 
@@ -120,30 +123,21 @@
 
     });
 
-    function activeRepeat() {
-        return window.innerWidth >= 601
-            ? $(".bf-table [name='bf-repeat']").first()
-            : $(".bf-mobile [name='bf-repeat']").first();
-    }
-
     function updateForm()
     {
-        /* Show/hide date-end row based on repeat value */
+        var repeat = $("[name='bf-repeat']");
 
-        var repeatVal = activeRepeat().val();
-        var $dateEndRows = $("[name='bf-date-end']").closest("tr");
-
-        if (repeatVal === "0") {
-            $dateEndRows.hide();
+        if (repeat.first().val() === "0") {
+            disableFormElement($("[name='bf-date-end']"));
         } else {
-            $dateEndRows.show();
+            enableFormElement($("[name='bf-date-end']"));
         }
 
         var editMode = tagProvider.data("edit-mode-tag");
 
         if (editMode == "no_subscr") {
-            disableFormElement(activeRepeat());
-            $dateEndRows.hide();
+            disableFormElement(repeat);
+            disableFormElement($("[name='bf-date-end']"));
         }
 
         /* Lock specific fields in edit mode */
@@ -151,13 +145,13 @@
         var rid = $("#bf-rid");
 
         if (rid.val()) {
-            disableFormElement(activeRepeat());
+            disableFormElement(repeat);
 
             if (editMode == "booking") {
                 disableFormElement($("[name='bf-time-start']"));
                 disableFormElement($("[name='bf-time-end']"));
                 disableFormElement($("[name='bf-date-start']"));
-                $dateEndRows.hide();
+                disableFormElement($("[name='bf-date-end']"));
             } else if (editMode == "reservation") {
                 disableFormElement($("[name='bf-user']"));
                 disableFormElement($("[name='bf-sid']"));
