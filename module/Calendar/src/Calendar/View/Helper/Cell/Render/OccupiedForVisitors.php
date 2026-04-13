@@ -33,6 +33,10 @@ class OccupiedForVisitors extends AbstractHelper
             $style = 'cc-single';
             $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'color: #FFFD7D' : null;
 
+            if (!empty($booking->getMeta('player-names'))) {
+                $cellStyle = 'color: #A5FAFA';
+            }
+
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {
                     $cellLabel = $view->t('temp blocked');
