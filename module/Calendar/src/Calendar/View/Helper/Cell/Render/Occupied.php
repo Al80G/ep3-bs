@@ -31,6 +31,7 @@ class Occupied extends AbstractHelper
                 $playerSuffix = $this->getPlayerSuffix($userBooking, $view);
                 if ($playerSuffix) {
                     $cellLabel .= $playerSuffix;
+                    $cellStyle = 'color: #A5FAFA';
                 }
 
                 return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
@@ -44,7 +45,7 @@ class Occupied extends AbstractHelper
                     if ($playerSuffix) {
                         $bookerLabel = $view->escapeHtml($booking->needExtra('user')->need('alias'));
                         $cellGroup = ' cc-group-' . $booking->need('bid');
-                        $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'color: #FFFD7D' : null;
+                        $cellStyle = 'color: #A5FAFA';
 
                         switch ($booking->need('status')) {
                             case 'single':

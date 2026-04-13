@@ -38,6 +38,10 @@ class OccupiedForPrivileged extends AbstractHelper
                 $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FFFD7D';
             }
 
+            if (!empty($booking->getMeta('player-names'))) {
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #A5FAFA';
+            }
+
             $cellLabel = $booking->needExtra('user')->need('alias');
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
