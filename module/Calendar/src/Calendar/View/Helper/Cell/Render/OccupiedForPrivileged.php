@@ -37,12 +37,7 @@ class OccupiedForPrivileged extends AbstractHelper
             $cellLabel = $booking->needExtra('user')->need('alias');
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
-            if ($booking->getMeta('ballmaschine') == '1') {
-                $style = 'cc-ballmaschine';
-                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'background-color: limegreen';
-            } else {
-                $style = 'cc-single';
-            }
+            $style = $booking->getMeta('ballmaschine') == '1' ? 'cc-ballmaschine' : 'cc-single';
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {

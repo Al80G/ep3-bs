@@ -302,15 +302,11 @@ a.cc-single:hover { background-color: #4C5359; }
 
 a.cc-ballmaschine:link,
 a.cc-ballmaschine:visited { opacity: 1.0; color: #FFF; background-color: limegreen; }
-a.cc-ballmaschine:hover { background-color: #506628 !important; }
+a.cc-ballmaschine:hover { background-color: #506628; }
 
 a.cc-single-ballmaschine:link,
 a.cc-single-ballmaschine:visited { opacity: 1.0; color: #FFF; background-color: #6C9CC4; }
 a.cc-single-ballmaschine:hover { background-color: #4C5359; }
-
-a.cc-own-ballmaschine:link,
-a.cc-own-ballmaschine:visited { opacity: 1.0; color: #FFF; background-color: #6C9CC4; }
-a.cc-own-ballmaschine:hover { background-color: #5F8024; }
 
 a.cc-multiple:link,
 a.cc-multiple:visited { opacity: 1.0; color: #FFF; background-color: #547B97; }
