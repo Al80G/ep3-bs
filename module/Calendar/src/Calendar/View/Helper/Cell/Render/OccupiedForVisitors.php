@@ -30,16 +30,13 @@ class OccupiedForVisitors extends AbstractHelper
 
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
-            $isBallmaschine = $booking->getMeta('ballmaschine') == '1';
-            $style = $isBallmaschine ? 'cc-single-ballmaschine' : 'cc-single';
-            $cellStyle = $isBallmaschine ? 'background-color: #6C9CC4; color: #FFF; opacity: 1' : null;
+            $style = $booking->getMeta('ballmaschine') == '1' ? 'cc-single-ballmaschine' : 'cc-single';
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {
                     $cellLabel = $view->t('temp blocked');
                 }
                 $style = 'cc-try';
-                $cellStyle = null;
             }
 
             switch ($booking->need('status')) {
@@ -48,7 +45,7 @@ class OccupiedForVisitors extends AbstractHelper
                         $cellLabel = $this->view->t('Occupied');
                     }
 
-                    return $view->calendarCellLink($view->escapeHtml($cellLabel), $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
+                    return $view->calendarCellLink($view->escapeHtml($cellLabel), $view->url('square', [], $cellLinkParams), $style . $cellGroup);
                 case 'subscription':
                     if (! $cellLabel) {
                         $cellLabel = $this->view->t('Subscription');
