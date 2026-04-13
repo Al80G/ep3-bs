@@ -30,7 +30,7 @@ class OccupiedForVisitors extends AbstractHelper
 
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
-            $style = 'cc-single';
+            $style = $booking->getMeta('ballmaschine') == '1' ? 'cc-single-ballmaschine' : 'cc-single';
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {

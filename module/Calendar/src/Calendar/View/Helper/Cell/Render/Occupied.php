@@ -20,7 +20,7 @@ class Occupied extends AbstractHelper
             if ($userBooking) {
                 $cellLabel = $view->t('Your Booking');
                 $cellGroup = ' cc-group-' . $userBooking->need('bid');
-                $style = 'cc-own';
+                $style = $userBooking->getMeta('ballmaschine') == '1' ? 'cc-own-ballmaschine' : 'cc-own';
 
                  if ($userBooking->getMeta('directpay') == 'true' and $userBooking->get('status_billing')!= 'paid') {
                      $cellLabel = $view->t('Your Booking TRY');
