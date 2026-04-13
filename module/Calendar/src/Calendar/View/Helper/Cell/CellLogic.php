@@ -75,6 +75,14 @@ class CellLogic extends AbstractHelper
             return $view->calendarCell($this->view->t('Closed'), 'cc-over');
         }
 
+        $weekdaysOpen = $square->getMeta('weekdays_open');
+        if ($weekdaysOpen !== null && $weekdaysOpen !== '') {
+            $allowedDays = array_map('trim', explode(',', $weekdaysOpen));
+            if (!in_array($walkingDate->format('N'), $allowedDays)) {
+                return $view->calendarCell($this->view->t('Closed'), 'cc-over');
+            }
+        }
+
         $reservationsForCell = $view->calendarReservationsForCell($reservationsForCol, $square);
         $eventsForCell = $view->calendarEventsForCell($eventsForCol, $square);
 

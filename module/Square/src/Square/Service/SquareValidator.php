@@ -158,6 +158,16 @@ class SquareValidator extends AbstractService
             throw new RuntimeException('The passed time range is invalid');
         }
 
+        /* Validate square weekdays */
+
+        $weekdaysOpen = $square->getMeta('weekdays_open');
+        if ($weekdaysOpen !== null && $weekdaysOpen !== '') {
+            $allowedDays = array_map('trim', explode(',', $weekdaysOpen));
+            if (!in_array($timeStart->format('N'), $allowedDays)) {
+                throw new RuntimeException('The square is not available on this day');
+            }
+        }
+
         /* Validate square time block bookable */
 
         $timeBlockExceeded = false;
