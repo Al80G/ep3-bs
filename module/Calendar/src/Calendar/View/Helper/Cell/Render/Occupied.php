@@ -32,9 +32,7 @@ class Occupied extends AbstractHelper
                     $cellLabel .= $playerSuffix;
                 }
 
-                $cellStyle = $userBooking->getMeta('ballmaschine') == '1' ? 'background-color: limegreen' : null;
-
-                return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
+                return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup);
             } else {
                 /* Other logged-in user: show names + players from meta */
                 if (count($reservations) == 1) {
@@ -45,11 +43,11 @@ class Occupied extends AbstractHelper
                     if ($playerSuffix) {
                         $bookerLabel = $view->escapeHtml($booking->needExtra('user')->need('alias'));
                         $cellGroup = ' cc-group-' . $booking->need('bid');
-                        $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'background-color: limegreen' : null;
+                        $singleClass = $booking->getMeta('ballmaschine') == '1' ? 'cc-single-ballmaschine' : 'cc-single';
 
                         switch ($booking->need('status')) {
                             case 'single':
-                                return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), 'cc-single' . $cellGroup, null, $cellStyle);
+                                return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), $singleClass . $cellGroup);
                             case 'subscription':
                                 return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), 'cc-multiple' . $cellGroup);
                         }
