@@ -34,6 +34,10 @@ class OccupiedForPrivileged extends AbstractHelper
                 $cellStyle = null;
             }
 
+            if ($booking->getMeta('ballmaschine') == '1') {
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FAA702';
+            }
+
             $cellLabel = $booking->needExtra('user')->need('alias');
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
