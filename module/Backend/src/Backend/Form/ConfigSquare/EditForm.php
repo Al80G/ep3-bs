@@ -167,6 +167,19 @@ class EditForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'cf-weekdays-open',
+            'type' => 'Text',
+            'attributes' => array(
+                'id' => 'cf-weekdays-open',
+                'style' => 'width: 160px;',
+            ),
+            'options' => array(
+                'label' => 'Open on weekdays (1=Mo, 2=Di, 3=Mi, 4=Do, 5=Fr, 6=Sa, 7=So)',
+                'description' => 'Comma-separated, empty = all days',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'cf-club-reserved-time-start',
             'type' => 'Text',
             'attributes' => array(
