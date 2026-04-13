@@ -50,6 +50,9 @@ function showHide() {
         <div class="separator separator-line"></div>
         <?php endif; ?>
 
+        <p class="symbolic symbolic-info">Vor Ablauf der Spieldauer m&uuml;ssen die Pl&auml;tze vollst&auml;ndig abgezogen &ndash; bei trockenen Platzverhältnissen mit dem Netz, bei feuchten Platzverhältnissen mit dem Besen &ndash; sowie entstandene L&ouml;cher mit dem Scharrierholz ausgebessert werden.</p>
+        <div class="separator separator-line"></div>
+
         <?php if ($this->hasBudget): ?>
         <p class="symbolic symbolic-warning"><b><font color="red"><?= $this->t('payment from open budget') ?>:</font></b></p>
         <div style="margin-left: 22px;margin-bottom: 22px;"><b><font color="red"><?= $this->t('budget') ?>: <?= $this->budget ?> -> <?= $this->t('new budget') ?> : <?= $this->newbudget ?></font></b></div>   
