@@ -20,11 +20,14 @@ class Occupied extends AbstractHelper
             if ($userBooking) {
                 $cellLabel = $view->t('Your Booking');
                 $cellGroup = ' cc-group-' . $userBooking->need('bid');
-                $style = $userBooking->getMeta('ballmaschine') == '1' ? 'cc-own-ballmaschine' : 'cc-own';
+                $isBallmaschine = $userBooking->getMeta('ballmaschine') == '1';
+                $style = $isBallmaschine ? 'cc-own-ballmaschine' : 'cc-own';
+                $cellStyle = $isBallmaschine ? 'background-color: #5889B8; color: #FFF; opacity: 1' : null;
 
                  if ($userBooking->getMeta('directpay') == 'true' and $userBooking->get('status_billing')!= 'paid') {
                      $cellLabel = $view->t('Your Booking TRY');
                      $style = 'cc-try';
+                     $cellStyle = null;
                  }
 
                 $playerSuffix = $this->getPlayerSuffix($userBooking, $view);
@@ -32,7 +35,7 @@ class Occupied extends AbstractHelper
                     $cellLabel .= $playerSuffix;
                 }
 
-                return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup);
+                return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
             } else {
                 /* Other logged-in user: show names + players from meta */
                 if (count($reservations) == 1) {
@@ -43,11 +46,13 @@ class Occupied extends AbstractHelper
                     if ($playerSuffix) {
                         $bookerLabel = $view->escapeHtml($booking->needExtra('user')->need('alias'));
                         $cellGroup = ' cc-group-' . $booking->need('bid');
-                        $singleClass = $booking->getMeta('ballmaschine') == '1' ? 'cc-single-ballmaschine' : 'cc-single';
+                        $isBallmaschine = $booking->getMeta('ballmaschine') == '1';
+                        $singleClass = $isBallmaschine ? 'cc-single-ballmaschine' : 'cc-single';
+                        $cellStyle = $isBallmaschine ? 'background-color: #6C9CC4; color: #FFF; opacity: 1' : null;
 
                         switch ($booking->need('status')) {
                             case 'single':
-                                return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), $singleClass . $cellGroup);
+                                return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), $singleClass . $cellGroup, null, $cellStyle);
                             case 'subscription':
                                 return $view->calendarCellLink($bookerLabel . $playerSuffix, $view->url('square', [], $cellLinkParams), 'cc-multiple' . $cellGroup);
                         }

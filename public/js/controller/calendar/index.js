@@ -52,7 +52,8 @@
                     $(this).data("original-style", $(this).attr("style"));
                 });
 
-                groupMembers.css({"opacity": 0.9, "background-color": that.css("background-color")});
+                var hoverBg = that.hasClass("cc-ballmaschine") ? "#506628" : that.css("background-color");
+                groupMembers.css({"opacity": 0.9, "background-color": hoverBg});
 
                 that.css("opacity", 1.0);
             }
