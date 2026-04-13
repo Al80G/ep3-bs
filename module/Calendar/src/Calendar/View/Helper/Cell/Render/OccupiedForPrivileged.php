@@ -39,7 +39,7 @@ class OccupiedForPrivileged extends AbstractHelper
 
             if ($booking->getMeta('ballmaschine') == '1') {
                 $style = 'cc-ballmaschine';
-                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'background-color: limegreen';
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'background-color: limegreen; color: #FFF; opacity: 1';
             } else {
                 $style = 'cc-single';
             }

@@ -77,7 +77,7 @@
         $(document).on("updateLayout", updateCalendarCols);
 
         /* Update calendar groups */
-        var groups = [".cc-event", ".cc-single", ".cc-own", ".cc-multiple", ".cc-multiple-14", ".cc-conflict"];
+        var groups = [".cc-event", ".cc-single", ".cc-own", ".cc-multiple", ".cc-multiple-14", ".cc-conflict", ".cc-ballmaschine", ".cc-single-ballmaschine", ".cc-own-ballmaschine"];
         groupCalendarCols(groups);
         $(window).resize(function(evt) { groupCalendarCols(groups); });
         $(document).on("updateLayout", function(evt) { groupCalendarCols(groups); });
