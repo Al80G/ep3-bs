@@ -36,10 +36,23 @@ class OccupiedForPrivileged extends AbstractHelper
 
             if ($booking->getMeta('ballmaschine') == '1') {
                 $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FFFD7D';
-            }
-
-            if (!empty($booking->getMeta('player-names'))) {
-                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #A5FAFA';
+            } else {
+                $raw = $booking->getMeta('player-names');
+                $hasGuest = false;
+                if ($raw) {
+                    $players = @unserialize($raw);
+                    if ($players && is_array($players)) {
+                        foreach ($players as $entry) {
+                            if (isset($entry['value']) && trim($entry['value']) === 'Gast') {
+                                $hasGuest = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if ($hasGuest) {
+                    $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #A5FAFA';
+                }
             }
 
             $cellLabel = $booking->needExtra('user')->need('alias');

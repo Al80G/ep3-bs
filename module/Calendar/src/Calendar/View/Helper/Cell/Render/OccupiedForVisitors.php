@@ -31,11 +31,7 @@ class OccupiedForVisitors extends AbstractHelper
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
             $style = 'cc-single';
-            $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'color: #FFFD7D' : null;
-
-            if (!empty($booking->getMeta('player-names'))) {
-                $cellStyle = 'color: #A5FAFA';
-            }
+            $cellStyle = null;
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {

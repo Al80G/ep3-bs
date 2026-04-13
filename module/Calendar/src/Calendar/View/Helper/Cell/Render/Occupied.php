@@ -31,7 +31,9 @@ class Occupied extends AbstractHelper
                 $playerSuffix = $this->getPlayerSuffix($userBooking, $view);
                 if ($playerSuffix) {
                     $cellLabel .= $playerSuffix;
-                    $cellStyle = 'color: #A5FAFA';
+                    if ($userBooking->getMeta('ballmaschine') != '1' && $this->hasGuestPlayer($userBooking)) {
+                        $cellStyle = 'color: #A5FAFA';
+                    }
                 }
 
                 return $view->calendarCellLink($cellLabel, $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
@@ -45,7 +47,13 @@ class Occupied extends AbstractHelper
                     if ($playerSuffix) {
                         $bookerLabel = $view->escapeHtml($booking->needExtra('user')->need('alias'));
                         $cellGroup = ' cc-group-' . $booking->need('bid');
-                        $cellStyle = 'color: #A5FAFA';
+                        if ($booking->getMeta('ballmaschine') == '1') {
+                            $cellStyle = 'color: #FFFD7D';
+                        } elseif ($this->hasGuestPlayer($booking)) {
+                            $cellStyle = 'color: #A5FAFA';
+                        } else {
+                            $cellStyle = null;
+                        }
 
                         switch ($booking->need('status')) {
                             case 'single':
@@ -61,6 +69,20 @@ class Occupied extends AbstractHelper
         } else {
             return $view->calendarCellRenderOccupiedForVisitors($reservations, $cellLinkParams, $square);
         }
+    }
+
+    protected function hasGuestPlayer($booking)
+    {
+        $raw = $booking->getMeta('player-names');
+        if (!$raw) return false;
+        $players = @unserialize($raw);
+        if (!$players || !is_array($players)) return false;
+        foreach ($players as $entry) {
+            if (isset($entry['value']) && trim($entry['value']) === 'Gast') {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected function getPlayerSuffix($booking, $view)
