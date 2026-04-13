@@ -35,7 +35,7 @@ class OccupiedForPrivileged extends AbstractHelper
             }
 
             if ($booking->getMeta('ballmaschine') == '1') {
-                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FFFED6';
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FFFD7D';
             }
 
             $cellLabel = $booking->needExtra('user')->need('alias');
