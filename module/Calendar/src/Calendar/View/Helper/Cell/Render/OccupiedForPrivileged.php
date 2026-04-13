@@ -34,10 +34,14 @@ class OccupiedForPrivileged extends AbstractHelper
                 $cellStyle = null;
             }
 
+            if ($booking->getMeta('ballmaschine') == '1') {
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'background-color: limegreen';
+            }
+
             $cellLabel = $booking->needExtra('user')->need('alias');
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
-            $style = $booking->getMeta('ballmaschine') == '1' ? 'cc-ballmaschine' : 'cc-single';
+            $style = 'cc-single';
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {
