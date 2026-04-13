@@ -21,7 +21,7 @@ class Occupied extends AbstractHelper
                 $cellLabel = $view->t('Your Booking');
                 $cellGroup = ' cc-group-' . $userBooking->need('bid');
                 $style = 'cc-own';
-                $cellStyle = $userBooking->getMeta('ballmaschine') == '1' ? 'color: #FAA702' : null;
+                $cellStyle = $userBooking->getMeta('ballmaschine') == '1' ? 'color: #FDC85D' : null;
 
                  if ($userBooking->getMeta('directpay') == 'true' and $userBooking->get('status_billing')!= 'paid') {
                      $cellLabel = $view->t('Your Booking TRY');
@@ -44,7 +44,7 @@ class Occupied extends AbstractHelper
                     if ($playerSuffix) {
                         $bookerLabel = $view->escapeHtml($booking->needExtra('user')->need('alias'));
                         $cellGroup = ' cc-group-' . $booking->need('bid');
-                        $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'color: #FAA702' : null;
+                        $cellStyle = $booking->getMeta('ballmaschine') == '1' ? 'color: #A1C4A1' : null;
 
                         switch ($booking->need('status')) {
                             case 'single':
