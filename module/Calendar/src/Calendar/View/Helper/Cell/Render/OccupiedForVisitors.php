@@ -31,6 +31,7 @@ class OccupiedForVisitors extends AbstractHelper
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
             $style = 'cc-single';
+            $cellStyle = null;
 
             if ($booking->getMeta('directpay') == 'true' and $booking->get('status_billing')!= 'paid') {
                 if (! $cellLabel) {
@@ -45,7 +46,7 @@ class OccupiedForVisitors extends AbstractHelper
                         $cellLabel = $this->view->t('Occupied');
                     }
 
-                    return $view->calendarCellLink($view->escapeHtml($cellLabel), $view->url('square', [], $cellLinkParams), $style . $cellGroup);
+                    return $view->calendarCellLink($view->escapeHtml($cellLabel), $view->url('square', [], $cellLinkParams), $style . $cellGroup, null, $cellStyle);
                 case 'subscription':
                     if (! $cellLabel) {
                         $cellLabel = $this->view->t('Subscription');

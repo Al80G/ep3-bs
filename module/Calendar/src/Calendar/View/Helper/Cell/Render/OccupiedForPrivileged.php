@@ -34,6 +34,27 @@ class OccupiedForPrivileged extends AbstractHelper
                 $cellStyle = null;
             }
 
+            if ($booking->getMeta('ballmaschine') == '1') {
+                $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #FFFD7D';
+            } else {
+                $raw = $booking->getMeta('player-names');
+                $hasGuest = false;
+                if ($raw) {
+                    $players = @unserialize($raw);
+                    if ($players && is_array($players)) {
+                        foreach ($players as $entry) {
+                            if (isset($entry['value']) && trim($entry['value']) === 'Gast') {
+                                $hasGuest = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if ($hasGuest) {
+                    $cellStyle = ($cellStyle ? $cellStyle . '; ' : '') . 'color: #A5FAFA';
+                }
+            }
+
             $cellLabel = $booking->needExtra('user')->need('alias');
             $cellGroup = ' cc-group-' . $booking->need('bid');
 
