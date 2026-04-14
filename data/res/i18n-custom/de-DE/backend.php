@@ -9,6 +9,9 @@ return array(
     'Member' => 'Mitglied',
     'These are only editable for administration' => 'Diese sind nur für die Administration bearbeitbar',
 
+    'Day names (like Sunday) or concrete dates (like 2016-08-16);<br>Separated by line breaks or commas;<br>Force concrete dates to be shown by adding a plus (like +2016-08-30)'
+        => 'Name des Tages (z. B. Sonntag) oder konkrete Datumangaben (z. B. 16.08.2016);<br>Getrennt durch Zeilenumbrüche oder Kommata;<br>Ein versteckter Tag kann mit einem Plus wieder angezeigt werden (z. B. +30.08.2016)',
+
     'Reserve these days for the club' => 'Folgende Tage für den Verein reservieren',
     'Day names (like Sunday) or concrete dates (like 2016-08-16);<br>Separated by line breaks or commas;<br>Force concrete dates to be free for everyone by adding a plus (like +2016-08-30)<br>The time can be additionally limited in the court config (i.e. 14:00 to 20:00)'
         => 'Name des Tages (z. B. Sonntag) oder konkrete Datumangaben (z. B. 16.08.2016);<br>Getrennt durch Zeilenumbrüche oder Kommata;<br>Ein reservierter Tag kann mit einem Plus für alle freigegeben werden (z. B. +30.08.2016)<br>Die Zeit kann zusätzlich in der Platzkonfiguration eingeschränkt werden (z. B. 14:00 bis 20:00)',
