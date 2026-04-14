@@ -19,7 +19,7 @@ if ($this->bookings) {
         }
     }
     if ($ballmaschineBooked) {
-        echo '<p class="gray"><em>Ballmaschine: gebucht</em></p>';
+        echo '<p class="gray"><em>' . $this->t('Ball machine') . ': ' . $this->t('booked') . '</em></p>';
     }
 }
 

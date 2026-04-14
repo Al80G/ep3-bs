@@ -29,9 +29,15 @@ class BookingController extends AbstractActionController
 
         $users = $userManager->interpret($term, $usersMax);
 
+        $userStatus = $user->need('status');
+        $isMember = in_array($userStatus, ['admin', 'assist']);
+
         $usersList = [];
 
         foreach ($users as $uid => $u) {
+            if (!$isMember && $u->need('status') === 'placeholder' && $u->need('alias') !== 'Gast') {
+                continue;
+            }
             $usersList[] = $u->need('alias');
         }
 

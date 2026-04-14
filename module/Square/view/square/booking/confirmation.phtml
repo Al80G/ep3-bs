@@ -46,11 +46,11 @@ function showHide() {
 ?>
 
         <?php if ($this->ballmaschineChoosen): ?>
-        <p class="symbolic symbolic-info"><b>Ballmaschine:</b> Zur Buchung hinzugef&uuml;gt</p>
+        <p class="symbolic symbolic-info"><b><?= $this->t('Ball machine') ?>:</b> <?= $this->t('Added to booking') ?></p>
         <div class="separator separator-line"></div>
         <?php endif; ?>
 
-        <p class="symbolic symbolic-info"><b>Vor Ablauf der Spieldauer m&uuml;ssen die Pl&auml;tze vollst&auml;ndig abgezogen &ndash; bei trockenen Platzverhältnissen mit dem Netz, bei feuchten Platzverhältnissen mit dem Besen &ndash; sowie entstandene L&ouml;cher mit dem Scharrierholz ausgebessert werden.</b></p>
+        <p class="symbolic symbolic-info"><b><?= $this->t('Before the end of play, the courts must be completely swept - with the net in dry conditions, with the broom in wet conditions - and any holes must be repaired with the scarifier.') ?></b></p>
         <div class="separator separator-line"></div>
 
         <?php if ($this->hasBudget): ?>
