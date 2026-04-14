@@ -27,7 +27,7 @@ foreach ($this->bookingsFromUser as $bid => $booking) {
     echo $renderPlayerNames($booking, $this);
 
     if ($booking->getMeta('ballmaschine')) {
-        echo '<p class="gray"><em>Ballmaschine: gebucht</em></p>';
+        echo '<p class="gray"><em>' . $this->t('Ball machine') . ': ' . $this->t('booked') . '</em></p>';
     }
 
     if ($this->validator->isCancellable($booking)) {

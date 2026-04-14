@@ -122,6 +122,7 @@ return array(
     'Add ball machine' => 'Ballmaschine hinzufügen',
     'Ball machine (already booked)' => 'Ballmaschine (bereits gebucht)',
     'Ball machine' => 'Ballmaschine',
+    'booked' => 'gebucht',
     'Added to booking' => 'Zur Buchung hinzugefügt',
     'Before the end of play, the courts must be completely swept - with the net in dry conditions, with the broom in wet conditions - and any holes must be repaired with the scarifier.'
         => 'Vor Ablauf der Spieldauer müssen die Plätze vollständig abgezogen &ndash; bei trockenen Platzverhältnissen mit dem Netz, bei feuchten Platzverhältnissen mit dem Besen &ndash; sowie entstandene Löcher mit dem Scharrierholz ausgebessert werden.',
