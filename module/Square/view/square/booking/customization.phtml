@@ -65,10 +65,10 @@ echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js')
     <div class="sandbox" id="sb-ballmaschine-container">
         <?php if ($this->ballmaschineAvailable): ?>
             <input type="checkbox" id="sb-ballmaschine" value="1">
-            <label for="sb-ballmaschine">Ballmaschine hinzuf&uuml;gen</label>
+            <label for="sb-ballmaschine"><?= $this->t('Add ball machine') ?></label>
         <?php else: ?>
             <input type="checkbox" id="sb-ballmaschine" disabled="disabled">
-            <label for="sb-ballmaschine" style="color: #999;">Ballmaschine (bereits gebucht)</label>
+            <label for="sb-ballmaschine" style="color: #999;"><?= $this->t('Ball machine (already booked)') ?></label>
         <?php endif; ?>
     </div>
 

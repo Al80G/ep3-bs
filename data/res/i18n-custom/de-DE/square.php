@@ -114,9 +114,13 @@ return array(
     'Check new rule' => 'Neue Regel prüfen',
 
     'The names of the other players are <b>optional</b>' => 'Die Namen der anderen Spieler sind <b>optional</b>',
-    'The names of the other players are <b>required</b>' => 'Die <b>Namen</b> der anderen Spieler sind <b>erforderlich</b>.<br>Die Namen werden beim Tippen vorgeschlagen!<br>Für Gäste bitte <b>Gast</b> auswählen!',
+    'The names of the other players are <b>required</b>' => 'Die <b>Namen</b> der anderen Spieler sind <b>erforderlich</b>',
+    'The names are suggested while typing!' => 'Die Namen werden beim Tippen vorgeschlagen!',
+    'For guests please select <b>Guest</b>!' => 'Für Gäste bitte <b>Gast</b> auswählen!',
     'Player\'s name' => 'Mitspieler Name',
     'Guest' => 'Gast',
+    'Add ball machine' => 'Ballmaschine hinzufügen',
+    'Ball machine (already booked)' => 'Ballmaschine (bereits gebucht)',
     'and email address' => 'und E-Mail Adresse',
     'and phone number' => 'und Telefonnummer',
     

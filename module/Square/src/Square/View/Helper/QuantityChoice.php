@@ -66,11 +66,15 @@ class QuantityChoice extends AbstractHelper
             $html .= '<div class="separator separator-line"></div>';
 
             if (isset($askNamesSegments[0]) && $askNamesSegments[0] == 'optional') {
-                $html .= sprintf('<p class="sb-player-names-mode gray" data-mode="optional">%s</p>',
-                    $this->view->translate('The names of the other players are <b>optional</b>'));
+                $html .= sprintf('<p class="sb-player-names-mode gray" data-mode="optional">%s<br>%s<br>%s</p>',
+                    $this->view->translate('The names of the other players are <b>optional</b>'),
+                    $this->view->translate('The names are suggested while typing!'),
+                    $this->view->translate('For guests please select <b>Guest</b>!'));
             } else {
-                $html .= sprintf('<p class="sb-player-names-mode gray" data-mode="required">%s</p>',
-                    $this->view->translate('The names of the other players are <b>required</b>'));
+                $html .= sprintf('<p class="sb-player-names-mode gray" data-mode="required">%s<br>%s<br>%s</p>',
+                    $this->view->translate('The names of the other players are <b>required</b>'),
+                    $this->view->translate('The names are suggested while typing!'),
+                    $this->view->translate('For guests please select <b>Guest</b>!'));
             }
 
             for ($i = 2; $i <= $quantityAvailable; $i++) {
