@@ -12,7 +12,6 @@ use Zend\Crypt\Password\Bcrypt;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
 use Zend\Session\Validator\HttpUserAgent;
-use Zend\Session\Validator\RemoteAddr;
 
 class UserSessionManager extends AbstractManager
 {
@@ -44,7 +43,6 @@ class UserSessionManager extends AbstractManager
         /* Prepare session validators */
 
         $sessionManager->getValidatorChain()->attach('session.validate', array(new HttpUserAgent(), 'isValid'));
-        $sessionManager->getValidatorChain()->attach('session.validate', array(new RemoteAddr(), 'isValid'));
     }
 
     /**
