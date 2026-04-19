@@ -102,12 +102,12 @@ $(document).ready(function() {
 
     /* Sync end date with start date when start date moves forward */
     setTimeout(function() {
-        \$("[name='ef-date-start']").datepicker("option", "onSelect", function() {
-            var startDate = \$(this).datepicker("getDate");
-            var \$end     = \$("[name='ef-date-end']");
-            var endDate   = \$end.datepicker("getDate");
+        \$(\"[name='ef-date-start']\").datepicker(\"option\", \"onSelect\", function() {
+            var startDate = \$(this).datepicker(\"getDate\");
+            var \$end     = \$(\"[name='ef-date-end']\");
+            var endDate   = \$end.datepicker(\"getDate\");
             if (startDate && endDate && endDate < startDate) {
-                \$end.datepicker("setDate", startDate);
+                \$end.datepicker(\"setDate\", startDate);
             }
         });
     }, 0);
