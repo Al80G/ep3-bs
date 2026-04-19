@@ -76,49 +76,51 @@ class EventController extends AbstractActionController
             if ($editForm->isValid()) {
                 $data = $editForm->getData();
 
-                if (! $event) {
-                    $event = new Event();
-                }
-
                 $locale = $this->config('i18n.locale');
 
-                $event->setMeta('name', $data['ef-name'], $locale);
-                $event->setMeta('description', $data['ef-description'], $locale);
-
                 $dateStart = new \DateTime($data['ef-date-start']);
-
                 $timeStartParts = explode(':', $data['ef-time-start']);
-
                 $dateStart->setTime($timeStartParts[0], $timeStartParts[1]);
 
                 $dateEnd = new \DateTime($data['ef-date-end']);
-
                 $timeEndParts = explode(':', $data['ef-time-end']);
-
                 $dateEnd->setTime($timeEndParts[0], $timeEndParts[1]);
 
-                $event->set('datetime_start', $dateStart->format('Y-m-d H:i:s'));
-                $event->set('datetime_end', $dateEnd->format('Y-m-d H:i:s'));
+                $capacity = $data['ef-capacity'] ?: null;
 
-                $sid = $data['ef-sid'];
+                $sids = is_array($data['ef-sid']) ? $data['ef-sid'] : [$data['ef-sid']];
 
-                if ($sid == 'null') {
-                    $sid = null;
+                if ($event) {
+                    /* Update existing event – use only the first selected square */
+                    $sid = $sids[0] == 'null' ? null : $sids[0];
+
+                    $event->setMeta('name', $data['ef-name'], $locale);
+                    $event->setMeta('description', $data['ef-description'], $locale);
+                    $event->set('datetime_start', $dateStart->format('Y-m-d H:i:s'));
+                    $event->set('datetime_end', $dateEnd->format('Y-m-d H:i:s'));
+                    $event->set('sid', $sid);
+                    $event->set('capacity', $capacity);
+                    $event->setMeta('notes', $data['ef-notes']);
+
+                    $eventManager->save($event);
+                } else {
+                    /* Create new event – one event per selected square */
+
+                    foreach ($sids as $rawSid) {
+                        $sid = $rawSid == 'null' ? null : $rawSid;
+
+                        $newEvent = new Event();
+                        $newEvent->setMeta('name', $data['ef-name'], $locale);
+                        $newEvent->setMeta('description', $data['ef-description'], $locale);
+                        $newEvent->set('datetime_start', $dateStart->format('Y-m-d H:i:s'));
+                        $newEvent->set('datetime_end', $dateEnd->format('Y-m-d H:i:s'));
+                        $newEvent->set('sid', $sid);
+                        $newEvent->set('capacity', $capacity);
+                        $newEvent->setMeta('notes', $data['ef-notes']);
+
+                        $eventManager->save($newEvent);
+                    }
                 }
-
-                $event->set('sid', $sid);
-
-                $capacity = $data['ef-capacity'];
-
-                if (! $capacity) {
-                    $capacity = null;
-                }
-
-                $event->set('capacity', $capacity);
-
-                $event->setMeta('notes', $data['ef-notes']);
-
-                $eventManager->save($event);
 
                 $this->flashMessenger()->addSuccessMessage('Event has been saved');
 
@@ -133,7 +135,7 @@ class EventController extends AbstractActionController
                     'ef-time-start' => $event->needExtra('datetime_start')->format('H:i'),
                     'ef-date-end' => $this->dateFormat($event->needExtra('datetime_end'), \IntlDateFormatter::MEDIUM),
                     'ef-time-end' => $event->needExtra('datetime_end')->format('H:i'),
-                    'ef-sid' =>  $event->get('sid'),
+                    'ef-sid' => [$event->get('sid') === null ? 'null' : $event->get('sid')],
                     'ef-capacity' =>  $event->get('capacity', 0),
                     'ef-notes' =>  $event->getMeta('notes'),
                 ));
@@ -145,7 +147,7 @@ class EventController extends AbstractActionController
                     'ef-time-start' => $params['dateTimeStart']->format('H:i'),
                     'ef-date-end' => $this->dateFormat($params['dateTimeEnd'], \IntlDateFormatter::MEDIUM),
                     'ef-time-end' => $params['dateTimeEnd']->format('H:i'),
-                    'ef-sid' =>  $params['square']->get('sid'),
+                    'ef-sid' => [$params['square']->get('sid')],
                     'ef-capacity' => 0,
                 ));
             }

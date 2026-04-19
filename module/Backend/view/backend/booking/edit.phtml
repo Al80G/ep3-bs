@@ -338,3 +338,18 @@ $this->setup(array(
 </div>
 
 <?= $this->ajaxAwareScript('js/controller/backend/booking/edit.min.js') ?>
+
+<?php $this->headScript()->appendScript("
+$(document).ready(function() {
+    setTimeout(function() {
+        \$(\"[name='bf-date-start']\").datepicker(\"option\", \"onSelect\", function() {
+            var startDate = \$(this).datepicker(\"getDate\");
+            var \$end     = \$(\"[name='bf-date-end']\");
+            var endDate   = \$end.datepicker(\"getDate\");
+            if (startDate && endDate && endDate < startDate) {
+                \$end.datepicker(\"setDate\", startDate);
+            }
+        });
+    }, 0);
+});
+"); ?>

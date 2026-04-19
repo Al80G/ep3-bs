@@ -46,10 +46,14 @@ class EditForm extends Form
             ),
         ));
 
-        $squareOptions = array();
+        $squareOptions = array(
+            'all' => 'All squares',
+        );
 
         foreach ($this->squareManager->getAll() as $sid => $square) {
-            $squareOptions[$sid] = $square->get('name');
+            if ($square->get('status') !== 'disabled') {
+                $squareOptions[$sid] = $square->get('name');
+            }
         }
 
         $this->add(array(
@@ -57,6 +61,7 @@ class EditForm extends Form
             'type' => 'Select',
             'attributes' => array(
                 'id' => 'bf-sid',
+                'multiple' => true,
                 'style' => 'width: 124px',
             ),
             'options' => array(

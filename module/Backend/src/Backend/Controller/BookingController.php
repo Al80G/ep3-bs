@@ -144,12 +144,23 @@ class BookingController extends AbstractActionController
 
                 /* Process form (note, that reservation and booking are not available here) */
 
+                $rawSids = is_array($d['bf-sid']) ? $d['bf-sid'] : [$d['bf-sid']];
+
+                /* Expand 'all' to every non-disabled square */
+                if (in_array('all', $rawSids)) {
+                    $sids = array_keys(array_filter($squareManager->getAll(), function($square) {
+                        return $square->get('status') !== 'disabled';
+                    }));
+                } else {
+                    $sids = $rawSids;
+                }
+
                 if ($d['bf-rid']) {
 
-                    /* Update booking/reservation */
+                    /* Update booking/reservation – use only the first selected square */
 
                     $savedBooking = $this->backendBookingUpdate($d['bf-rid'], $d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'],
-                        $d['bf-sid'], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $params['editMode']);
+                        $sids[0], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $params['editMode']);
 
                     $bid = $savedBooking->get('bid');
                     $square = $squareManager->get($savedBooking->get('sid'));
@@ -161,14 +172,86 @@ class BookingController extends AbstractActionController
 
                 } else {
 
-                    /* Create booking/reservation */
+                    /* Create booking/reservation – conflict check first, then one booking per square */
 
-                    $savedBooking = $this->backendBookingCreate($d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'], $d['bf-date-end'],
-                        $d['bf-repeat'], $d['bf-sid'], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $sessionUser->get('alias'));
-         
+                    $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
+                    $bookingManager     = $serviceManager->get('Booking\Manager\BookingManager');
+                    $eventManager       = $serviceManager->get('Event\Manager\EventManager');
+
+                    $dateStartObj = new \DateTime($d['bf-date-start']);
+                    $dateEndObj   = new \DateTime($d['bf-date-end'] ?: $d['bf-date-start']);
+                    $repeat       = intval($d['bf-repeat']);
+
+                    /* Conflict check only for single bookings */
+                    if ($repeat == 0) {
+                        $possibleReservations = $reservationManager->getByRange(
+                            $dateStartObj->format('Y-m-d'),
+                            $dateEndObj->format('Y-m-d'),
+                            $d['bf-time-start'],
+                            $d['bf-time-end']
+                        );
+                        $possibleBookings = $bookingManager->getByReservations($possibleReservations);
+
+                        $possibleEvents = $eventManager->getInRange(
+                            new \DateTime($dateStartObj->format('Y-m-d') . ' ' . $d['bf-time-start']),
+                            new \DateTime($dateEndObj->format('Y-m-d') . ' ' . $d['bf-time-end'])
+                        );
+
+                        $conflictingSquareNames = [];
+
+                        foreach ($sids as $sid) {
+                            $square              = $squareManager->get($sid);
+                            $capacity            = $square->need('capacity');
+                            $capacityHeterogenic = $square->need('capacity_heterogenic');
+
+                            $quantity    = 0;
+                            $hasBookings = false;
+
+                            foreach ($possibleBookings as $booking) {
+                                if ($booking->need('sid') == $sid
+                                    && $booking->need('status') != 'cancelled'
+                                    && $booking->need('visibility') == 'public'
+                                ) {
+                                    $quantity += $booking->need('quantity');
+                                    $hasBookings = true;
+                                }
+                            }
+
+                            $conflict = ($capacity <= $quantity) || ($hasBookings && ! $capacityHeterogenic);
+
+                            if (! $conflict) {
+                                foreach ($possibleEvents as $event) {
+                                    if (is_null($event->get('sid')) || $event->get('sid') == $sid) {
+                                        $conflict = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($conflict) {
+                                $conflictingSquareNames[] = $square->need('name');
+                            }
+                        }
+
+                        if (! empty($conflictingSquareNames)) {
+                            $this->flashMessenger()->addErrorMessage(
+                                sprintf($this->t('The following squares are already occupied: %s'),
+                                    implode(', ', $conflictingSquareNames))
+                            );
+
+                            return $this->redirect()->toRoute('frontend');
+                        }
+                    }
+
+                    $savedBooking = null;
+                    foreach ($sids as $sid) {
+                        $savedBooking = $this->backendBookingCreate($d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'], $d['bf-date-end'],
+                            $d['bf-repeat'], $sid, $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $sessionUser->get('alias'));
+                    }
+
                 }
 
-                /* Handle Ballmaschine meta */
+                /* Handle Ballmaschine meta (applied to the last saved booking) */
 
                 $bid = (int) $savedBooking->get('bid');
                 $db = $serviceManager->get('Zend\Db\Adapter\Adapter');
@@ -200,7 +283,7 @@ class BookingController extends AbstractActionController
                 $editForm->setData(array(
                     'bf-rid' => $reservation->get('rid'),
                     'bf-user' => $user->need('alias') . ' (' . $user->need('uid') . ')',
-                    'bf-sid' => $booking->get('sid'),
+                    'bf-sid' => [$booking->get('sid')],
                     'bf-status-billing' => $booking->get('status_billing'),
                     'bf-quantity' => $booking->get('quantity'),
                     'bf-notes' => $booking->getMeta('notes'),
@@ -230,7 +313,7 @@ class BookingController extends AbstractActionController
                 }
 
                 $editForm->setData(array(
-                    'bf-sid' => $params['square']->get('sid'),
+                    'bf-sid' => [$params['square']->get('sid')],
                     'bf-date-start' => $this->dateFormat($params['dateTimeStart'], \IntlDateFormatter::MEDIUM),
                     'bf-date-end' => $this->dateFormat($params['dateTimeEnd'], \IntlDateFormatter::MEDIUM),
                     'bf-time-start' => $params['dateTimeStart']->format('H:i'),
