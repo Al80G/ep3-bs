@@ -93,22 +93,39 @@
             });
         }
 
-        /* iOS Webclip (standalone mode): JS layout recalculation is unreliable after rotation
-           because iOS hasn't committed the new viewport to the DOM yet at any predictable time.
-           Reloading is the only guaranteed fix — and matches what the user does manually. */
+        /* iOS Webclip (standalone + user-scalable=0): the viewport does not resize on rotation.
+           Fix: temporarily remove the scale constraints so iOS reflows, poll until window.innerWidth
+           actually changes, then restore the meta and recalculate layout. */
         if (window.navigator.standalone) {
+            var viewportMeta = document.querySelector("meta[name='viewport']");
+            var viewportMetaOriginal = viewportMeta ? viewportMeta.getAttribute("content") : null;
+
             window.addEventListener("orientationchange", function() {
-                window.location.reload();
-            });
-        } else if (window.visualViewport) {
-            window.visualViewport.addEventListener("resize", doLayoutUpdate);
-        } else {
-            $(window).on("orientationchange", function() {
-                var fallbackTimer = setTimeout(doLayoutUpdate, 500);
-                $(window).one("resize.orientationfix", function() {
-                    clearTimeout(fallbackTimer);
+                var prevWidth = window.innerWidth;
+
+                if (viewportMeta) {
+                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+                }
+
+                var fallbackTimer;
+                var pollTimer = setInterval(function() {
+                    if (window.innerWidth !== prevWidth) {
+                        clearInterval(pollTimer);
+                        clearTimeout(fallbackTimer);
+                        if (viewportMeta && viewportMetaOriginal) {
+                            viewportMeta.setAttribute("content", viewportMetaOriginal);
+                        }
+                        doLayoutUpdate();
+                    }
+                }, 50);
+
+                fallbackTimer = setTimeout(function() {
+                    clearInterval(pollTimer);
+                    if (viewportMeta && viewportMetaOriginal) {
+                        viewportMeta.setAttribute("content", viewportMetaOriginal);
+                    }
                     doLayoutUpdate();
-                });
+                }, 1500);
             });
         }
 
