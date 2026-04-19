@@ -180,63 +180,67 @@ class BookingController extends AbstractActionController
 
                     $dateStartObj = new \DateTime($d['bf-date-start']);
                     $dateEndObj   = new \DateTime($d['bf-date-end'] ?: $d['bf-date-start']);
+                    $repeat       = intval($d['bf-repeat']);
 
-                    $possibleReservations = $reservationManager->getByRange(
-                        $dateStartObj->format('Y-m-d'),
-                        $dateEndObj->format('Y-m-d'),
-                        $d['bf-time-start'],
-                        $d['bf-time-end']
-                    );
-                    $possibleBookings = $bookingManager->getByReservations($possibleReservations);
+                    /* Conflict check only for single bookings */
+                    if ($repeat == 0) {
+                        $possibleReservations = $reservationManager->getByRange(
+                            $dateStartObj->format('Y-m-d'),
+                            $dateEndObj->format('Y-m-d'),
+                            $d['bf-time-start'],
+                            $d['bf-time-end']
+                        );
+                        $possibleBookings = $bookingManager->getByReservations($possibleReservations);
 
-                    $possibleEvents = $eventManager->getInRange(
-                        new \DateTime($dateStartObj->format('Y-m-d') . ' ' . $d['bf-time-start']),
-                        new \DateTime($dateEndObj->format('Y-m-d') . ' ' . $d['bf-time-end'])
-                    );
-
-                    $conflictingSquareNames = [];
-
-                    foreach ($sids as $sid) {
-                        $square              = $squareManager->get($sid);
-                        $capacity            = $square->need('capacity');
-                        $capacityHeterogenic = $square->need('capacity_heterogenic');
-
-                        $quantity    = 0;
-                        $hasBookings = false;
-
-                        foreach ($possibleBookings as $booking) {
-                            if ($booking->need('sid') == $sid
-                                && $booking->need('status') != 'cancelled'
-                                && $booking->need('visibility') == 'public'
-                            ) {
-                                $quantity += $booking->need('quantity');
-                                $hasBookings = true;
-                            }
-                        }
-
-                        $conflict = ($capacity <= $quantity) || ($hasBookings && ! $capacityHeterogenic);
-
-                        if (! $conflict) {
-                            foreach ($possibleEvents as $event) {
-                                if (is_null($event->get('sid')) || $event->get('sid') == $sid) {
-                                    $conflict = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if ($conflict) {
-                            $conflictingSquareNames[] = $square->need('name');
-                        }
-                    }
-
-                    if (! empty($conflictingSquareNames)) {
-                        $this->flashMessenger()->addErrorMessage(
-                            sprintf($this->t('The following squares are already occupied: %s'),
-                                implode(', ', $conflictingSquareNames))
+                        $possibleEvents = $eventManager->getInRange(
+                            new \DateTime($dateStartObj->format('Y-m-d') . ' ' . $d['bf-time-start']),
+                            new \DateTime($dateEndObj->format('Y-m-d') . ' ' . $d['bf-time-end'])
                         );
 
-                        return $this->redirect()->toRoute('frontend');
+                        $conflictingSquareNames = [];
+
+                        foreach ($sids as $sid) {
+                            $square              = $squareManager->get($sid);
+                            $capacity            = $square->need('capacity');
+                            $capacityHeterogenic = $square->need('capacity_heterogenic');
+
+                            $quantity    = 0;
+                            $hasBookings = false;
+
+                            foreach ($possibleBookings as $booking) {
+                                if ($booking->need('sid') == $sid
+                                    && $booking->need('status') != 'cancelled'
+                                    && $booking->need('visibility') == 'public'
+                                ) {
+                                    $quantity += $booking->need('quantity');
+                                    $hasBookings = true;
+                                }
+                            }
+
+                            $conflict = ($capacity <= $quantity) || ($hasBookings && ! $capacityHeterogenic);
+
+                            if (! $conflict) {
+                                foreach ($possibleEvents as $event) {
+                                    if (is_null($event->get('sid')) || $event->get('sid') == $sid) {
+                                        $conflict = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($conflict) {
+                                $conflictingSquareNames[] = $square->need('name');
+                            }
+                        }
+
+                        if (! empty($conflictingSquareNames)) {
+                            $this->flashMessenger()->addErrorMessage(
+                                sprintf($this->t('The following squares are already occupied: %s'),
+                                    implode(', ', $conflictingSquareNames))
+                            );
+
+                            return $this->redirect()->toRoute('frontend');
+                        }
                     }
 
                     $savedBooking = null;
