@@ -82,13 +82,8 @@
         $(window).resize(function(evt) { groupCalendarCols(groups); });
         $(document).on("updateLayout", function(evt) { groupCalendarCols(groups); });
 
-        /* Re-calculate layout after orientation change.
-           iOS webclips: window resize often doesn't fire; visualViewport is reliable.
-           Fallback: orientationchange + timeout for older browsers. */
+        /* Re-calculate layout after orientation change. */
         function doLayoutUpdate() {
-            /* Clear stale inline widths so iOS reflowes with the new orientation dimensions.
-               Double rAF: first frame lets the browser apply the cleared styles and reflow,
-               second frame ensures the layout is committed before we read positions. */
             $(".calendar-date-col").css("width", "");
             requestAnimationFrame(function() {
                 requestAnimationFrame(function() {
@@ -98,12 +93,26 @@
             });
         }
 
-        if (window.visualViewport) {
+        /* iOS Webclip (standalone + user-scalable=0): the viewport does NOT resize on rotation —
+           iOS scales the content instead, so all JS dimension reads return stale values.
+           Fix: temporarily remove the scale constraints so iOS is forced to reflow, then restore. */
+        if (window.navigator.standalone) {
+            var viewportMeta = document.querySelector("meta[name='viewport']");
+            window.addEventListener("orientationchange", function() {
+                if (viewportMeta) {
+                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+                }
+                setTimeout(function() {
+                    if (viewportMeta) {
+                        viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
+                    }
+                    doLayoutUpdate();
+                }, 300);
+            });
+        } else if (window.visualViewport) {
             window.visualViewport.addEventListener("resize", doLayoutUpdate);
         } else {
             $(window).on("orientationchange", function() {
-                /* Wait for resize event (fires when viewport dimensions are final),
-                   with a 500ms fallback in case resize never fires (iOS webclip quirk). */
                 var fallbackTimer = setTimeout(doLayoutUpdate, 500);
                 $(window).one("resize.orientationfix", function() {
                     clearTimeout(fallbackTimer);
