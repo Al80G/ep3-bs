@@ -82,6 +82,24 @@
         $(window).resize(function(evt) { groupCalendarCols(groups); });
         $(document).on("updateLayout", function(evt) { groupCalendarCols(groups); });
 
+        /* Re-calculate layout after orientation change. */
+        function doLayoutUpdate() {
+            $(".calendar-date-col").css("width", "");
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    updateCalendarCols();
+                    groupCalendarCols(groups);
+                });
+            });
+        }
+
+        /* iOS Webclip (standalone): matchMedia fires after the browser has committed the new
+           orientation and updated its layout — more reliable than orientationchange + timeout. */
+        if (window.navigator.standalone && window.matchMedia) {
+            window.matchMedia("(orientation: portrait)").addEventListener("change", doLayoutUpdate);
+            window.matchMedia("(orientation: landscape)").addEventListener("change", doLayoutUpdate);
+        }
+
     });
 
     function loadSquarebox(href)
@@ -258,7 +276,10 @@
 
     function groupCalendarCols(groups)
     {
-        setTimeout(function(){ 
+        /* Remove stale overlays so they are rebuilt with correct dimensions after resize/orientation change */
+        $("[id^='cc-group-'][id*='-overlay-']").remove();
+
+        setTimeout(function(){
         groups.forEach(function(group, index) {
            $(".calendar-date-col").each(function(dateIndex) {
                var calendarDateCol = $(this);
