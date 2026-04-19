@@ -86,8 +86,16 @@
            iOS webclips: window resize often doesn't fire; visualViewport is reliable.
            Fallback: orientationchange + timeout for older browsers. */
         function doLayoutUpdate() {
-            updateCalendarCols();
-            groupCalendarCols(groups);
+            /* Clear stale inline widths so iOS reflowes with the new orientation dimensions.
+               Double rAF: first frame lets the browser apply the cleared styles and reflow,
+               second frame ensures the layout is committed before we read positions. */
+            $(".calendar-date-col").css("width", "");
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    updateCalendarCols();
+                    groupCalendarCols(groups);
+                });
+            });
         }
 
         if (window.visualViewport) {
