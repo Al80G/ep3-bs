@@ -12,11 +12,6 @@
 
     $(document).ready(function() {
 
-		// Fix Orientation Bug
-		window.addEventListener('orientationchange', () => {
-			location.reload();
-		});
-		
         calendar = $(".calendar-table");
 
         /* Squarebox */
