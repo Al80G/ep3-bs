@@ -82,6 +82,14 @@
         $(window).resize(function(evt) { groupCalendarCols(groups); });
         $(document).on("updateLayout", function(evt) { groupCalendarCols(groups); });
 
+        /* Re-calculate layout after orientation change (mobile devices need more time to finish reflow) */
+        $(window).on("orientationchange", function() {
+            setTimeout(function() {
+                updateCalendarCols();
+                groupCalendarCols(groups);
+            }, 350);
+        });
+
     });
 
     function loadSquarebox(href)
@@ -258,7 +266,10 @@
 
     function groupCalendarCols(groups)
     {
-        setTimeout(function(){ 
+        /* Remove stale overlays so they are rebuilt with correct dimensions after resize/orientation change */
+        $("[id^='cc-group-'][id*='-overlay-']").remove();
+
+        setTimeout(function(){
         groups.forEach(function(group, index) {
            $(".calendar-date-col").each(function(dateIndex) {
                var calendarDateCol = $(this);
