@@ -96,39 +96,7 @@
         /* iOS Webclip (standalone + user-scalable=0): the viewport does NOT resize on rotation —
            iOS scales the content instead, so all JS dimension reads return stale values.
            Fix: temporarily remove the scale constraints so iOS is forced to reflow, then restore. */
-        if (window.navigator.standalone) {
-            var viewportMeta = document.querySelector("meta[name='viewport']");
-            var viewportMetaOriginal = viewportMeta ? viewportMeta.getAttribute("content") : null;
-
-            window.addEventListener("orientationchange", function() {
-                /* Remove scale constraints so iOS performs a real reflow with new dimensions. */
-                if (viewportMeta) {
-                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
-                }
-
-                /* Wait for the resize event iOS fires once the viewport is actually updated.
-                   Fall back to 800ms if it never arrives (observed on some iOS versions). */
-                var fallbackTimer = setTimeout(function() {
-                    window.removeEventListener("resize", onViewportResize);
-                    restoreAndUpdate();
-                }, 800);
-
-                function onViewportResize() {
-                    clearTimeout(fallbackTimer);
-                    window.removeEventListener("resize", onViewportResize);
-                    restoreAndUpdate();
-                }
-
-                function restoreAndUpdate() {
-                    if (viewportMeta && viewportMetaOriginal) {
-                        viewportMeta.setAttribute("content", viewportMetaOriginal);
-                    }
-                    doLayoutUpdate();
-                }
-
-                window.addEventListener("resize", onViewportResize);
-            });
-        } else if (window.visualViewport) {
+        if (window.visualViewport) {
             window.visualViewport.addEventListener("resize", doLayoutUpdate);
         } else {
             $(window).on("orientationchange", function() {
