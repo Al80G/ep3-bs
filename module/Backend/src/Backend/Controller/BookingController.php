@@ -144,12 +144,14 @@ class BookingController extends AbstractActionController
 
                 /* Process form (note, that reservation and booking are not available here) */
 
+                $sids = is_array($d['bf-sid']) ? $d['bf-sid'] : [$d['bf-sid']];
+
                 if ($d['bf-rid']) {
 
-                    /* Update booking/reservation */
+                    /* Update booking/reservation – use only the first selected square */
 
                     $savedBooking = $this->backendBookingUpdate($d['bf-rid'], $d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'],
-                        $d['bf-sid'], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $params['editMode']);
+                        $sids[0], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $params['editMode']);
 
                     $bid = $savedBooking->get('bid');
                     $square = $squareManager->get($savedBooking->get('sid'));
@@ -161,14 +163,17 @@ class BookingController extends AbstractActionController
 
                 } else {
 
-                    /* Create booking/reservation */
+                    /* Create booking/reservation – one booking per selected square */
 
-                    $savedBooking = $this->backendBookingCreate($d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'], $d['bf-date-end'],
-                        $d['bf-repeat'], $d['bf-sid'], $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $sessionUser->get('alias'));
-         
+                    $savedBooking = null;
+                    foreach ($sids as $sid) {
+                        $savedBooking = $this->backendBookingCreate($d['bf-user'], $d['bf-time-start'], $d['bf-time-end'], $d['bf-date-start'], $d['bf-date-end'],
+                            $d['bf-repeat'], $sid, $d['bf-status-billing'], $d['bf-quantity'], $d['bf-notes'], $sessionUser->get('alias'));
+                    }
+
                 }
 
-                /* Handle Ballmaschine meta */
+                /* Handle Ballmaschine meta (applied to the last saved booking) */
 
                 $bid = (int) $savedBooking->get('bid');
                 $db = $serviceManager->get('Zend\Db\Adapter\Adapter');
@@ -200,7 +205,7 @@ class BookingController extends AbstractActionController
                 $editForm->setData(array(
                     'bf-rid' => $reservation->get('rid'),
                     'bf-user' => $user->need('alias') . ' (' . $user->need('uid') . ')',
-                    'bf-sid' => $booking->get('sid'),
+                    'bf-sid' => [$booking->get('sid')],
                     'bf-status-billing' => $booking->get('status_billing'),
                     'bf-quantity' => $booking->get('quantity'),
                     'bf-notes' => $booking->getMeta('notes'),
@@ -230,7 +235,7 @@ class BookingController extends AbstractActionController
                 }
 
                 $editForm->setData(array(
-                    'bf-sid' => $params['square']->get('sid'),
+                    'bf-sid' => [$params['square']->get('sid')],
                     'bf-date-start' => $this->dateFormat($params['dateTimeStart'], \IntlDateFormatter::MEDIUM),
                     'bf-date-end' => $this->dateFormat($params['dateTimeEnd'], \IntlDateFormatter::MEDIUM),
                     'bf-time-start' => $params['dateTimeStart']->format('H:i'),
