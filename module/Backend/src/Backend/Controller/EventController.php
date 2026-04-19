@@ -104,7 +104,68 @@ class EventController extends AbstractActionController
 
                     $eventManager->save($event);
                 } else {
-                    /* Create new event – one event per selected square */
+                    /* Create new event – conflict check first, then one event per selected square */
+
+                    $squareManager      = $serviceManager->get('Square\Manager\SquareManager');
+                    $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
+                    $bookingManager     = $serviceManager->get('Booking\Manager\BookingManager');
+
+                    $possibleReservations = $reservationManager->getByRange(
+                        $dateStart->format('Y-m-d'),
+                        $dateEnd->format('Y-m-d'),
+                        $dateStart->format('H:i'),
+                        $dateEnd->format('H:i')
+                    );
+                    $possibleBookings = $bookingManager->getByReservations($possibleReservations);
+
+                    $overlappingEvents = $eventManager->getInRange($dateStart, $dateEnd);
+
+                    $conflictingSquareNames = [];
+
+                    foreach ($sids as $rawSid) {
+                        $sid        = $rawSid == 'null' ? null : $rawSid;
+                        $squareName = is_null($sid)
+                            ? $this->t('All squares')
+                            : $squareManager->get($sid)->need('name');
+
+                        $conflict = false;
+
+                        foreach ($possibleBookings as $booking) {
+                            if ($booking->need('status') != 'cancelled'
+                                && $booking->need('visibility') == 'public'
+                                && (is_null($sid) || $booking->need('sid') == $sid)
+                            ) {
+                                $conflict = true;
+                                break;
+                            }
+                        }
+
+                        if (! $conflict) {
+                            foreach ($overlappingEvents as $existingEvent) {
+                                if (is_null($sid)
+                                    || is_null($existingEvent->get('sid'))
+                                    || $existingEvent->get('sid') == $sid
+                                ) {
+                                    $conflict = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($conflict) {
+                            $conflictingSquareNames[] = $squareName;
+                        }
+                    }
+
+                    if (! empty($conflictingSquareNames)) {
+                        $this->flashMessenger()->addErrorMessage(
+                            sprintf($this->t('The following squares are already occupied: %s'),
+                                implode(', ', $conflictingSquareNames))
+                        );
+
+                        return $this->redirectBack()->toOrigin();
+                    }
+
                     foreach ($sids as $rawSid) {
                         $sid = $rawSid == 'null' ? null : $rawSid;
 

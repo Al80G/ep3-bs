@@ -174,6 +174,8 @@ return [
 
     'This %s has multiple reservations here:' => 'Dieser %s ist hier mehrfach belegt:',
 
+    'The following squares are already occupied: %s' => 'Folgende Plätze sind bereits belegt: %s',
+
     'Booking created' => 'Buchung erstellt',
     'Booking created:<br>%s' => 'Buchung erstellt:<br>%s',
     'Booking created:<br>%s by %s' => 'Buchung erstellt:<br>%s von %s',
