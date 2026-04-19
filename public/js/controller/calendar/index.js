@@ -82,13 +82,27 @@
         $(window).resize(function(evt) { groupCalendarCols(groups); });
         $(document).on("updateLayout", function(evt) { groupCalendarCols(groups); });
 
-        /* Re-calculate layout after orientation change (mobile devices need more time to finish reflow) */
-        $(window).on("orientationchange", function() {
-            setTimeout(function() {
-                updateCalendarCols();
-                groupCalendarCols(groups);
-            }, 350);
-        });
+        /* Re-calculate layout after orientation change.
+           iOS webclips: window resize often doesn't fire; visualViewport is reliable.
+           Fallback: orientationchange + timeout for older browsers. */
+        function doLayoutUpdate() {
+            updateCalendarCols();
+            groupCalendarCols(groups);
+        }
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", doLayoutUpdate);
+        } else {
+            $(window).on("orientationchange", function() {
+                /* Wait for resize event (fires when viewport dimensions are final),
+                   with a 500ms fallback in case resize never fires (iOS webclip quirk). */
+                var fallbackTimer = setTimeout(doLayoutUpdate, 500);
+                $(window).one("resize.orientationfix", function() {
+                    clearTimeout(fallbackTimer);
+                    doLayoutUpdate();
+                });
+            });
+        }
 
     });
 
