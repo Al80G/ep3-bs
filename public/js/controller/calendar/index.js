@@ -93,11 +93,11 @@
             });
         }
 
-        /* iOS Webclip (standalone): recalculate layout 50ms after orientation change. */
-        if (window.navigator.standalone) {
-            window.addEventListener("orientationchange", function() {
-                setTimeout(doLayoutUpdate, 50);
-            });
+        /* iOS Webclip (standalone): matchMedia fires after the browser has committed the new
+           orientation and updated its layout — more reliable than orientationchange + timeout. */
+        if (window.navigator.standalone && window.matchMedia) {
+            window.matchMedia("(orientation: portrait)").addEventListener("change", doLayoutUpdate);
+            window.matchMedia("(orientation: landscape)").addEventListener("change", doLayoutUpdate);
         }
 
     });
