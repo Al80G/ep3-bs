@@ -144,7 +144,16 @@ class BookingController extends AbstractActionController
 
                 /* Process form (note, that reservation and booking are not available here) */
 
-                $sids = is_array($d['bf-sid']) ? $d['bf-sid'] : [$d['bf-sid']];
+                $rawSids = is_array($d['bf-sid']) ? $d['bf-sid'] : [$d['bf-sid']];
+
+                /* Expand 'all' to every non-disabled square */
+                if (in_array('all', $rawSids)) {
+                    $sids = array_keys(array_filter($squareManager->getAll(), function($square) {
+                        return $square->get('status') !== 'disabled';
+                    }));
+                } else {
+                    $sids = $rawSids;
+                }
 
                 if ($d['bf-rid']) {
 
