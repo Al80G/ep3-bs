@@ -59,7 +59,7 @@ while ($walkingDate <= $this->dateEnd) {
         $walkingDate->setTime(0, 0, 0);
     }
 
-    /* Build colspan map: merge consecutive conflict cells per square row */
+    /* Build colspan map: merge consecutive conflict or same-event cells per square row */
 
     $colspanMap = array();
     $timeSlots  = array();
@@ -73,12 +73,27 @@ while ($walkingDate <= $this->dateEnd) {
         $i   = 0;
 
         while ($i < $slotCount) {
-            $t = $timeSlots[$i];
+            $t    = $timeSlots[$i];
+            $cell = $output[$sid][$t];
 
-            if (strpos($output[$sid][$t], 'cc-conflict') !== false) {
+            if (strpos($cell, 'cc-conflict') !== false) {
                 $run = 1;
                 while ($i + $run < $slotCount
                     && strpos($output[$sid][$timeSlots[$i + $run]], 'cc-conflict') !== false) {
+                    $run++;
+                }
+                $colspanMap[$sid][$t] = $run;
+                for ($j = 1; $j < $run; $j++) {
+                    $colspanMap[$sid][$timeSlots[$i + $j]] = 0;
+                }
+                $i += $run;
+            } elseif (preg_match('/cc-group-(\d+)/', $cell, $m)) {
+                $eid = $m[1];
+                $run = 1;
+                while ($i + $run < $slotCount) {
+                    $next = $output[$sid][$timeSlots[$i + $run]];
+                    if (strpos($next, 'cc-conflict') !== false) break;
+                    if (!preg_match('/cc-group-(\d+)/', $next, $m2) || $m2[1] !== $eid) break;
                     $run++;
                 }
                 $colspanMap[$sid][$t] = $run;
