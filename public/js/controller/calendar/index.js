@@ -125,7 +125,7 @@
                         viewportMeta.setAttribute("content", viewportMetaOriginal);
                     }
                     doLayoutUpdate();
-                }, 1500);
+                }, 100);
             });
         }
 
