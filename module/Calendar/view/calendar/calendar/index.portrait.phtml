@@ -59,17 +59,63 @@ while ($walkingDate <= $this->dateEnd) {
         $walkingDate->setTime(0, 0, 0);
     }
 
+    /* Build colspan map: merge consecutive conflict cells per square row */
+
+    $colspanMap = array();
+    $timeSlots  = array();
+    for ($t = $this->timeStart; $t < $this->timeEnd; $t += $this->timeBlock) {
+        $timeSlots[] = $t;
+    }
+    $slotCount = count($timeSlots);
+
+    foreach ($this->squares as $square) {
+        $sid = $square->need('sid');
+        $i   = 0;
+
+        while ($i < $slotCount) {
+            $t = $timeSlots[$i];
+
+            if (strpos($output[$sid][$t], 'cc-conflict') !== false) {
+                $run = 1;
+                while ($i + $run < $slotCount
+                    && strpos($output[$sid][$timeSlots[$i + $run]], 'cc-conflict') !== false) {
+                    $run++;
+                }
+                $colspanMap[$sid][$t] = $run;
+                for ($j = 1; $j < $run; $j++) {
+                    $colspanMap[$sid][$timeSlots[$i + $j]] = 0;
+                }
+                $i += $run;
+            } else {
+                $colspanMap[$sid][$t] = 1;
+                $i++;
+            }
+        }
+    }
+
     /* Render output: Loop through square rows */
 
     foreach ($this->squares as $square) {
         echo '<tr class="calendar-core-row">';
 
-	    $sid = $square->need('sid');
+        $sid = $square->need('sid');
 
         /* Render output: Loop through time cells */
 
         for ($walkingTime = $this->timeStart; $walkingTime < $this->timeEnd; $walkingTime += $this->timeBlock) {
-            echo $output[$sid][$walkingTime];
+            $colspan = isset($colspanMap[$sid][$walkingTime]) ? $colspanMap[$sid][$walkingTime] : 1;
+
+            if ($colspan === 0) {
+                continue;
+            }
+
+            $cell = $output[$sid][$walkingTime];
+
+            if ($colspan > 1) {
+                $cell = preg_replace('/<td\b/', '<td colspan="' . $colspan . '"', $cell, 1);
+            }
+
+            echo $cell;
         }
 
         echo '</tr>';
