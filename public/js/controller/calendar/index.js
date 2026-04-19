@@ -93,10 +93,14 @@
             });
         }
 
-        /* iOS Webclip (standalone + user-scalable=0): the viewport does NOT resize on rotation —
-           iOS scales the content instead, so all JS dimension reads return stale values.
-           Fix: temporarily remove the scale constraints so iOS is forced to reflow, then restore. */
-        if (window.visualViewport) {
+        /* iOS Webclip (standalone mode): JS layout recalculation is unreliable after rotation
+           because iOS hasn't committed the new viewport to the DOM yet at any predictable time.
+           Reloading is the only guaranteed fix — and matches what the user does manually. */
+        if (window.navigator.standalone) {
+            window.addEventListener("orientationchange", function() {
+                window.location.reload();
+            });
+        } else if (window.visualViewport) {
             window.visualViewport.addEventListener("resize", doLayoutUpdate);
         } else {
             $(window).on("orientationchange", function() {
