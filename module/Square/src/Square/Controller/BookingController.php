@@ -409,9 +409,9 @@ class BookingController extends AbstractActionController
                         '<b>', $this->config('tmpBookingAt'), '</b>'));
                 }
 
-                return $this->redirectBack()->toOrigin();
-            }                
-          }               
+                return $this->redirect()->toRoute('frontend', [], ['query' => ['date' => $dateStartParam]]);
+            }
+          }
         }
 
        return $this->ajaxViewModel($byproducts);
