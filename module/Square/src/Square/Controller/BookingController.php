@@ -409,7 +409,7 @@ class BookingController extends AbstractActionController
                         '<b>', $this->config('tmpBookingAt'), '</b>'));
                 }
 
-                return $this->redirect()->toRoute('calendar', [], ['query' => ['date' => $dateStartParam]]);
+                return $this->redirect()->toRoute('frontend', [], ['query' => ['date' => $dateStartParam]]);
             }
           }
         }

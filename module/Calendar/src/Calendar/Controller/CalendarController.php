@@ -153,7 +153,7 @@ class CalendarController extends AbstractActionController
         if ($squaresFilter) {
             $calendarOriginQuery['squares'] = $squaresFilter;
         }
-        $this->redirectBack()->setOrigin('calendar', [], ['query' => $calendarOriginQuery]);
+        $this->redirectBack()->setOrigin('frontend', [], ['query' => $calendarOriginQuery]);
 
         return array(
             'dateStart' => $dateStart,
