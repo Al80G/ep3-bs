@@ -149,7 +149,11 @@ class CalendarController extends AbstractActionController
             $userManager->getByBookings($bookings);
         }
 
-        $this->redirectBack()->setOrigin('calendar');
+        $calendarOriginQuery = ['date' => $dateStart->format('Y-m-d')];
+        if ($squaresFilter) {
+            $calendarOriginQuery['squares'] = $squaresFilter;
+        }
+        $this->redirectBack()->setOrigin('calendar', [], ['query' => $calendarOriginQuery]);
 
         return array(
             'dateStart' => $dateStart,
