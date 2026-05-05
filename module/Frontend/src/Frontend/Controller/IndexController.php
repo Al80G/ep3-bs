@@ -18,7 +18,11 @@ class IndexController extends AbstractActionController
         $squaresFilter = $calendarViewModel->getVariable('squaresFilter');
         $user = $calendarViewModel->getVariable('user');
 
-        $this->redirectBack()->setOrigin('frontend');
+        $originQuery = ['date' => $dateStart->format('Y-m-d')];
+        if ($squaresFilter) {
+            $originQuery['squares'] = $squaresFilter;
+        }
+        $this->redirectBack()->setOrigin('frontend', [], ['query' => $originQuery]);
 
         $viewModel = new ViewModel(array(
             'dateStart' => $dateStart,
