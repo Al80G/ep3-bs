@@ -11,7 +11,6 @@ use Zend\Authentication\Result as ResultAlias;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
-use Zend\Session\Validator\HttpUserAgent;
 
 class UserSessionManager extends AbstractManager
 {
@@ -40,9 +39,7 @@ class UserSessionManager extends AbstractManager
         $this->userManager = $userManager;
         $this->sessionManager = $sessionManager;
 
-        /* Prepare session validators */
-
-        $sessionManager->getValidatorChain()->attach('session.validate', array(new HttpUserAgent(), 'isValid'));
+        /* Session validators intentionally omitted — HttpUserAgent causes logouts on iOS Webclips */
     }
 
     /**
