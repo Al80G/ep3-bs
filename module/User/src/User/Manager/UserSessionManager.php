@@ -75,16 +75,42 @@ class UserSessionManager extends AbstractManager
     {
         if ($this->user) {
             return $this->user;
-        } else {
-            $sessionName = $this->configManager->need('session_config.name');
+        }
 
-            if (isset($_COOKIE[$sessionName])) {
-                $container = $this->getSessionContainer();
+        $sessionName = $this->configManager->need('session_config.name');
 
-                if (isset($container->uid) && is_numeric($container->uid) && $container->uid > 0) {
-                    return $this->user = $this->userManager->get($container->uid, false);
+        if (isset($_COOKIE[$sessionName])) {
+            $container = $this->getSessionContainer();
+
+            if (isset($container->uid) && is_numeric($container->uid) && $container->uid > 0) {
+                return $this->user = $this->userManager->get($container->uid, false);
+            }
+        }
+
+        /* Session missing — try remember-me cookie */
+
+        $rememberCookieName = $sessionName . '-remember';
+
+        if (isset($_COOKIE[$rememberCookieName])) {
+            $parts = explode(':', $_COOKIE[$rememberCookieName], 2);
+
+            if (count($parts) === 2 && is_numeric($parts[0]) && $parts[0] > 0) {
+                $uid = (int) $parts[0];
+                $token = $parts[1];
+
+                $user = $this->userManager->get($uid, false);
+
+                if ($user && $user->getMeta('remember-token') && hash_equals($user->getMeta('remember-token'), hash('sha256', $token))) {
+                    $container = $this->getSessionContainer();
+                    $container->uid = $user->need('uid');
+                    $container->status = $user->need('status');
+
+                    return $this->user = $user;
                 }
             }
+
+            /* Invalid token — clear the cookie */
+            $this->clearRememberCookie($sessionName);
         }
 
         return null;
@@ -170,6 +196,24 @@ class UserSessionManager extends AbstractManager
 
             $this->userManager->save($user);
 
+            /* Set remember-me cookie */
+
+            $token = bin2hex(random_bytes(32));
+            $user->setMeta('remember-token', hash('sha256', $token));
+            $this->userManager->save($user);
+
+            $sessionName = $this->configManager->need('session_config.name');
+            $cookieLifetime = (int) $this->configManager->get('session_config.cookie_lifetime', 7776000);
+            setcookie(
+                $sessionName . '-remember',
+                $user->need('uid') . ':' . $token,
+                time() + $cookieLifetime,
+                '/',
+                '',
+                isset($_SERVER['HTTPS']),
+                true
+            );
+
             /* Inform anyone interested in this */
 
             $this->getEventManager()->trigger('login', $user);
@@ -203,6 +247,11 @@ class UserSessionManager extends AbstractManager
         return new Result(ResultAlias::FAILURE_CREDENTIAL_INVALID, $user);
     }
 
+    protected function clearRememberCookie($sessionName)
+    {
+        setcookie($sessionName . '-remember', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+    }
+
     /**
      * Deletes the session from the current session user.
      *
@@ -230,6 +279,14 @@ class UserSessionManager extends AbstractManager
 	    $container->status = null;
 
         $this->sessionManager->destroy();
+
+        /* Clear remember-me cookie and token */
+
+        $user->setMeta('remember-token', null);
+        $this->userManager->save($user);
+
+        $sessionName = $this->configManager->need('session_config.name');
+        $this->clearRememberCookie($sessionName);
 
         $this->user = null;
 
