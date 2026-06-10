@@ -87,6 +87,29 @@ class TimeBlockChoice extends AbstractHelper
         $html .= '<label for="sb-alternate-times" ><span><b>' . $view->t('Timeblock choice:') . '</b></span></label>';
         $html .= '<select id="sb-alternate-times" style="display: none; margin-right: 16px;">';
 
+        /* Peak Einzel info – shown after the select (injected below) */
+        $peakEinzelDays  = $square->getMeta('peak_einzel_days');
+        $peakEinzelStart = $square->getMeta('peak_einzel_start');
+        $peakEinzelMax   = $square->getMeta('peak_einzel_max');
+        $peakEinzelInfo  = null;
+
+        if ($peakEinzelDays && $peakEinzelStart && $peakEinzelMax) {
+            $allowedDays = array_map('trim', explode(',', $peakEinzelDays));
+            if (in_array($dateTimeStart->format('N'), $allowedDays)) {
+                $peakParts    = explode(':', $peakEinzelStart);
+                $peakStartSec = (int)$peakParts[0] * 3600 + (int)$peakParts[1] * 60;
+                $tsStartSec   = (int)$dateTimeStart->format('H') * 3600 + (int)$dateTimeStart->format('i') * 60;
+
+                if ($tsStartSec >= $peakStartSec) {
+                    $peakEinzelInfo = sprintf(
+                        $view->t('Single bookings after %s are limited to %s minutes'),
+                        $peakEinzelStart,
+                        $peakEinzelMax
+                    );
+                }
+            }
+        }
+
         $walkingTimeStartParts = explode(':', $dateTimeStart->format('H:i'));
         $walkingTimeStart = $walkingTimeStartParts[0] * 3600 + $walkingTimeStartParts[1] * 60;
 
@@ -202,6 +225,10 @@ class TimeBlockChoice extends AbstractHelper
 
         if ($walkingIndex <= 1) {
             return null;
+        }
+
+        if ($peakEinzelInfo) {
+            $html .= '<p class="gray" style="margin: 6px 0 0; font-size: 0.9em;">ℹ️ ' . $view->escapeHtml($peakEinzelInfo) . '</p>';
         }
 
         /* Render reload button */
