@@ -151,6 +151,30 @@ class BehaviourForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'cf-no-consecutive-bookings',
+            'type' => 'Checkbox',
+            'attributes' => array(
+                'id' => 'cf-no-consecutive-bookings',
+            ),
+            'options' => array(
+                'label' => 'Aufeinanderfolgende Buchungen nicht erlauben',
+                'notes' => 'Verhindert, dass normale Benutzer unmittelbar aufeinanderfolgende Buchungen anlegen (gilt nicht für Admins)',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'cf-no-simultaneous-bookings',
+            'type' => 'Checkbox',
+            'attributes' => array(
+                'id' => 'cf-no-simultaneous-bookings',
+            ),
+            'options' => array(
+                'label' => 'Gleichzeitige Buchungen nicht erlauben',
+                'notes' => 'Verhindert, dass normale Benutzer parallel auf mehreren Plätzen buchen (gilt nicht für Admins)',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'cf-submit',
             'type' => 'Submit',
             'attributes' => array(

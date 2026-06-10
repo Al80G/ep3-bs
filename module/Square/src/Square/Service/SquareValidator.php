@@ -399,6 +399,42 @@ class SquareValidator extends AbstractService
             }
         }
 
+        /* Check consecutive and simultaneous bookings for normal users */
+
+        $isAdmin = $user && $user->can('calendar.create-single-bookings, calendar.create-subscription-bookings');
+
+        if ($bookable && $user && ! $isAdmin) {
+
+            $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
+            $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
+
+            if ($noConsecutive || $noSimultaneous) {
+                $userBookings     = $this->bookingManager->getByValidity(['uid' => $user->need('uid')]);
+                $userReservations = $this->reservationManager->getByBookings($userBookings);
+
+                $newStart = $dateStart->getTimestamp();
+                $newEnd   = $dateEnd->getTimestamp();
+
+                foreach ($userReservations as $res) {
+                    $resDate     = $res->get('date');
+                    $resStart    = strtotime($resDate . ' ' . $res->get('time_start'));
+                    $resEnd      = strtotime($resDate . ' ' . $res->get('time_end'));
+
+                    if ($noSimultaneous) {
+                        if ($resStart < $newEnd && $resEnd > $newStart) {
+                            throw new RuntimeException($this->t('You already have a booking at this time'));
+                        }
+                    }
+
+                    if ($noConsecutive) {
+                        if ($resEnd === $newStart || $resStart === $newEnd) {
+                            throw new RuntimeException($this->t('Consecutive bookings are not allowed'));
+                        }
+                    }
+                }
+            }
+        }
+
         /* Gather byproducts */
 
         $byproducts['bookings'] = $bookings;
