@@ -327,7 +327,7 @@ class SquareValidator extends AbstractService
 
         /* Check for maximum active bookings limitation */
 
-        if ($user) {
+        if ($user && $bookable) {
             $maxActiveBookings = $square->need('max_active_bookings');
 
             if ($maxActiveBookings != 0) {
