@@ -11,7 +11,13 @@ $this->setup(array(
 
 echo $this->ajaxAwareScript('js/controller/square/booking/customization.min.js');
 
-?><div id="sb-url-provider" data-player-autocomplete-url="<?= $this->url('square/booking/player-autocomplete') ?>" data-current-user="<?= $this->user ? $this->escapeHtmlAttr($this->user->need('alias')) : '' ?>"></div><?php
+?><div id="sb-url-provider"
+    data-player-autocomplete-url="<?= $this->url('square/booking/player-autocomplete') ?>"
+    data-current-user="<?= $this->user ? $this->escapeHtmlAttr($this->user->need('alias')) : '' ?>"
+    data-peak-einzel-days="<?= $this->escapeHtmlAttr($square->getMeta('peak_einzel_days', '')) ?>"
+    data-peak-einzel-start="<?= $this->escapeHtmlAttr($square->getMeta('peak_einzel_start', '')) ?>"
+    data-peak-einzel-max="<?= $this->escapeHtmlAttr($square->getMeta('peak_einzel_max', '')) ?>"
+></div><?php
 
 ?>
 

@@ -258,6 +258,48 @@ class EditForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'cf-peak-einzel-days',
+            'type' => 'Text',
+            'attributes' => array(
+                'id' => 'cf-peak-einzel-days',
+                'style' => 'width: 160px;',
+                'placeholder' => '1,2,3,4,5',
+            ),
+            'options' => array(
+                'label' => 'Einzel-Limit: Wochentage (ISO)',
+                'notes' => 'ISO-Tagnummern: Mo=1 ... Sa=6, So=7. Leer lassen = kein Limit.',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'cf-peak-einzel-start',
+            'type' => 'Text',
+            'attributes' => array(
+                'id' => 'cf-peak-einzel-start',
+                'style' => 'width: 80px;',
+                'placeholder' => '17:00',
+            ),
+            'options' => array(
+                'label' => 'Einzel-Limit: Ab Uhrzeit',
+                'postfix' => 'Uhr',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'cf-peak-einzel-max',
+            'type' => 'Text',
+            'attributes' => array(
+                'id' => 'cf-peak-einzel-max',
+                'style' => 'width: 80px;',
+            ),
+            'options' => array(
+                'label' => 'Einzel-Limit: Max. Buchungszeit',
+                'postfix' => 'Minuten',
+                'notes' => 'Gilt nur für Einzel (2 Spieler). Doppel ist immer unbegrenzt.',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'cf-min-range-book',
             'type' => 'Text',
             'attributes' => array(

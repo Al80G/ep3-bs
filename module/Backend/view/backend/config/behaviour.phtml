@@ -45,6 +45,8 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/config/be
             <?= $this->formRowDefault($form, 'cf-calendar-day-exceptions') ?>
             <?= $this->formRowDefault($form, 'cf-calendar-club-exceptions') ?>
             <?= $this->formRowDefault($form, 'cf-calendar-display-club-exceptions') ?>
+            <?= $this->formRowCheckbox($form, 'cf-no-consecutive-bookings') ?>
+            <?= $this->formRowCheckbox($form, 'cf-no-simultaneous-bookings') ?>
 
             <tr>
                 <td class="default-form-label-row">&nbsp;</td>

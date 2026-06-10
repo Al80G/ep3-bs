@@ -12,6 +12,7 @@ use Event\Manager\EventManager;
 use Exception;
 use RuntimeException;
 use Square\Manager\SquareManager;
+use User\Manager\UserManager;
 use User\Manager\UserSessionManager;
 
 class SquareValidator extends AbstractService
@@ -22,17 +23,19 @@ class SquareValidator extends AbstractService
     protected $eventManager;
     protected $squareManager;
     protected $optionManager;
+    protected $userManager;
     protected $user;
 
     public function __construct(BookingManager $bookingManager, ReservationManager $reservationManager,
         EventManager $eventManager, SquareManager $squareManager, UserSessionManager $userSessionManager,
-        OptionManager $optionManager)
+        OptionManager $optionManager, UserManager $userManager)
     {
         $this->bookingManager = $bookingManager;
         $this->reservationManager = $reservationManager;
         $this->eventManager = $eventManager;
         $this->squareManager = $squareManager;
         $this->optionManager = $optionManager;
+        $this->userManager = $userManager;
         $this->user = $userSessionManager->getSessionUser();
     }
 
@@ -261,7 +264,7 @@ class SquareValidator extends AbstractService
      * @param int $square
      * @return array
      */
-    public function isBookable($dateStart, $dateEnd, $timeStart, $timeEnd, $square)
+    public function isBookable($dateStart, $dateEnd, $timeStart, $timeEnd, $square, $quantity = null)
     {
         $byproducts = $this->isValid($dateStart, $dateEnd, $timeStart, $timeEnd, $square);
 
@@ -305,6 +308,8 @@ class SquareValidator extends AbstractService
                     $reservations[$rid] = $reservation;
                 }
             }
+
+            $this->userManager->getByBookings($bookings);
         }
 
         $capacity = $square->need('capacity');
@@ -322,7 +327,7 @@ class SquareValidator extends AbstractService
 
         /* Check for maximum active bookings limitation */
 
-        if ($user) {
+        if ($user && $bookable) {
             $maxActiveBookings = $square->need('max_active_bookings');
 
             if ($maxActiveBookings != 0) {
@@ -367,6 +372,81 @@ class SquareValidator extends AbstractService
         if ($bookable && $byproducts['timeBlockExceeded']) {
             $squareTimeBlockMaxRound = round($byproducts['squareTimeBlockMax'] / 60);
             throw new RuntimeException(sprintf($this->t('You cannot book more than %s minutes at once'), $squareTimeBlockMaxRound));
+        }
+
+        /* Check peak-time Einzel restriction (quantity == 2) */
+
+        if ($bookable && $quantity !== null && (int)$quantity === 2) {
+            $peakEinzelDays  = $square->getMeta('peak_einzel_days');
+            $peakEinzelStart = $square->getMeta('peak_einzel_start');
+            $peakEinzelMax   = $square->getMeta('peak_einzel_max'); // minutes
+
+            if ($peakEinzelDays && $peakEinzelStart && $peakEinzelMax) {
+                $allowedDays = array_map('trim', explode(',', $peakEinzelDays));
+                if (in_array($dateStart->format('N'), $allowedDays)) {
+                    $peakParts    = explode(':', $peakEinzelStart);
+                    $peakStartSec = (int)$peakParts[0] * 3600 + (int)$peakParts[1] * 60;
+                    $tsStartSec   = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
+
+                    if ($tsStartSec >= $peakStartSec) {
+                        $maxSec      = (int)$peakEinzelMax * 60;
+                        $durationSec = $dateEnd->getTimestamp() - $dateStart->getTimestamp();
+
+                        if ($durationSec > $maxSec) {
+                            throw new RuntimeException(sprintf(
+                                $this->t('Single bookings after %s are limited to %s minutes'),
+                                $peakEinzelStart,
+                                $peakEinzelMax
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Check consecutive and simultaneous bookings for normal users */
+
+        $isAdmin = $user && $user->can('calendar.create-single-bookings, calendar.create-subscription-bookings');
+
+        if ($user && $bookable) {
+
+            $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
+            $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
+
+            if ($noConsecutive || $noSimultaneous) {
+                $userBookings     = $this->bookingManager->getByValidity(['uid' => $user->need('uid')]);
+                $userReservations = $this->reservationManager->getByBookings($userBookings);
+
+                $newSid      = $square->need('sid');
+                $newDateStr  = $dateStart->format('Y-m-d');
+                $newStartSec = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
+                $newEndSec   = (int)$dateEnd->format('H') * 3600 + (int)$dateEnd->format('i') * 60;
+                if ($newEndSec === 0) $newEndSec = 86400;
+
+                foreach ($userReservations as $res) {
+                    if ($res->get('date') !== $newDateStr) continue;
+
+                    $rsParts = explode(':', $res->get('time_start'));
+                    $rsSec   = (int)$rsParts[0] * 3600 + (int)$rsParts[1] * 60;
+                    $reParts = explode(':', $res->get('time_end'));
+                    $reSec   = (int)$reParts[0] * 3600 + (int)$reParts[1] * 60;
+                    if ($reSec === 0) $reSec = 86400;
+
+                    $resSid = $res->needExtra('booking')->need('sid');
+
+                    if ($noSimultaneous && $rsSec < $newEndSec && $reSec > $newStartSec) {
+                        $bookable = false;
+                        $notBookableReason = $this->t('You already have a booking at this time');
+                        break;
+                    }
+
+                    if ($noConsecutive && $resSid == $newSid && ($reSec === $newStartSec || $rsSec === $newEndSec)) {
+                        $bookable = false;
+                        $notBookableReason = $this->t('Consecutive bookings are not allowed');
+                        break;
+                    }
+                }
+            }
         }
 
         /* Gather byproducts */

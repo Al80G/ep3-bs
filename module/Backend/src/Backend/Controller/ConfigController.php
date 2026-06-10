@@ -131,6 +131,8 @@ class ConfigController extends AbstractActionController
                 $calendarDayExceptions = $data['cf-calendar-day-exceptions'];
                 $calendarClubExceptions = $data['cf-calendar-club-exceptions'];
                 $calendarDisplayClubExceptions = $data['cf-calendar-display-club-exceptions'];
+                $noConsecutiveBookings = $data['cf-no-consecutive-bookings'];
+                $noSimultaneousBookings = $data['cf-no-simultaneous-bookings'];
 
                 $locale = $this->config('i18n.locale');
 
@@ -143,6 +145,8 @@ class ConfigController extends AbstractActionController
                 $optionManager->set('service.calendar.day-exceptions', $calendarDayExceptions);
                 $optionManager->set('service.calendar.club-exceptions', $calendarClubExceptions);
                 $optionManager->set('service.calendar.display-club-exceptions', $calendarDisplayClubExceptions);
+                $optionManager->set('service.calendar.no-consecutive-bookings', $noConsecutiveBookings ? '1' : '0');
+                $optionManager->set('service.calendar.no-simultaneous-bookings', $noSimultaneousBookings ? '1' : '0');
 
                 $this->flashMessenger()->addSuccessMessage('Configuration has been saved');
             } else {
@@ -160,6 +164,8 @@ class ConfigController extends AbstractActionController
             $behaviourForm->get('cf-calendar-day-exceptions')->setValue($optionManager->get('service.calendar.day-exceptions'));
             $behaviourForm->get('cf-calendar-club-exceptions')->setValue($optionManager->get('service.calendar.club-exceptions'));
             $behaviourForm->get('cf-calendar-display-club-exceptions')->setValue($optionManager->get('service.calendar.display-club-exceptions'));
+            $behaviourForm->get('cf-no-consecutive-bookings')->setValue($optionManager->get('service.calendar.no-consecutive-bookings', '0'));
+            $behaviourForm->get('cf-no-simultaneous-bookings')->setValue($optionManager->get('service.calendar.no-simultaneous-bookings', '0'));
         }
 
         return array(
