@@ -430,11 +430,15 @@ class SquareValidator extends AbstractService
                     $resSid = $res->needExtra('booking')->need('sid');
 
                     if ($noSimultaneous && $rsSec < $newEndSec && $reSec > $newStartSec) {
-                        throw new RuntimeException($this->t('You already have a booking at this time'));
+                        $bookable = false;
+                        $notBookableReason = $this->t('You already have a booking at this time');
+                        break;
                     }
 
                     if ($noConsecutive && $resSid == $newSid && ($reSec === $newStartSec || $rsSec === $newEndSec)) {
-                        throw new RuntimeException($this->t('Consecutive bookings are not allowed'));
+                        $bookable = false;
+                        $notBookableReason = $this->t('Consecutive bookings are not allowed');
+                        break;
                     }
                 }
             }
