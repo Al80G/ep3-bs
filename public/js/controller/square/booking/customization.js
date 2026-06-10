@@ -24,6 +24,46 @@
 
     });
 
+    function applyPeakEinzelRestriction(href) {
+        var urlProvider = $("#sb-url-provider");
+        var peakDays  = String(urlProvider.data("peak-einzel-days")  || "");
+        var peakStart = String(urlProvider.data("peak-einzel-start") || "");
+        var peakMax   = parseInt(urlProvider.data("peak-einzel-max") || "0");
+
+        if (!peakDays || !peakStart || !peakMax) return href;
+
+        var dsMatch = href.match(/ds=([^&]+)/);
+        var tsMatch = href.match(/ts=([^&]+)/);
+        var teMatch = href.match(/te=([^&]+)/);
+        if (!dsMatch || !tsMatch || !teMatch) return href;
+
+        var ds = dsMatch[1];
+        var ts = decodeURIComponent(tsMatch[1]);
+        var te = decodeURIComponent(teMatch[1]);
+
+        // ISO day of week: Mon=1 … Sun=7
+        var date = new Date(ds);
+        var isoDay = date.getDay() === 0 ? 7 : date.getDay();
+        var allowedDays = peakDays.split(",").map(function(d) { return parseInt(d.trim()); });
+        if (allowedDays.indexOf(isoDay) === -1) return href;
+
+        var tsParts = ts.split(":");
+        var tsMinutes = parseInt(tsParts[0]) * 60 + parseInt(tsParts[1]);
+        var peakParts = peakStart.split(":");
+        var peakMinutes = parseInt(peakParts[0]) * 60 + parseInt(peakParts[1]);
+        if (tsMinutes < peakMinutes) return href;
+
+        var teParts = te.split(":");
+        var teMinutes = parseInt(teParts[0]) * 60 + parseInt(teParts[1]);
+        var maxTeMinutes = tsMinutes + peakMax;
+        if (teMinutes <= maxTeMinutes) return href;
+
+        var newTeH = Math.floor(maxTeMinutes / 60);
+        var newTeM = maxTeMinutes % 60;
+        var newTe = (newTeH < 10 ? "0" : "") + newTeH + ":" + (newTeM < 10 ? "0" : "") + newTeM;
+        return href.replace(/te=[^&]+/, "te=" + newTe);
+    }
+
     function onQuantityChange() {
         var quantity = $("#sb-quantity").val();
         var sbButton = $("#sb-button");
@@ -31,6 +71,10 @@
         if (sbButton.length) {
             var oldHref = sbButton.attr("href");
             var newHref = oldHref.replace(/q=[0-9]+/, "q=" + quantity);
+
+            if (String(quantity) === "2") {
+                newHref = applyPeakEinzelRestriction(newHref);
+            }
 
             sbButton.attr("href", newHref);
         }

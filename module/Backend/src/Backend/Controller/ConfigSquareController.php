@@ -70,6 +70,9 @@ class ConfigSquareController extends AbstractActionController
                 $square->set('time_block_bookable', max($editData['cf-time-block-bookable'], 10) * 60);
                 $square->setMeta('pseudo-time-block-bookable', $editData['cf-pseudo-time-block-bookable'] ? 'true' : 'false');
                 $square->set('time_block_bookable_max', max($editData['cf-time-block-bookable-max'], 10) * 60);
+                $square->setMeta('peak_einzel_days', $editData['cf-peak-einzel-days']);
+                $square->setMeta('peak_einzel_start', $editData['cf-peak-einzel-start']);
+                $square->setMeta('peak_einzel_max', $editData['cf-peak-einzel-max']);
                 $square->set('min_range_book', (float) $editData['cf-min-range-book'] * 60);
                 $square->set('range_book', (float) $editData['cf-range-book'] * 60 * 60 * 24);
                 $square->set('max_active_bookings', $editData['cf-max-active-bookings']);
@@ -115,6 +118,9 @@ class ConfigSquareController extends AbstractActionController
                     'cf-time-block-bookable' => round($square->get('time_block_bookable') / 60),
                     'cf-pseudo-time-block-bookable' => $square->getMeta('pseudo-time-block-bookable', 'false') == 'true',
                     'cf-time-block-bookable-max' => round($square->get('time_block_bookable_max') / 60),
+                    'cf-peak-einzel-days'  => $square->getMeta('peak_einzel_days'),
+                    'cf-peak-einzel-start' => $square->getMeta('peak_einzel_start'),
+                    'cf-peak-einzel-max'   => $square->getMeta('peak_einzel_max'),
                     'cf-min-range-book' => round($square->get('min_range_book') / 60),
                     'cf-range-book' => round($square->get('range_book') / 60 / 60 / 24),
                     'cf-max-active-bookings' => $square->get('max_active_bookings'),

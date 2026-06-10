@@ -261,7 +261,7 @@ class SquareValidator extends AbstractService
      * @param int $square
      * @return array
      */
-    public function isBookable($dateStart, $dateEnd, $timeStart, $timeEnd, $square)
+    public function isBookable($dateStart, $dateEnd, $timeStart, $timeEnd, $square, $quantity = null)
     {
         $byproducts = $this->isValid($dateStart, $dateEnd, $timeStart, $timeEnd, $square);
 
@@ -367,6 +367,36 @@ class SquareValidator extends AbstractService
         if ($bookable && $byproducts['timeBlockExceeded']) {
             $squareTimeBlockMaxRound = round($byproducts['squareTimeBlockMax'] / 60);
             throw new RuntimeException(sprintf($this->t('You cannot book more than %s minutes at once'), $squareTimeBlockMaxRound));
+        }
+
+        /* Check peak-time Einzel restriction (quantity == 2) */
+
+        if ($bookable && $quantity !== null && (int)$quantity === 2) {
+            $peakEinzelDays  = $square->getMeta('peak_einzel_days');
+            $peakEinzelStart = $square->getMeta('peak_einzel_start');
+            $peakEinzelMax   = $square->getMeta('peak_einzel_max'); // minutes
+
+            if ($peakEinzelDays && $peakEinzelStart && $peakEinzelMax) {
+                $allowedDays = array_map('trim', explode(',', $peakEinzelDays));
+                if (in_array($dateStart->format('N'), $allowedDays)) {
+                    $peakParts    = explode(':', $peakEinzelStart);
+                    $peakStartSec = (int)$peakParts[0] * 3600 + (int)$peakParts[1] * 60;
+                    $tsStartSec   = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
+
+                    if ($tsStartSec >= $peakStartSec) {
+                        $maxSec      = (int)$peakEinzelMax * 60;
+                        $durationSec = $dateEnd->getTimestamp() - $dateStart->getTimestamp();
+
+                        if ($durationSec > $maxSec) {
+                            throw new RuntimeException(sprintf(
+                                $this->t('Single bookings after %s are limited to %s minutes'),
+                                $peakEinzelStart,
+                                $peakEinzelMax
+                            ));
+                        }
+                    }
+                }
+            }
         }
 
         /* Gather byproducts */

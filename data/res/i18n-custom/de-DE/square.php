@@ -30,6 +30,7 @@ return array(
     'The passed time is already over' => 'Das ist bereits vorbei',
     'The passed date is still too far away' => 'Dieses Datum liegt noch zu weit in der Ferne',
     'You cannot book more than %s minutes at once' => 'Sie können nicht mehr als %s Minuten zusammen buchen',
+    'Single bookings after %s are limited to %s minutes' => 'Einzel-Buchungen sind ab %s Uhr auf %s Minuten begrenzt',
 
     'You have no permission to cancel this booking' => 'Sie dürfen diese Buchung nicht stornieren',
     'You have no permission to cancel this subscription' => 'Sie dürfen dieses Abo nicht stornieren',
