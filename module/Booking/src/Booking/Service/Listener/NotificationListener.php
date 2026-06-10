@@ -187,21 +187,23 @@ class NotificationListener extends AbstractListenerAggregate
             $message .= "\n" . $booking->getMeta('notes');
         }
 
-        if ($user->getMeta('notification.bookings', 'true') == 'true') {
-            $attachments = ['event.ics' => ['name' => 'event.ics', 'disposition' => true, 'type' => 'text/calendar', 'content' => $vCalendar->render()]];            
-            $this->userMailService->send($user, $subject, $message, $attachments);
-        }
+        if ($user->need('status') !== 'placeholder') {
+            if ($user->getMeta('notification.bookings', 'true') == 'true') {
+                $attachments = ['event.ics' => ['name' => 'event.ics', 'disposition' => true, 'type' => 'text/calendar', 'content' => $vCalendar->render()]];
+                $this->userMailService->send($user, $subject, $message, $attachments);
+            }
 
-	    if ($this->optionManager->get('client.contact.email.user-notifications')) {
+            if ($this->optionManager->get('client.contact.email.user-notifications')) {
 
-		    $backendSubject = sprintf($this->t('%s\'s %s-booking for %s'),
-		        $user->need('alias'), $this->optionManager->get('subject.square.type'),
-			    $dateFormatHelper($reservationStart, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT));
+                $backendSubject = sprintf($this->t('%s\'s %s-booking for %s'),
+                    $user->need('alias'), $this->optionManager->get('subject.square.type'),
+                    $dateFormatHelper($reservationStart, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT));
 
-		    $addendum = sprintf($this->t('Originally sent to %s (%s).'),
-	            $user->need('alias'), $user->need('email'));
+                $addendum = sprintf($this->t('Originally sent to %s (%s).'),
+                    $user->need('alias'), $user->need('email'));
 
-	        $this->backendMailService->send($backendSubject, $message, array(), $addendum);
+                $this->backendMailService->send($backendSubject, $message, array(), $addendum);
+            }
         }
     }
 
@@ -235,19 +237,21 @@ class NotificationListener extends AbstractListenerAggregate
             $dateRangerHelper($reservationStart, $reservationEnd),
             $booking->get('bid'));
 
-        if ($user->getMeta('notification.bookings', 'true') == 'true') {
-            $this->userMailService->send($user, $subject, $message);
-        }
+        if ($user->need('status') !== 'placeholder') {
+            if ($user->getMeta('notification.bookings', 'true') == 'true') {
+                $this->userMailService->send($user, $subject, $message);
+            }
 
-	    if ($this->optionManager->get('client.contact.email.user-notifications')) {
+            if ($this->optionManager->get('client.contact.email.user-notifications')) {
 
-		    $backendSubject = sprintf($this->t('%s\'s %s-booking has been cancelled'),
-		        $user->need('alias'), $this->optionManager->get('subject.square.type'));
+                $backendSubject = sprintf($this->t('%s\'s %s-booking has been cancelled'),
+                    $user->need('alias'), $this->optionManager->get('subject.square.type'));
 
-		    $addendum = sprintf($this->t('Originally sent to %s (%s).'),
-	            $user->need('alias'), $user->need('email'));
+                $addendum = sprintf($this->t('Originally sent to %s (%s).'),
+                    $user->need('alias'), $user->need('email'));
 
-	        $this->backendMailService->send($backendSubject, $message, array(), $addendum);
+                $this->backendMailService->send($backendSubject, $message, array(), $addendum);
+            }
         }
     }
 
