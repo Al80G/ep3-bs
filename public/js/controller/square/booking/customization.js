@@ -64,16 +64,28 @@
         return href.replace(/te=[^&]+/, "te=" + newTe);
     }
 
+    var originalTe = null;
+
     function onQuantityChange() {
         var quantity = $("#sb-quantity").val();
         var sbButton = $("#sb-button");
 
         if (sbButton.length) {
             var oldHref = sbButton.attr("href");
+
+            // Capture the original te once on first call
+            if (originalTe === null) {
+                var teMatch = oldHref.match(/te=([^&]+)/);
+                originalTe = teMatch ? decodeURIComponent(teMatch[1]) : null;
+            }
+
             var newHref = oldHref.replace(/q=[0-9]+/, "q=" + quantity);
 
             if (String(quantity) === "2") {
                 newHref = applyPeakEinzelRestriction(newHref);
+            } else if (originalTe !== null) {
+                // Restore original end time for Doppel
+                newHref = newHref.replace(/te=[^&]+/, "te=" + originalTe);
             }
 
             sbButton.attr("href", newHref);
