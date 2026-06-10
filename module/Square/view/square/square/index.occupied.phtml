@@ -24,7 +24,7 @@ if ($this->bookings) {
 }
 
 if ($this->user && $this->bookings) {
-    foreach ($this->bookings as $booking) {
+    foreach ($this->bookings as $bid => $booking) {
         $bookerUser = $booking->getExtra('user');
         $bookerName = $bookerUser ? $this->escapeHtml($bookerUser->need('alias')) : null;
         $names = $bookerName ? [$bookerName] : [];
@@ -42,6 +42,14 @@ if ($this->user && $this->bookings) {
         }
         if (!empty($names)) {
             echo '<p class="gray"><em>' . $this->t('Players') . ': ' . implode(', ', $names) . '</em></p>';
+        }
+
+        if ($bookerUser && $bookerUser->need('status') == 'placeholder') {
+            if ($this->validator->isCancellable($booking)) {
+                echo sprintf('<p><a href="%s" class="default-button squarebox-internal-link"><span class="symbolic symbolic-cross">%s</span></a></p>',
+                    $this->url('square/booking/cancellation', [], ['query' => ['bid' => $bid]]),
+                    $this->t('Cancel this booking'));
+            }
         }
     }
 }
