@@ -403,32 +403,22 @@ class SquareValidator extends AbstractService
 
         $isAdmin = $user && $user->can('calendar.create-single-bookings, calendar.create-subscription-bookings');
 
-        if ($user) { // DEBUG: isAdmin check temporarily removed
+        if ($user) {
 
             $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
             $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
-
-            $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
-            $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
-
-            $debugMsg = 'DEBUG: uid=' . $user->need('uid') . ' noConsec=' . var_export($noConsecutive, true) . ' noSimult=' . var_export($noSimultaneous, true);
 
             if ($noConsecutive || $noSimultaneous) {
                 $userBookings     = $this->bookingManager->getByValidity(['uid' => $user->need('uid')]);
                 $userReservations = $this->reservationManager->getByBookings($userBookings);
 
-                $debugMsg .= ' | bookings=' . count($userBookings) . ' reservations=' . count($userReservations);
-
+                $newSid      = $square->need('sid');
                 $newDateStr  = $dateStart->format('Y-m-d');
                 $newStartSec = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
                 $newEndSec   = (int)$dateEnd->format('H') * 3600 + (int)$dateEnd->format('i') * 60;
                 if ($newEndSec === 0) $newEndSec = 86400;
 
-                $debugMsg .= ' | newDate=' . $newDateStr . ' newStart=' . $newStartSec . ' newEnd=' . $newEndSec;
-
                 foreach ($userReservations as $res) {
-                    $debugMsg .= ' | res[date=' . $res->get('date') . ' ts=' . $res->get('time_start') . ' te=' . $res->get('time_end') . ']';
-
                     if ($res->get('date') !== $newDateStr) continue;
 
                     $rsParts = explode(':', $res->get('time_start'));
@@ -437,17 +427,17 @@ class SquareValidator extends AbstractService
                     $reSec   = (int)$reParts[0] * 3600 + (int)$reParts[1] * 60;
                     if ($reSec === 0) $reSec = 86400;
 
+                    $resSid = $res->needExtra('booking')->need('sid');
+
                     if ($noSimultaneous && $rsSec < $newEndSec && $reSec > $newStartSec) {
                         throw new RuntimeException($this->t('You already have a booking at this time'));
                     }
 
-                    if ($noConsecutive && ($reSec === $newStartSec || $rsSec === $newEndSec)) {
+                    if ($noConsecutive && $resSid == $newSid && ($reSec === $newStartSec || $rsSec === $newEndSec)) {
                         throw new RuntimeException($this->t('Consecutive bookings are not allowed'));
                     }
                 }
             }
-
-            throw new RuntimeException($debugMsg);
         }
 
         /* Gather byproducts */
