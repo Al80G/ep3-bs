@@ -403,7 +403,7 @@ class SquareValidator extends AbstractService
 
         $isAdmin = $user && $user->can('calendar.create-single-bookings, calendar.create-subscription-bookings');
 
-        if ($user && ! $isAdmin) {
+        if ($user) { // DEBUG: isAdmin check temporarily removed
 
             $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
             $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
