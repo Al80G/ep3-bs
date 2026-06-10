@@ -408,34 +408,34 @@ class SquareValidator extends AbstractService
             $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
             $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
 
-            syslog(LOG_EMERG, '[BookingCheck] user=' . $user->need('uid') . ' noConsec=' . var_export($noConsecutive,true) . ' noSimult=' . var_export($noSimultaneous,true));
+            $noConsecutive  = $this->optionManager->get('service.calendar.no-consecutive-bookings', '0');
+            $noSimultaneous = $this->optionManager->get('service.calendar.no-simultaneous-bookings', '0');
+
+            $debugMsg = 'DEBUG: uid=' . $user->need('uid') . ' noConsec=' . var_export($noConsecutive, true) . ' noSimult=' . var_export($noSimultaneous, true);
 
             if ($noConsecutive || $noSimultaneous) {
                 $userBookings     = $this->bookingManager->getByValidity(['uid' => $user->need('uid')]);
                 $userReservations = $this->reservationManager->getByBookings($userBookings);
 
-                syslog(LOG_EMERG, '[BookingCheck] userBookings=' . count($userBookings) . ' userReservations=' . count($userReservations));
+                $debugMsg .= ' | bookings=' . count($userBookings) . ' reservations=' . count($userReservations);
 
-                // Use seconds-from-midnight to avoid timezone issues
-                $newDateStr   = $dateStart->format('Y-m-d');
-                $newStartSec  = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
-                $newEndSec    = (int)$dateEnd->format('H') * 3600 + (int)$dateEnd->format('i') * 60;
+                $newDateStr  = $dateStart->format('Y-m-d');
+                $newStartSec = (int)$dateStart->format('H') * 3600 + (int)$dateStart->format('i') * 60;
+                $newEndSec   = (int)$dateEnd->format('H') * 3600 + (int)$dateEnd->format('i') * 60;
                 if ($newEndSec === 0) $newEndSec = 86400;
 
-                syslog(LOG_EMERG, '[BookingCheck] newDate=' . $newDateStr . ' newStart=' . $newStartSec . ' newEnd=' . $newEndSec);
+                $debugMsg .= ' | newDate=' . $newDateStr . ' newStart=' . $newStartSec . ' newEnd=' . $newEndSec;
 
                 foreach ($userReservations as $res) {
-                    syslog(LOG_EMERG, '[BookingCheck] res date=' . $res->get('date') . ' ts=' . $res->get('time_start') . ' te=' . $res->get('time_end'));
+                    $debugMsg .= ' | res[date=' . $res->get('date') . ' ts=' . $res->get('time_start') . ' te=' . $res->get('time_end') . ']';
 
                     if ($res->get('date') !== $newDateStr) continue;
 
-                    $rsParts  = explode(':', $res->get('time_start'));
-                    $rsSec    = (int)$rsParts[0] * 3600 + (int)$rsParts[1] * 60;
-                    $reParts  = explode(':', $res->get('time_end'));
-                    $reSec    = (int)$reParts[0] * 3600 + (int)$reParts[1] * 60;
+                    $rsParts = explode(':', $res->get('time_start'));
+                    $rsSec   = (int)$rsParts[0] * 3600 + (int)$rsParts[1] * 60;
+                    $reParts = explode(':', $res->get('time_end'));
+                    $reSec   = (int)$reParts[0] * 3600 + (int)$reParts[1] * 60;
                     if ($reSec === 0) $reSec = 86400;
-
-                    syslog(LOG_EMERG, '[BookingCheck] rsSec=' . $rsSec . ' reSec=' . $reSec . ' -> simult=' . ($rsSec < $newEndSec && $reSec > $newStartSec ? 'YES' : 'no') . ' consec=' . ($reSec === $newStartSec || $rsSec === $newEndSec ? 'YES' : 'no'));
 
                     if ($noSimultaneous && $rsSec < $newEndSec && $reSec > $newStartSec) {
                         throw new RuntimeException($this->t('You already have a booking at this time'));
@@ -446,6 +446,8 @@ class SquareValidator extends AbstractService
                     }
                 }
             }
+
+            throw new RuntimeException($debugMsg);
         }
 
         /* Gather byproducts */
