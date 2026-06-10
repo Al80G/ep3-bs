@@ -122,12 +122,8 @@ class SquareValidator extends AbstractService
         $dateMax->modify('+' . $square->get('range_book', 0) . ' sec');
 
         if ($timeStart < $dateMin) {
-            if (! ($this->user && $this->user->can('calendar.see-past'))) {
-
-                // Allow assist users with calendar.see-data privilege to see the entire day
-                if (! ($this->user && $this->user->can('calendar.see-data') && $dateEnd->format('Y-m-d') == $dateMin->format('Y-m-d'))) {
-                    throw new RuntimeException('The passed time is already over');
-                }
+            if (! ($this->user && ($this->user->can('calendar.see-past') || $this->user->can('calendar.see-data')))) {
+                throw new RuntimeException('The passed time is already over');
             }
         }
 
@@ -402,6 +398,13 @@ class SquareValidator extends AbstractService
                     }
                 }
             }
+        }
+
+        /* Mark past slots as not bookable for non-admins (shows info popup instead of error page) */
+
+        if ($bookable && $dateStart < new DateTime()) {
+            $bookable = false;
+            $notBookableReason = $this->t('This time slot is in the past');
         }
 
         /* Check consecutive and simultaneous bookings for normal users */
