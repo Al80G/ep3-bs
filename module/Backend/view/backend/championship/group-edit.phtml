@@ -1,0 +1,74 @@
+<?php
+
+if ($this->group) {
+    $gid = $this->group->need('gid');
+} else {
+    $gid = null;
+}
+
+$catid = $this->category->need('catid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Category' => $this->url('backend/championship/category-edit', ['catid' => $catid]),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Group') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->groupForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/group-edit', ['gid' => $gid], ['query' => ['catid' => $catid]]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <table class="default-table">
+            <?= $this->formRowDefault($form, 'gf-name') ?>
+
+            <tr>
+                <td class="default-form-label-row"><?= $this->formLabel($form->get('gf-members')) ?></td>
+                <td>
+                    <?= $this->formMultiCheckbox($form->get('gf-members')) ?>
+
+                    <?= $this->formElementErrors($form->get('gf-members')) ?>
+                    <?= $this->formElementNotes($form->get('gf-members')) ?>
+
+                    <?php if (! $form->get('gf-members')->getValueOptions()): ?>
+                        <p class="gray"><?= $this->t('No unassigned participants are left for this category.') ?></p>
+                    <?php endif; ?>
+                </td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('gf-submit')) ?>
+
+                    <?php if ($this->group): ?>
+                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+
+                        <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $gid]) ?>" class="default-button">
+                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+</div>

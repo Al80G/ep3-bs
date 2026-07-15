@@ -10,6 +10,7 @@ use Championship\Table\ParticipantTable;
 use DateTime;
 use InvalidArgumentException;
 use RuntimeException;
+use Zend\Db\Sql\Where;
 
 class ParticipantManager extends AbstractManager
 {
@@ -203,6 +204,29 @@ class ParticipantManager extends AbstractManager
         }
 
         return $this->getBy(array('catid' => $catid, 'status' => 'registered'), $order);
+    }
+
+    /**
+     * Gets all registrations (as player or partner) of the passed user, across all categories.
+     *
+     * @param int $uid
+     * @param string $order
+     * @return array
+     */
+    public function getByUser($uid, $order = 'created ASC')
+    {
+        $where = new Where();
+        $where->equalTo('status', 'registered');
+
+        $where->and;
+
+        $nested = $where->nest();
+        $nested->equalTo('uid', $uid);
+        $nested->or;
+        $nested->equalTo('partner_uid', $uid);
+        $nested->unnest();
+
+        return $this->getBy($where, $order);
     }
 
     /**

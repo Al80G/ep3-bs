@@ -234,6 +234,124 @@ return array(
                             ),
                         ),
                     ),
+                    'championship' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/championship',
+                            'defaults' => array(
+                                'controller' => 'Backend\Controller\Championship',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit[/:cid]',
+                                    'defaults' => array(
+                                        'action' => 'edit',
+                                    ),
+                                    'constraints' => array(
+                                        'cid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'delete' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/delete/:cid',
+                                    'defaults' => array(
+                                        'action' => 'delete',
+                                    ),
+                                    'constraints' => array(
+                                        'cid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'category-edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/category-edit[/:catid]',
+                                    'defaults' => array(
+                                        'action' => 'categoryEdit',
+                                    ),
+                                    'constraints' => array(
+                                        'catid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'category-delete' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/category-delete/:catid',
+                                    'defaults' => array(
+                                        'action' => 'categoryDelete',
+                                    ),
+                                    'constraints' => array(
+                                        'catid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'group-edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/group-edit[/:gid]',
+                                    'defaults' => array(
+                                        'action' => 'groupEdit',
+                                    ),
+                                    'constraints' => array(
+                                        'gid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'group-delete' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/group-delete/:gid',
+                                    'defaults' => array(
+                                        'action' => 'groupDelete',
+                                    ),
+                                    'constraints' => array(
+                                        'gid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'bracket' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/bracket/:catid',
+                                    'defaults' => array(
+                                        'action' => 'bracket',
+                                    ),
+                                    'constraints' => array(
+                                        'catid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'match-edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/match-edit/:mid',
+                                    'defaults' => array(
+                                        'action' => 'matchEdit',
+                                    ),
+                                    'constraints' => array(
+                                        'mid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'config' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/config',
+                                    'defaults' => array(
+                                        'action' => 'config',
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
                     'config' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -419,6 +537,7 @@ return array(
             'Backend\Controller\Booking' => 'Backend\Controller\BookingController',
             'Backend\Controller\SquareControl' => 'Backend\Controller\SquareControlController',
             'Backend\Controller\Event' => 'Backend\Controller\EventController',
+            'Backend\Controller\Championship' => 'Backend\Controller\ChampionshipController',
             'Backend\Controller\Config' => 'Backend\Controller\ConfigController',
             'Backend\Controller\ConfigSquare' => 'Backend\Controller\ConfigSquareController',
         ),

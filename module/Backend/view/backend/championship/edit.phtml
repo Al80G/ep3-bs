@@ -1,0 +1,105 @@
+<?php
+
+if ($this->championship) {
+    $cid = $this->championship->need('cid');
+} else {
+    $cid = null;
+}
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Championship-Administration' => $this->url('backend/championship'),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Championship-Administration') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->editForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/edit', ['cid' => $cid]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <table class="default-table">
+            <?= $this->formRowDefault($form, 'chf-name') ?>
+            <?= $this->formRowDefault($form, 'chf-status') ?>
+            <?= $this->formRowDefault($form, 'chf-registration-start') ?>
+            <?= $this->formRowDefault($form, 'chf-registration-end') ?>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('chf-submit')) ?>
+
+                    <?php if ($this->championship): ?>
+                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+
+                        <a href="<?= $this->url('backend/championship/delete', ['cid' => $cid]) ?>" class="default-button">
+                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+
+    <?php if ($this->championship): ?>
+
+        <div class="separator separator-line"></div>
+
+        <div class="padded">
+            <h2><?= $this->t('Categories') ?></h2>
+
+            <div class="separator-small"></div>
+
+            <?php if ($this->categories): ?>
+                <table class="default-table">
+                    <tr>
+                        <th><?= $this->t('Name') ?></th>
+                        <th><?= $this->t('Discipline') ?></th>
+                        <th><?= $this->t('Gender') ?></th>
+                        <th><?= $this->t('Status') ?></th>
+                        <th></th>
+                    </tr>
+
+                    <?php foreach ($this->categories as $category): ?>
+                        <tr>
+                            <td><?= $this->escapeHtml($category->need('name')) ?></td>
+                            <td><?= $this->t(ucfirst($category->need('discipline'))) ?></td>
+                            <td><?= $this->t(ucfirst($category->need('gender'))) ?></td>
+                            <td><?= $this->t(ucfirst($category->need('status'))) ?></td>
+                            <td>
+                                <a href="<?= $this->url('backend/championship/category-edit', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                </a>
+                                &nbsp;
+                                <a href="<?= $this->url('backend/championship/category-delete', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
+
+            <p><a href="<?= $this->url('backend/championship/category-edit', [], ['query' => ['cid' => $cid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New category') ?></span></a></p>
+        </div>
+
+    <?php endif; ?>
+</div>

@@ -1,0 +1,59 @@
+<?php
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel large-sized',
+    'back' => true,
+    'links' => array(
+        'User-Administration' => $this->url('backend/user'),
+        'Event-Administration' => $this->url('backend/event'),
+        'Configuration' => $this->url('backend/config'),
+        'Championship settings' => $this->url('backend/championship/config'),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Championship-Administration') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <p><?= $this->t('Here you can create, edit or delete club championships (Vereinsmeisterschaften).') ?></p>
+
+    <div class="separator separator-line"></div>
+
+    <div class="centered-text" style="padding: 16px 0 16px 0;">
+
+        <?php if ($this->championships): ?>
+
+            <table class="default-table">
+                <tr>
+                    <th><?= $this->t('Name') ?></th>
+                    <th><?= $this->t('Status') ?></th>
+                    <th></th>
+                </tr>
+
+                <?php foreach ($this->championships as $championship): ?>
+                    <tr>
+                        <td><?= $this->escapeHtml($championship->need('name')) ?></td>
+                        <td><?= $this->t(ucfirst($championship->need('status'))) ?></td>
+                        <td>
+                            <a href="<?= $this->url('backend/championship/edit', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
+                                <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                            </a>
+                            &nbsp;
+                            <a href="<?= $this->url('backend/championship/delete', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
+                                <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+
+        <?php endif; ?>
+
+        <p><a href="<?= $this->url('backend/championship/edit') ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New championship') ?></span></a></p>
+
+    </div>
+</div>

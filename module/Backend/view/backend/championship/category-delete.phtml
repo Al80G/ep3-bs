@@ -1,0 +1,31 @@
+<?php
+
+$catid = $this->category->need('catid');
+
+$backUrl = $this->url('backend/championship/category-edit', ['catid' => $catid]);
+
+$this->setup(array(
+    'title' => 'Delete this category',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Category' => $backUrl,
+    ),
+));
+
+?>
+
+<div class="padded centered-text">
+    <p><span class="symbolic symbolic-warning"><?= $this->t('Are you sure you want to delete this category?') ?></span></p>
+
+    <p><?= $this->t('This also deletes all its registrations, groups and matches.') ?></p>
+
+    <p class="no-wrap">
+        <a href="<?= $this->url('backend/championship/category-delete', ['catid' => $catid], ['query' => ['confirmed' => 'true']]) ?>" class="default-button">
+            <span class="symbolic symbolic-cross"><?= $this->t('Yes, delete this category') ?></span>
+        </a>
+
+        &nbsp;
+
+        <a href="<?= $backUrl ?>" class="default-button"><?= $this->t('No, go back') ?></a>
+    </p>
+</div>

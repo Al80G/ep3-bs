@@ -1,0 +1,137 @@
+<?php
+
+if ($this->category) {
+    $catid = $this->category->need('catid');
+} else {
+    $catid = null;
+}
+
+$cid = $this->championship->need('cid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Championship-Administration' => $this->url('backend/championship/edit', ['cid' => $cid]),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Category') ?>: <?= $this->escapeHtml($this->championship->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->categoryForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/category-edit', ['catid' => $catid], ['query' => ['cid' => $cid]]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <table class="default-table">
+            <?= $this->formRowDefault($form, 'caf-name') ?>
+            <?= $this->formRowDefault($form, 'caf-discipline') ?>
+            <?= $this->formRowDefault($form, 'caf-gender') ?>
+            <?= $this->formRowDefault($form, 'caf-group-size-max') ?>
+            <?= $this->formRowDefault($form, 'caf-advance-per-group') ?>
+            <?= $this->formRowDefault($form, 'caf-status') ?>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('caf-submit')) ?>
+
+                    <?php if ($this->category): ?>
+                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+
+                        <a href="<?= $this->url('backend/championship/category-delete', ['catid' => $catid]) ?>" class="default-button">
+                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                        </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+
+    <?php if ($this->category): ?>
+
+        <div class="separator separator-line"></div>
+
+        <div class="padded">
+            <h2><?= $this->t('Groups') ?></h2>
+
+            <div class="separator-small"></div>
+
+            <?php if ($this->groups): ?>
+                <table class="default-table">
+                    <tr>
+                        <th><?= $this->t('Name') ?></th>
+                        <th><?= $this->t('Members') ?></th>
+                        <th></th>
+                    </tr>
+
+                    <?php foreach ($this->groups as $group): ?>
+                        <tr>
+                            <td><?= $this->escapeHtml($group->need('name')) ?></td>
+                            <td><?= $group->getExtra('memberCount', 0) ?></td>
+                            <td>
+                                <a href="<?= $this->url('backend/championship/group-edit', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                </a>
+                                &nbsp;
+                                <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
+
+            <p><a href="<?= $this->url('backend/championship/group-edit', [], ['query' => ['catid' => $catid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New group') ?></span></a></p>
+        </div>
+
+        <div class="separator separator-line"></div>
+
+        <div class="padded">
+            <h2><?= $this->t('Registered participants') ?></h2>
+
+            <div class="separator-small"></div>
+
+            <?php if ($this->participants): ?>
+                <ul>
+                    <?php foreach ($this->participants as $participant): ?>
+                        <li><?= $this->escapeHtml($participant->getExtra('label')) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p class="gray"><?= $this->t('No one has registered for this category yet.') ?></p>
+            <?php endif; ?>
+        </div>
+
+        <div class="separator separator-line"></div>
+
+        <div class="padded">
+            <h2><?= $this->t('Knock-out stage') ?></h2>
+
+            <div class="separator-small"></div>
+
+            <p>
+                <a href="<?= $this->url('backend/championship/bracket', ['catid' => $catid]) ?>" class="default-button">
+                    <span class="symbolic symbolic-date"><?= $this->koGenerated ? $this->t('View bracket') : $this->t('Generate bracket') ?></span>
+                </a>
+            </p>
+        </div>
+
+    <?php endif; ?>
+</div>
