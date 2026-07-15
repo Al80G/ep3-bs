@@ -82,6 +82,7 @@ class User extends AbstractEntity
         'admin.user' => 'May manage users',
         'admin.booking' => 'May manage bookings',
         'admin.event' => 'May manage events',
+        'admin.championship' => 'May manage the club championship',
         'admin.config' => 'May change configuration',
         'admin.see-menu' => 'Can see the admin menu',
         'calendar.see-past' => 'Can see the past in calendar',

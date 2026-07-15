@@ -17,6 +17,19 @@ If you haven't made any changes to the core files, your configuration, customiza
 after the update.
 
 
+## Championship module (Vereinsmeisterschaft)
+
+Adds a club championship feature (module `Championship`). For an existing installation:
+
+- Replace the `module/` directory (or add the new `module/Championship/` directory)
+- Replace `config/application.php` (adds `'Championship'` to the module list)
+- Apply the schema addition to your existing database: run the SQL block starting at
+  `--- changes for Championship module (Vereinsmeisterschaft)` at the end of `data/db/ep3-bs.sql`
+  against your database (creates the `bs_championships`, `bs_championship_categories`,
+  `bs_championship_participants`, `bs_championship_groups`, `bs_championship_group_members`,
+  `bs_championship_matches` and `bs_championship_match_sets` tables)
+
+
 ## Update from 1.8.1 to `1.9.0`
 
 - Replace the `module/` directory

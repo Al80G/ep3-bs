@@ -30,6 +30,7 @@ return [
         'Base',
         'Booking',
         'Calendar',
+        'Championship',
         'Event',
         'Frontend',
         'Service',
