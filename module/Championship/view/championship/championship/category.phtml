@@ -149,7 +149,7 @@ $editableMatchIds = $this->editableMatchIds;
         <div style="white-space: nowrap; overflow-x: auto; text-align: center;">
             <?php foreach ($roundsByNumber as $roundNumber => $matches): ?>
                 <div style="display: inline-block; vertical-align: top; margin-right: 32px; min-width: 220px; text-align: left;">
-                    <h3><?= $this->escapeHtml($matches[0]->need('round_name')) ?></h3>
+                    <h3><?= $this->escapeHtml($this->t($matches[0]->need('round_name'))) ?></h3>
 
                     <?php foreach ($matches as $match): ?>
                         <?php $sets = $match->getExtra('sets', array()); ?>

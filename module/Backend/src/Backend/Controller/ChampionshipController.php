@@ -297,7 +297,7 @@ class ChampionshipController extends AbstractActionController
         }
 
         $groupForm = $formElementManager->get('Backend\Form\Championship\GroupForm');
-        $groupForm->setMemberOptions($memberOptions, $maxSize);
+        $groupForm->setMemberOptions($memberOptions);
 
         if ($this->getRequest()->isPost()) {
             $groupForm->setData($this->params()->fromPost());

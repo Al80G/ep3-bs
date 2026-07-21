@@ -58,6 +58,7 @@ return array(
     'Enabled' => 'Aktiviert',
     'Disabled' => 'Deaktiviert',
     'Max. group size' => 'Max. Gruppengröße',
+    'Max. %d members' => 'Max. %d Mitglieder',
     'Advancing per group' => 'Aufsteiger pro Gruppe',
     'How many players/pairs of each group advance to the knock-out stage'
         => 'Wie viele Spieler/Paare je Gruppe in die K.-o.-Phase aufsteigen',
@@ -162,6 +163,10 @@ return array(
     'Walkover' => 'Kampflos',
     'not yet played' => 'noch nicht gespielt',
     'Round' => 'Runde',
+    'Group stage' => 'Gruppenphase',
+    'Quarterfinal' => 'Viertelfinale',
+    'Semifinal' => 'Halbfinale',
+    'Final' => 'Finale',
     'Opponent' => 'Gegner',
     'Result' => 'Ergebnis',
     'Enter result' => 'Ergebnis eintragen',

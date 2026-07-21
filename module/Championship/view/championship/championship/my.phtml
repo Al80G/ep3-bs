@@ -58,11 +58,13 @@ $this->setup(array(
                     <?php foreach ($registration['matches'] as $matchRow): ?>
                         <?php $match = $matchRow['match']; ?>
                         <tr>
-                            <td><?= $this->escapeHtml($match->need('round_name')) ?></td>
+                            <td><?= $this->escapeHtml($this->t($match->need('round_name'))) ?></td>
                             <td><?= $this->escapeHtml($matchRow['opponentLabel']) ?></td>
                             <td>
-                                <?php if ($match->isPlayed()): ?>
-                                    <?= $this->t(ucfirst($match->need('status'))) ?>
+                                <?php if ($match->need('status') == 'walkover'): ?>
+                                    <span class="gray"><?= $this->t('Walkover') ?></span>
+                                <?php elseif ($match->isPlayed()): ?>
+                                    <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
                                 <?php else: ?>
                                     <span class="gray"><?= $this->t('not yet played') ?></span>
                                 <?php endif; ?>

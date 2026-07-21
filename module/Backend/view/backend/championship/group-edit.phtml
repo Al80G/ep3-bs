@@ -41,7 +41,11 @@ $this->setup(array(
             <?= $this->formRowDefault($form, 'gf-name') ?>
 
             <tr>
-                <td class="default-form-label-row"><?= $this->formLabel($form->get('gf-members')) ?></td>
+                <td class="default-form-label-row">
+                    <?= $this->formLabel($form->get('gf-members')) ?>
+                    <br>
+                    <span class="gray"><?= sprintf($this->t('Max. %d members'), $this->category->get('group_size_max', 6)) ?></span>
+                </td>
                 <td>
                     <?php $this->formMultiCheckbox()->setSeparator('<br>'); ?>
                     <?= $this->formMultiCheckbox($form->get('gf-members')) ?>

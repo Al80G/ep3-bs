@@ -374,6 +374,8 @@ class ChampionshipController extends AbstractActionController
             $matchRows = array();
 
             foreach ($matchManager->getByParticipant($category, $participant->need('pid')) as $match) {
+                $match->setExtra('setsLabel', $this->championshipFormatSets($matchManager->getSets($match)));
+
                 $matchRows[] = array(
                     'match' => $match,
                     'editable' => $matchResultValidator->isEditableBy($match, $user),

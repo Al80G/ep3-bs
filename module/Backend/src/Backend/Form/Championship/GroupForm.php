@@ -77,12 +77,10 @@ class GroupForm extends Form
      * Sets the participants that may be picked as members of this group.
      *
      * @param array $valueOptions       pid => label
-     * @param int $maxSize
      */
-    public function setMemberOptions(array $valueOptions, $maxSize)
+    public function setMemberOptions(array $valueOptions)
     {
         $this->get('gf-members')->setValueOptions($valueOptions);
-        $this->get('gf-members')->setLabel(sprintf('Members (max. %d)', $maxSize));
     }
 
 }
