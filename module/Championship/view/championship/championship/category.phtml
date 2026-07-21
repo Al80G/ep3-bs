@@ -38,27 +38,29 @@ $editableMatchIds = $this->editableMatchIds;
         <?php $standings = $this->standingsByGroup[$group->need('gid')]; ?>
 
         <?php if ($standings): ?>
-            <table class="default-table championship-table">
-                <tr>
-                    <th><?= $this->t('Participant') ?></th>
-                    <th><?= $this->t('Played') ?></th>
-                    <th><?= $this->t('Wins') ?></th>
-                    <th><?= $this->t('Losses') ?></th>
-                    <th><?= $this->t('Sets') ?></th>
-                    <th><?= $this->t('Games') ?></th>
-                </tr>
-
-                <?php foreach ($standings as $row): ?>
-                    <tr<?php if ($row['pid'] == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
-                        <td><?= $this->escapeHtml($participantLabel($row['pid'])) ?></td>
-                        <td><?= $row['played'] ?></td>
-                        <td><?= $row['wins'] ?></td>
-                        <td><?= $row['losses'] ?></td>
-                        <td><?= $row['sets_won'] ?>:<?= $row['sets_lost'] ?></td>
-                        <td><?= $row['games_won'] ?>:<?= $row['games_lost'] ?></td>
+            <div style="overflow-x: auto;">
+                <table class="default-table championship-table">
+                    <tr>
+                        <th><?= $this->t('Participant') ?></th>
+                        <th><?= $this->t('Played') ?></th>
+                        <th><?= $this->t('Wins') ?></th>
+                        <th><?= $this->t('Losses') ?></th>
+                        <th><?= $this->t('Sets') ?></th>
+                        <th><?= $this->t('Games') ?></th>
                     </tr>
-                <?php endforeach; ?>
-            </table>
+
+                    <?php foreach ($standings as $row): ?>
+                        <tr<?php if ($row['pid'] == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
+                            <td><?= $this->escapeHtml($participantLabel($row['pid'])) ?></td>
+                            <td><?= $row['played'] ?></td>
+                            <td><?= $row['wins'] ?></td>
+                            <td><?= $row['losses'] ?></td>
+                            <td><?= $row['sets_won'] ?>:<?= $row['sets_lost'] ?></td>
+                            <td><?= $row['games_won'] ?>:<?= $row['games_lost'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
         <?php else: ?>
             <p class="gray"><?= $this->t('No members in this group yet.') ?></p>
         <?php endif; ?>
@@ -68,56 +70,58 @@ $editableMatchIds = $this->editableMatchIds;
         <?php $groupMatches = $this->groupMatchesByGroup[$group->need('gid')]; ?>
 
         <?php if ($groupMatches): ?>
-            <table class="default-table championship-table">
-                <tr>
-                    <th><?= $this->t('Participant 1') ?></th>
-                    <th><?= $this->t('Participant 2') ?></th>
-                    <th><?= $this->t('Result') ?></th>
-                    <th></th>
-                </tr>
-
-                <?php foreach ($groupMatches as $match): ?>
-                    <?php
-                    $matchCellStyle = function ($pid) use ($match, $myParticipantPid) {
-                        $styles = array();
-
-                        if ($pid == $myParticipantPid) {
-                            $styles[] = 'font-weight: bold';
-                        }
-
-                        if ($pid && $pid == $match->get('winner_pid')) {
-                            $styles[] = 'color: green';
-                        }
-
-                        return $styles ? ' style="' . implode('; ', $styles) . '"' : '';
-                    };
-                    ?>
+            <div style="overflow-x: auto;">
+                <table class="default-table championship-table">
                     <tr>
-                        <td<?= $matchCellStyle($match->get('participant1_pid')) ?>>
-                            <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
-                        </td>
-                        <td<?= $matchCellStyle($match->get('participant2_pid')) ?>>
-                            <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
-                        </td>
-                        <td>
-                            <?php if ($match->need('status') == 'walkover'): ?>
-                                <span class="gray"><?= $this->t('Walkover') ?></span>
-                            <?php elseif ($match->isPlayed()): ?>
-                                <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
-                            <?php else: ?>
-                                <span class="gray"><?= $this->t('not yet played') ?></span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if (! $match->isPlayed() && in_array($match->need('mid'), $editableMatchIds)): ?>
-                                <a href="<?= $this->url('championship/match-result', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
-                                    <span class="symbolic symbolic-edit"><?= $this->t('Enter result') ?></span>
-                                </a>
-                            <?php endif; ?>
-                        </td>
+                        <th><?= $this->t('Participant 1') ?></th>
+                        <th><?= $this->t('Participant 2') ?></th>
+                        <th><?= $this->t('Result') ?></th>
+                        <th></th>
                     </tr>
-                <?php endforeach; ?>
-            </table>
+
+                    <?php foreach ($groupMatches as $match): ?>
+                        <?php
+                        $matchCellStyle = function ($pid) use ($match, $myParticipantPid) {
+                            $styles = array();
+
+                            if ($pid == $myParticipantPid) {
+                                $styles[] = 'font-weight: bold';
+                            }
+
+                            if ($pid && $pid == $match->get('winner_pid')) {
+                                $styles[] = 'color: green';
+                            }
+
+                            return $styles ? ' style="' . implode('; ', $styles) . '"' : '';
+                        };
+                        ?>
+                        <tr>
+                            <td<?= $matchCellStyle($match->get('participant1_pid')) ?>>
+                                <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
+                            </td>
+                            <td<?= $matchCellStyle($match->get('participant2_pid')) ?>>
+                                <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
+                            </td>
+                            <td>
+                                <?php if ($match->need('status') == 'walkover'): ?>
+                                    <span class="gray"><?= $this->t('Walkover') ?></span>
+                                <?php elseif ($match->isPlayed()): ?>
+                                    <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
+                                <?php else: ?>
+                                    <span class="gray"><?= $this->t('not yet played') ?></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (! $match->isPlayed() && in_array($match->need('mid'), $editableMatchIds)): ?>
+                                    <a href="<?= $this->url('championship/match-result', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-edit"><?= $this->t('Enter result') ?></span>
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
         <?php else: ?>
             <p class="gray"><?= $this->t('No matches yet.') ?></p>
         <?php endif; ?>
