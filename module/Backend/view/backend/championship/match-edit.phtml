@@ -31,37 +31,39 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table championship-table">
-            <?= $this->formRowDefault($form, 'mf-participant1') ?>
-            <?= $this->formRowDefault($form, 'mf-participant2') ?>
+        <div style="overflow-x: auto;">
+            <table class="default-table championship-table">
+                <?= $this->formRowDefault($form, 'mf-participant1') ?>
+                <?= $this->formRowDefault($form, 'mf-participant2') ?>
 
-            <tr>
-                <td colspan="2"><b><?= $this->t('Set scores') ?></b></td>
-            </tr>
-
-            <?php foreach ([1, 2, 3] as $setNumber): ?>
                 <tr>
-                    <td><?= sprintf($this->t('Set %d'), $setNumber) ?></td>
+                    <td colspan="2"><b><?= $this->t('Set scores') ?></b></td>
+                </tr>
+
+                <?php foreach ([1, 2, 3] as $setNumber): ?>
+                    <tr>
+                        <td><?= sprintf($this->t('Set %d'), $setNumber) ?></td>
+                        <td>
+                            <?= $this->formElement($form->get('mf-set' . $setNumber . '-p1')) ?>
+                            :
+                            <?= $this->formElement($form->get('mf-set' . $setNumber . '-p2')) ?>
+                            <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p1')) ?>
+                            <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p2')) ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+                <?= $this->formRowDefault($form, 'mf-walkover-winner') ?>
+
+                <tr>
+                    <td>&nbsp;</td>
+
                     <td>
-                        <?= $this->formElement($form->get('mf-set' . $setNumber . '-p1')) ?>
-                        :
-                        <?= $this->formElement($form->get('mf-set' . $setNumber . '-p2')) ?>
-                        <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p1')) ?>
-                        <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p2')) ?>
+                        <?= $this->formElement($form->get('mf-submit')) ?>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-
-            <?= $this->formRowDefault($form, 'mf-walkover-winner') ?>
-
-            <tr>
-                <td>&nbsp;</td>
-
-                <td>
-                    <?= $this->formElement($form->get('mf-submit')) ?>
-                </td>
-            </tr>
-        </table>
+            </table>
+        </div>
 
         <?= $this->form()->closeTag() ?>
     </div>

@@ -35,28 +35,30 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table championship-table">
-            <?= $this->formRowDefault($form, 'chf-name') ?>
-            <?= $this->formRowDefault($form, 'chf-status') ?>
-            <?= $this->formRowDefault($form, 'chf-registration-start') ?>
-            <?= $this->formRowDefault($form, 'chf-registration-end') ?>
+        <div style="overflow-x: auto;">
+            <table class="default-table championship-table">
+                <?= $this->formRowDefault($form, 'chf-name') ?>
+                <?= $this->formRowDefault($form, 'chf-status') ?>
+                <?= $this->formRowDefault($form, 'chf-registration-start') ?>
+                <?= $this->formRowDefault($form, 'chf-registration-end') ?>
 
-            <tr>
-                <td>&nbsp;</td>
+                <tr>
+                    <td>&nbsp;</td>
 
-                <td>
-                    <?= $this->formElement($form->get('chf-submit')) ?>
+                    <td>
+                        <?= $this->formElement($form->get('chf-submit')) ?>
 
-                    <?php if ($this->championship): ?>
-                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+                        <?php if ($this->championship): ?>
+                            <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
 
-                        <a href="<?= $this->url('backend/championship/delete', ['cid' => $cid]) ?>" class="default-button">
-                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                        </a>
-                    <?php endif; ?>
-                </td>
-            </tr>
-        </table>
+                            <a href="<?= $this->url('backend/championship/delete', ['cid' => $cid]) ?>" class="default-button">
+                                <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
         <?= $this->form()->closeTag() ?>
     </div>
@@ -71,33 +73,35 @@ $this->setup(array(
             <div class="separator-small"></div>
 
             <?php if ($this->categories): ?>
-                <table class="default-table championship-table">
-                    <tr>
-                        <th><?= $this->t('Name') ?></th>
-                        <th><?= $this->t('Discipline') ?></th>
-                        <th><?= $this->t('Gender') ?></th>
-                        <th><?= $this->t('Status') ?></th>
-                        <th></th>
-                    </tr>
-
-                    <?php foreach ($this->categories as $category): ?>
+                <div style="overflow-x: auto;">
+                    <table class="default-table championship-table">
                         <tr>
-                            <td><?= $this->escapeHtml($category->need('name')) ?></td>
-                            <td><?= $this->t(ucfirst($category->need('discipline'))) ?></td>
-                            <td><?= $this->t(ucfirst($category->need('gender'))) ?></td>
-                            <td><?= $this->t(ucfirst($category->need('status'))) ?></td>
-                            <td>
-                                <a href="<?= $this->url('backend/championship/category-edit', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
-                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
-                                </a>
-                                &nbsp;
-                                <a href="<?= $this->url('backend/championship/category-delete', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
-                                    <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                                </a>
-                            </td>
+                            <th><?= $this->t('Name') ?></th>
+                            <th><?= $this->t('Discipline') ?></th>
+                            <th><?= $this->t('Gender') ?></th>
+                            <th><?= $this->t('Status') ?></th>
+                            <th></th>
                         </tr>
-                    <?php endforeach; ?>
-                </table>
+
+                        <?php foreach ($this->categories as $category): ?>
+                            <tr>
+                                <td><?= $this->escapeHtml($category->need('name')) ?></td>
+                                <td><?= $this->t(ucfirst($category->need('discipline'))) ?></td>
+                                <td><?= $this->t(ucfirst($category->need('gender'))) ?></td>
+                                <td><?= $this->t(ucfirst($category->need('status'))) ?></td>
+                                <td>
+                                    <a href="<?= $this->url('backend/championship/category-edit', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                    </a>
+                                    &nbsp;
+                                    <a href="<?= $this->url('backend/championship/category-delete', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
             <?php endif; ?>
 
             <p class="centered-text" style="margin-top: 16px;"><a href="<?= $this->url('backend/championship/category-edit', [], ['query' => ['cid' => $cid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New category') ?></span></a></p>

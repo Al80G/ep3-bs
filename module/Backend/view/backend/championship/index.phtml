@@ -29,29 +29,31 @@ $this->setup(array(
 
         <?php if ($this->championships): ?>
 
-            <table class="default-table championship-table">
-                <tr>
-                    <th><?= $this->t('Name') ?></th>
-                    <th><?= $this->t('Status') ?></th>
-                    <th></th>
-                </tr>
-
-                <?php foreach ($this->championships as $championship): ?>
+            <div style="overflow-x: auto;">
+                <table class="default-table championship-table">
                     <tr>
-                        <td><?= $this->escapeHtml($championship->need('name')) ?></td>
-                        <td><?= $this->t(ucfirst($championship->need('status'))) ?></td>
-                        <td>
-                            <a href="<?= $this->url('backend/championship/edit', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
-                                <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
-                            </a>
-                            &nbsp;
-                            <a href="<?= $this->url('backend/championship/delete', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
-                                <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                            </a>
-                        </td>
+                        <th><?= $this->t('Name') ?></th>
+                        <th><?= $this->t('Status') ?></th>
+                        <th></th>
                     </tr>
-                <?php endforeach; ?>
-            </table>
+
+                    <?php foreach ($this->championships as $championship): ?>
+                        <tr>
+                            <td><?= $this->escapeHtml($championship->need('name')) ?></td>
+                            <td><?= $this->t(ucfirst($championship->need('status'))) ?></td>
+                            <td>
+                                <a href="<?= $this->url('backend/championship/edit', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                </a>
+                                &nbsp;
+                                <a href="<?= $this->url('backend/championship/delete', ['cid' => $championship->need('cid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
 
         <?php endif; ?>
 
