@@ -41,6 +41,7 @@ $this->setup(array(
             <tr>
                 <td class="default-form-label-row"><?= $this->formLabel($form->get('gf-members')) ?></td>
                 <td>
+                    <?php $this->formMultiCheckbox()->setSeparator('<br>'); ?>
                     <?= $this->formMultiCheckbox($form->get('gf-members')) ?>
 
                     <?= $this->formElementErrors($form->get('gf-members')) ?>
