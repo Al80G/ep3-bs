@@ -45,6 +45,7 @@ $editableMatchIds = $this->editableMatchIds;
                     <th><?= $this->t('Wins') ?></th>
                     <th><?= $this->t('Losses') ?></th>
                     <th><?= $this->t('Sets') ?></th>
+                    <th><?= $this->t('Games') ?></th>
                 </tr>
 
                 <?php foreach ($standings as $row): ?>
@@ -54,6 +55,7 @@ $editableMatchIds = $this->editableMatchIds;
                         <td><?= $row['wins'] ?></td>
                         <td><?= $row['losses'] ?></td>
                         <td><?= $row['sets_won'] ?>:<?= $row['sets_lost'] ?></td>
+                        <td><?= $row['games_won'] ?>:<?= $row['games_lost'] ?></td>
                     </tr>
                 <?php endforeach; ?>
             </table>
@@ -75,16 +77,33 @@ $editableMatchIds = $this->editableMatchIds;
                 </tr>
 
                 <?php foreach ($groupMatches as $match): ?>
+                    <?php
+                    $matchCellStyle = function ($pid) use ($match, $myParticipantPid) {
+                        $styles = array();
+
+                        if ($pid == $myParticipantPid) {
+                            $styles[] = 'font-weight: bold';
+                        }
+
+                        if ($pid && $pid == $match->get('winner_pid')) {
+                            $styles[] = 'color: green';
+                        }
+
+                        return $styles ? ' style="' . implode('; ', $styles) . '"' : '';
+                    };
+                    ?>
                     <tr>
-                        <td<?php if ($match->get('participant1_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
+                        <td<?= $matchCellStyle($match->get('participant1_pid')) ?>>
                             <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
                         </td>
-                        <td<?php if ($match->get('participant2_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
+                        <td<?= $matchCellStyle($match->get('participant2_pid')) ?>>
                             <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
                         </td>
                         <td>
-                            <?php if ($match->isPlayed()): ?>
-                                <b><?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?> <?= $this->t('won') ?></b>
+                            <?php if ($match->need('status') == 'walkover'): ?>
+                                <span class="gray"><?= $this->t('Walkover') ?></span>
+                            <?php elseif ($match->isPlayed()): ?>
+                                <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
                             <?php else: ?>
                                 <span class="gray"><?= $this->t('not yet played') ?></span>
                             <?php endif; ?>

@@ -104,7 +104,14 @@ class ChampionshipController extends AbstractActionController
 
         foreach ($groups as $group) {
             $standingsByGroup[$group->need('gid')] = $standingsService->getStandings($group);
-            $groupMatchesByGroup[$group->need('gid')] = $matchManager->getByGroup($group);
+
+            $groupMatches = $matchManager->getByGroup($group);
+
+            foreach ($groupMatches as $match) {
+                $match->setExtra('setsLabel', $this->championshipFormatSets($matchManager->getSets($match)));
+            }
+
+            $groupMatchesByGroup[$group->need('gid')] = $groupMatches;
         }
 
         $koMatches = $matchManager->getBy(array('catid' => $catid, 'round_type' => 'ko'));
@@ -471,6 +478,35 @@ class ChampionshipController extends AbstractActionController
             'participant2Label' => $match->get('participant2_pid') ? $participantLabels[$match->get('participant2_pid')] : '— bye —',
             'matchResultForm' => $matchResultForm,
         );
+    }
+
+    /**
+     * Formats a match's set scores as a compact string, e.g. "6:4 3:6 7:6(5)".
+     *
+     * @param array $sets       Championship\Entity\Fixture\SetScore entities
+     * @return string
+     */
+    protected function championshipFormatSets(array $sets)
+    {
+        $parts = array();
+
+        foreach ($sets as $set) {
+            $score1 = $set->need('score_participant1');
+            $score2 = $set->need('score_participant2');
+
+            $part = $score1 . ':' . $score2;
+
+            $tiebreak1 = $set->get('tiebreak_participant1');
+            $tiebreak2 = $set->get('tiebreak_participant2');
+
+            if ($tiebreak1 !== null && $tiebreak2 !== null) {
+                $part .= '(' . ($score1 > $score2 ? $tiebreak2 : $tiebreak1) . ')';
+            }
+
+            $parts[] = $part;
+        }
+
+        return implode(' ', $parts);
     }
 
     /**
