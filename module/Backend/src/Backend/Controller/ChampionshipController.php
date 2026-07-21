@@ -597,6 +597,10 @@ class ChampionshipController extends AbstractActionController
 
         $koMatches = $matchManager->getBy(array('catid' => $catid, 'round_type' => 'ko'));
 
+        foreach ($koMatches as $match) {
+            $match->setExtra('sets', $matchManager->getSets($match));
+        }
+
         return array(
             'championship' => $championship,
             'category' => $category,

@@ -129,15 +129,33 @@ $participantLabel = function ($pid) use ($participantLabels) {
         ksort($roundsByNumber);
         ?>
 
-        <div style="white-space: nowrap; overflow-x: auto;">
+        <div style="white-space: nowrap; overflow-x: auto; text-align: center;">
             <?php foreach ($roundsByNumber as $roundNumber => $matches): ?>
-                <div style="display: inline-block; vertical-align: top; margin-right: 32px; min-width: 220px;">
+                <div style="display: inline-block; vertical-align: top; margin-right: 32px; min-width: 220px; text-align: left;">
                     <h3><?= $this->escapeHtml($matches[0]->need('round_name')) ?></h3>
 
                     <?php foreach ($matches as $match): ?>
+                        <?php $sets = $match->getExtra('sets', array()); ?>
                         <div class="default-table" style="margin-bottom: 12px; padding: 8px; border: 1px solid #CCC;">
-                            <div><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></div>
-                            <div><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></div>
+                            <?php if ($sets): ?>
+                                <table style="border-collapse: collapse;">
+                                    <tr>
+                                        <td><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
+                                        <?php foreach ($sets as $set): ?>
+                                            <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant1') ?></td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                    <tr>
+                                        <td><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
+                                        <?php foreach ($sets as $set): ?>
+                                            <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant2') ?></td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                </table>
+                            <?php else: ?>
+                                <div><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></div>
+                                <div><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></div>
+                            <?php endif; ?>
 
                             <?php if ($match->isPlayed()): ?>
                                 <div class="gray"><?= $this->t('Winner') ?>: <b><?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?></b></div>
