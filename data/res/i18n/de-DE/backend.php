@@ -396,5 +396,5 @@ return [
 
     'Show the championship menu item to members' => 'Menüpunkt für die Vereinsmeisterschaft für Mitglieder anzeigen',
     'Enables the club championship (Vereinsmeisterschaft) feature for members'
-        => 'Aktiviert die Vereinsmeisterschaft-Funktion für Mitglieder',
+        => 'Aktiviert die Vereinsmeisterschaft-Funktion für Mitglieder (gilt nicht für Admins)',
 ];

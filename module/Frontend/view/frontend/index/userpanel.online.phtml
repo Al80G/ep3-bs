@@ -20,7 +20,7 @@
 
         <?php endif; ?>
 
-        <?php if ($this->option('service.championship.enabled') == 'true'): ?>
+        <?php if ($this->option('service.championship.enabled') == 'true' || $this->user->can('admin.championship')): ?>
 
             <td class="responsive-pass-up never-hide-table-cell" style="padding-right: 12px;">
                 <a href="<?= $this->url('championship') ?>" class="default-button">
