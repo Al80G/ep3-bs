@@ -535,6 +535,66 @@ class ChampionshipController extends AbstractActionController
         );
     }
 
+    public function notifyGroupsAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+        $mailService = $serviceManager->get('Championship\Service\MailService');
+
+        $catid = $this->params()->fromRoute('catid');
+        $category = $categoryManager->get($catid);
+
+        $users = $this->championshipCategoryRecipients($category, $participantManager, $userManager);
+
+        $subject = sprintf($this->t('Category %s: the groups have been assigned'), $category->need('name'));
+
+        $link = $this->option('service.website') . $this->url('championship/category', array('catid' => $catid));
+
+        $text = sprintf($this->t('The groups for "%s" have been assigned.'), $category->need('name'))
+            . "\r\n\r\n" . $this->t('You can see your group and matches here:')
+            . "\r\n" . $link;
+
+        $sent = $mailService->notify($users, $subject, $text);
+
+        $this->flashMessenger()->addSuccessMessage(sprintf($this->t('%d participants have been notified'), $sent));
+
+        return $this->redirect()->toRoute('backend/championship/category-edit', array('catid' => $catid));
+    }
+
+    public function notifyBracketAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+        $mailService = $serviceManager->get('Championship\Service\MailService');
+
+        $catid = $this->params()->fromRoute('catid');
+        $category = $categoryManager->get($catid);
+
+        $users = $this->championshipCategoryRecipients($category, $participantManager, $userManager);
+
+        $subject = sprintf($this->t('Category %s: the knock-out stage is set'), $category->need('name'));
+
+        $link = $this->option('service.website') . $this->url('championship/category', array('catid' => $catid));
+
+        $text = sprintf($this->t('The knock-out stage for "%s" has been drawn.'), $category->need('name'))
+            . "\r\n\r\n" . $this->t('You can see the bracket here:')
+            . "\r\n" . $link;
+
+        $sent = $mailService->notify($users, $subject, $text);
+
+        $this->flashMessenger()->addSuccessMessage(sprintf($this->t('%d participants have been notified'), $sent));
+
+        return $this->redirect()->toRoute('backend/championship/bracket', array('catid' => $catid));
+    }
+
     public function bracketAction()
     {
         $this->authorize('admin.championship');
@@ -732,6 +792,36 @@ class ChampionshipController extends AbstractActionController
         }
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * Gets the distinct users to notify for a category (every registered player and, for
+     * doubles/mixed, their partner).
+     *
+     * @param \Championship\Entity\Category $category
+     * @param \Championship\Manager\ParticipantManager $participantManager
+     * @param \User\Manager\UserManager $userManager
+     * @return array
+     */
+    protected function championshipCategoryRecipients($category, $participantManager, $userManager)
+    {
+        $uids = array();
+
+        foreach ($participantManager->getByCategory($category) as $participant) {
+            $uids[] = $participant->need('uid');
+
+            if ($participant->get('partner_uid')) {
+                $uids[] = $participant->get('partner_uid');
+            }
+        }
+
+        $users = array();
+
+        foreach (array_unique($uids) as $uid) {
+            $users[] = $userManager->get($uid);
+        }
+
+        return $users;
     }
 
     /**

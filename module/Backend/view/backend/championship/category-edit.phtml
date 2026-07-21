@@ -116,6 +116,15 @@ $this->setup(array(
             <?php endif; ?>
 
             <p class="centered-text" style="margin-top: 16px;"><a href="<?= $this->url('backend/championship/group-edit', [], ['query' => ['catid' => $catid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New group') ?></span></a></p>
+
+            <?php if ($this->groups): ?>
+                <p class="centered-text">
+                    <a href="<?= $this->url('backend/championship/notify-groups', ['catid' => $catid]) ?>" class="default-button"
+                        onclick="return confirm('<?= $this->t('Notify all registered participants of this category that the groups have been assigned?') ?>');">
+                        <span class="symbolic symbolic-email"><?= $this->t('Notify participants: groups assigned') ?></span>
+                    </a>
+                </p>
+            <?php endif; ?>
         </div>
 
         <div class="separator separator-line"></div>

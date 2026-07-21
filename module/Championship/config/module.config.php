@@ -99,6 +99,7 @@ return array(
             'Championship\Service\StandingsService' => 'Championship\Service\StandingsServiceFactory',
             'Championship\Service\BracketService' => 'Championship\Service\BracketServiceFactory',
             'Championship\Service\MatchResultValidator' => 'Championship\Service\MatchResultValidatorFactory',
+            'Championship\Service\MailService' => 'Championship\Service\MailServiceFactory',
         ),
     ),
 

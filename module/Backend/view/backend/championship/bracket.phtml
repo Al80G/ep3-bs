@@ -193,4 +193,13 @@ $participantLabel = function ($pid) use ($participantLabels) {
             </button>
         <?php endif; ?>
     </form>
+
+    <?php if ($this->koGenerated): ?>
+        <p class="centered-text">
+            <a href="<?= $this->url('backend/championship/notify-bracket', ['catid' => $catid]) ?>" class="default-button"
+                onclick="return confirm('<?= $this->t('Notify all registered participants of this category that the knock-out stage is set?') ?>');">
+                <span class="symbolic symbolic-email"><?= $this->t('Notify participants: knock-out stage set') ?></span>
+            </a>
+        </p>
+    <?php endif; ?>
 </div>

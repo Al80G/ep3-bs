@@ -350,6 +350,30 @@ return array(
                                     ),
                                 ),
                             ),
+                            'notify-groups' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/notify-groups/:catid',
+                                    'defaults' => array(
+                                        'action' => 'notifyGroups',
+                                    ),
+                                    'constraints' => array(
+                                        'catid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'notify-bracket' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/notify-bracket/:catid',
+                                    'defaults' => array(
+                                        'action' => 'notifyBracket',
+                                    ),
+                                    'constraints' => array(
+                                        'catid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
                             'bracket' => array(
                                 'type' => 'Segment',
                                 'options' => array(
