@@ -552,7 +552,7 @@ class ChampionshipController extends AbstractActionController
 
         $subject = sprintf($this->t('Category %s: the groups have been assigned'), $category->need('name'));
 
-        $link = $this->option('service.website') . $this->url('championship/category', array('catid' => $catid));
+        $link = $this->option('service.website') . $this->url()->fromRoute('championship/category', array('catid' => $catid));
 
         $text = sprintf($this->t('The groups for "%s" have been assigned.'), $category->need('name'))
             . "\r\n\r\n" . $this->t('You can see your group and matches here:')
@@ -582,7 +582,7 @@ class ChampionshipController extends AbstractActionController
 
         $subject = sprintf($this->t('Category %s: the knock-out stage is set'), $category->need('name'));
 
-        $link = $this->option('service.website') . $this->url('championship/category', array('catid' => $catid));
+        $link = $this->option('service.website') . $this->url()->fromRoute('championship/category', array('catid' => $catid));
 
         $text = sprintf($this->t('The knock-out stage for "%s" has been drawn.'), $category->need('name'))
             . "\r\n\r\n" . $this->t('You can see the bracket here:')
