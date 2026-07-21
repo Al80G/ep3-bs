@@ -556,9 +556,15 @@ class ChampionshipController extends AbstractActionController
 
         if ($this->getRequest()->isPost()) {
             try {
-                $bracketService->generate($category, (bool) $this->params()->fromPost('regenerate'));
+                if ($this->params()->fromPost('delete')) {
+                    $bracketService->delete($category);
 
-                $this->flashMessenger()->addSuccessMessage('Knock-out stage has been generated');
+                    $this->flashMessenger()->addSuccessMessage('Knock-out stage has been deleted');
+                } else {
+                    $bracketService->generate($category, (bool) $this->params()->fromPost('regenerate'));
+
+                    $this->flashMessenger()->addSuccessMessage('Knock-out stage has been generated');
+                }
             } catch (RuntimeException $e) {
                 $this->flashMessenger()->addErrorMessage($e->getMessage());
             }

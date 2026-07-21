@@ -150,9 +150,14 @@ $participantLabel = function ($pid) use ($participantLabels) {
 
     <form method="post" action="<?= $this->url('backend/championship/bracket', ['catid' => $catid]) ?>">
         <?php if ($this->koGenerated): ?>
-            <input type="hidden" name="regenerate" value="1">
-            <button type="submit" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage and regenerates it from the current group standings. Continue?') ?>');">
+            <button type="submit" name="regenerate" value="1" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage and regenerates it from the current group standings. Continue?') ?>');">
                 <span class="symbolic symbolic-reload"><?= $this->t('Regenerate bracket') ?></span>
+            </button>
+
+            &nbsp;
+
+            <button type="submit" name="delete" value="1" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage without generating a new one. Continue?') ?>');">
+                <span class="symbolic symbolic-cross"><?= $this->t('Delete bracket') ?></span>
             </button>
         <?php else: ?>
             <button type="submit" class="default-button">

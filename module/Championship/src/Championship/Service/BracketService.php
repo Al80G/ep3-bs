@@ -60,6 +60,23 @@ class BracketService
     }
 
     /**
+     * Deletes the knock-out stage of a category entirely (only if none of its matches have been played).
+     *
+     * @param Category $category
+     * @throws RuntimeException
+     */
+    public function delete(Category $category)
+    {
+        $existingKoMatches = $this->getKoMatches($category);
+
+        if (! $existingKoMatches) {
+            throw new RuntimeException('No knock-out stage exists for this category');
+        }
+
+        $this->deleteKoMatches($existingKoMatches);
+    }
+
+    /**
      * Generates the knock-out stage for a category from the current group standings.
      *
      * @param Category $category
@@ -77,15 +94,7 @@ class BracketService
                 throw new RuntimeException('The knock-out stage has already been generated for this category');
             }
 
-            foreach ($existingKoMatches as $match) {
-                if ($match->isPlayed()) {
-                    throw new RuntimeException('The knock-out stage cannot be regenerated once matches have been played');
-                }
-            }
-
-            foreach ($existingKoMatches as $match) {
-                $this->matchManager->delete($match);
-            }
+            $this->deleteKoMatches($existingKoMatches);
         }
 
         $qualifiers = $this->getQualifiers($category);
@@ -196,6 +205,25 @@ class BracketService
     protected function getKoMatches(Category $category)
     {
         return $this->matchManager->getBy(array('catid' => $category->need('catid'), 'round_type' => 'ko'));
+    }
+
+    /**
+     * Deletes the passed knock-out stage matches, refusing if any of them have already been played.
+     *
+     * @param array $matches
+     * @throws RuntimeException
+     */
+    protected function deleteKoMatches(array $matches)
+    {
+        foreach ($matches as $match) {
+            if ($match->isPlayed()) {
+                throw new RuntimeException('The knock-out stage cannot be changed once matches have been played');
+            }
+        }
+
+        foreach ($matches as $match) {
+            $this->matchManager->delete($match);
+        }
     }
 
     /**
