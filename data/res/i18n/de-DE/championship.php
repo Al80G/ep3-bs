@@ -20,6 +20,7 @@ return array(
     'Here you can create, edit or delete club championships (Vereinsmeisterschaften).'
         => 'Hier können Sie Vereinsmeisterschaften anlegen, bearbeiten oder löschen.',
     'Manage the club championship (Vereinsmeisterschaft)' => 'Vereinsmeisterschaft verwalten',
+    'May manage the club championship' => 'Darf die Vereinsmeisterschaft verwalten',
 
     /* Championship (edition) */
 
