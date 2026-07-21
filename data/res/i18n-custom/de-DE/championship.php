@@ -64,7 +64,7 @@ return array(
     'How many players/pairs of each group advance to the knock-out stage'
         => 'Wie viele Spieler/Paare je Gruppe in die K.-o.-Phase aufsteigen',
     'E.g. "Einzel Herren"' => 'Z. B. "Einzel Herren"',
-    'Are you sure you want to delete this category?' => 'Möchten Sie diesen Bewerb wirklich löschen?',
+    'Are you sure you want to delete this category?' => 'Möchtest du diesen Bewerb wirklich löschen?',
     'This also deletes all its registrations, groups and matches.'
         => 'Dabei werden auch alle zugehörigen Anmeldungen, Gruppen und Spiele gelöscht.',
     'Yes, delete this category' => 'Ja, diesen Bewerb löschen',
@@ -74,7 +74,7 @@ return array(
     'A championship id is required to create a new category' => 'Für einen neuen Bewerb wird eine Vereinsmeisterschaft benötigt',
     'No categories have been announced yet.' => 'Es wurden noch keine Bewerbe ausgeschrieben.',
     'Groups & bracket' => 'Gruppen & Turnierraster',
-    'This category is not open to your gender.' => 'Dieser Bewerb ist für Ihr Geschlecht nicht zugänglich.',
+    'This category is not open to your gender.' => 'Dieser Bewerb ist für dein Geschlecht nicht zugänglich.',
 
     /* Group */
 
@@ -85,7 +85,7 @@ return array(
     'Matches' => 'Spiele',
     'E.g. "Gruppe A"' => 'Z. B. "Gruppe A"',
     'No unassigned participants are left for this category.' => 'Für diesen Bewerb sind keine nicht zugeteilten Teilnehmer mehr übrig.',
-    'Are you sure you want to delete this group?' => 'Möchten Sie diese Gruppe wirklich löschen?',
+    'Are you sure you want to delete this group?' => 'Möchtest du diese Gruppe wirklich löschen?',
     'This also deletes all its matches.' => 'Dabei werden auch alle zugehörigen Spiele gelöscht.',
     'Yes, delete this group' => 'Ja, diese Gruppe löschen',
     'Group has been saved' => 'Gruppe wurde gespeichert',
@@ -110,8 +110,8 @@ return array(
     'Player' => 'Spieler',
     'Partner' => 'Partner',
     'Partner: %s' => 'Partner: %s',
-    'Please select a partner' => 'Bitte wählen Sie einen Partner aus',
-    'Please select a player' => 'Bitte wählen Sie einen Spieler aus',
+    'Please select a partner' => 'Bitte wähle einen Partner aus',
+    'Please select a player' => 'Bitte wähle einen Spieler aus',
     'Player and partner must be different' => 'Spieler und Partner müssen unterschiedlich sein',
     'A mixed pair requires one man and one woman' => 'Bei Mixed müssen ein Mann und eine Frau ausgewählt werden',
     'This category requires two men' => 'Dieser Bewerb erfordert zwei Männer',
@@ -119,28 +119,28 @@ return array(
     'Invalid pair for this category' => 'Ungültige Paarung für diesen Bewerb',
     'Player is already registered for this category' => 'Spieler ist bereits für diesen Bewerb registriert',
     'Player has been registered' => 'Spieler wurde angemeldet',
-    'You have been registered' => 'Sie wurden angemeldet',
+    'You have been registered' => 'Du wurdest angemeldet',
     'Registration for this championship is currently closed.' => 'Die Anmeldung für diese Vereinsmeisterschaft ist derzeit geschlossen.',
     'Registration closed' => 'Anmeldung geschlossen',
-    'You are already registered for this category.' => 'Sie sind für diesen Bewerb bereits angemeldet.',
-    'You are registered' => 'Sie sind angemeldet',
+    'You are already registered for this category.' => 'Du bist für diesen Bewerb bereits angemeldet.',
+    'You are registered' => 'Du bist angemeldet',
     'No one has registered for this category yet.' => 'Für diesen Bewerb hat sich noch niemand angemeldet.',
-    'You are not registered for any championship category yet.' => 'Sie sind noch für keinen Bewerb der Vereinsmeisterschaft angemeldet.',
+    'You are not registered for any championship category yet.' => 'Du bist noch für keinen Bewerb der Vereinsmeisterschaft angemeldet.',
     'A category id is required to register' => 'Für die Anmeldung wird ein Bewerb benötigt',
     'A category id is required to add a participant' => 'Zum Hinzufügen eines Teilnehmers wird ein Bewerb benötigt',
     'This participant does not exist' => 'Diesen Teilnehmer gibt es nicht',
     'Participant has been removed' => 'Teilnehmer wurde entfernt',
-    'Are you sure you want to remove %s from this category?' => 'Möchten Sie %s wirklich aus diesem Bewerb entfernen?',
+    'Are you sure you want to remove %s from this category?' => 'Möchtest du %s wirklich aus diesem Bewerb entfernen?',
     'Yes, remove this participant' => 'Ja, diesen Teilnehmer entfernen',
     '%s already has matches in this category.' => '%s hat in diesem Bewerb bereits Spiele.',
     'Please remove or reassign those matches first (via the bracket/group pages) before removing this participant.'
         => 'Bitte entfernen oder verschieben Sie diese Spiele zuerst (über die Turnierraster-/Gruppen-Seiten), bevor Sie diesen Teilnehmer entfernen.',
-    'Are you sure you want to withdraw from this category?' => 'Möchten Sie sich wirklich von diesem Bewerb abmelden?',
+    'Are you sure you want to withdraw from this category?' => 'Möchtest du dich wirklich von diesem Bewerb abmelden?',
     'Yes, withdraw' => 'Ja, abmelden',
-    'You have been withdrawn from this category' => 'Sie wurden von diesem Bewerb abgemeldet',
-    'You already have matches scheduled for this category.' => 'Für diesen Bewerb sind für Sie bereits Spiele angesetzt.',
-    'Please contact the club administration if you need to withdraw.' => 'Bitte wenden Sie sich an die Vereinsverwaltung, falls Sie sich abmelden möchten.',
-    'You are not allowed to withdraw this registration' => 'Sie dürfen diese Anmeldung nicht zurückziehen',
+    'You have been withdrawn from this category' => 'Du wurdest von diesem Bewerb abgemeldet',
+    'You already have matches scheduled for this category.' => 'Für diesen Bewerb sind für dich bereits Spiele angesetzt.',
+    'Please contact the club administration if you need to withdraw.' => 'Bitte wende dich an die Vereinsverwaltung, falls du dich abmelden möchtest.',
+    'You are not allowed to withdraw this registration' => 'Du kannst diese Anmeldung nicht zurückziehen',
 
     /* Matches / bracket / results */
 
@@ -197,7 +197,7 @@ return array(
         => 'Dies löscht die aktuelle (noch nicht gespielte) K.-o.-Phase, ohne eine neue zu generieren. Fortfahren?',
     'Match has been saved' => 'Spiel wurde gespeichert',
     'This match does not exist' => 'Dieses Spiel gibt es nicht',
-    'You are not allowed to enter the result of this match' => 'Sie dürfen das Ergebnis dieses Spiels nicht eintragen',
+    'You are not allowed to enter the result of this match' => 'Du darfst das Ergebnis dieses Spiels nicht eintragen',
     'Walkover in favour of' => 'Kampflos zugunsten von',
     'Use this instead of set scores if the match was decided without being played'
         => 'Verwenden Sie dies anstelle von Satzergebnissen, wenn das Spiel ohne Austragung entschieden wurde',
@@ -211,8 +211,8 @@ return array(
 
     /* Form validation */
 
-    'Please type something here' => 'Bitte tragen Sie hier etwas ein',
-    'Please type a number here' => 'Bitte tragen Sie hier eine Zahl ein',
+    'Please type something here' => 'Bitte trage hier etwas ein',
+    'Please type a number here' => 'Bitte trage hier eine Zahl ein',
     'Invalid category' => 'Ungültiger Bewerb',
 
     /* Failure / internal error messages */
