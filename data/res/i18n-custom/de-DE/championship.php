@@ -72,14 +72,14 @@ return array(
     'Notify participants: groups assigned' => 'Teilnehmer benachrichtigen: Gruppen eingeteilt',
     'Notify all registered participants of this category that the groups have been assigned?'
         => 'Alle für diesen Bewerb registrierten Teilnehmer benachrichtigen, dass die Gruppen eingeteilt sind?',
-    'Category %s: the groups have been assigned' => 'Bewerb %s: Die Gruppen sind eingeteilt',
-    'The groups for "%s" have been assigned.' => 'Die Gruppen für "%s" sind eingeteilt.',
+    'Category %s: the groups have been assigned' => 'Vereinsmeisterschaft - %s: Die Gruppen sind eingeteilt',
+    'The groups for "%s" have been assigned.' => 'die Gruppen für den Bewerb "%s" sind eingeteilt.',
     'You can see your group and matches here:' => 'Deine Gruppe und Spiele findest du hier:',
     'Notify participants: knock-out stage set' => 'Teilnehmer benachrichtigen: K.-o.-Runde steht fest',
     'Notify all registered participants of this category that the knock-out stage is set?'
         => 'Alle für diesen Bewerb registrierten Teilnehmer benachrichtigen, dass die K.-o.-Runde feststeht?',
-    'Category %s: the knock-out stage is set' => 'Bewerb %s: Die K.-o.-Runde steht fest',
-    'The knock-out stage for "%s" has been drawn.' => 'Die K.-o.-Runde für "%s" wurde ausgelost.',
+    'Category %s: the knock-out stage is set' => 'Vereinsmeisterschaft - %s: Die K.-o.-Runde steht fest',
+    'The knock-out stage for "%s" has been drawn.' => 'die K.-o.-Runde für "%s" wurde ausgelost.',
     'You can see the bracket here:' => 'Das Turnierraster findest du hier:',
     '%d participants have been notified' => '%d Teilnehmer wurden benachrichtigt',
     'Category has been deleted' => 'Bewerb wurde gelöscht',
