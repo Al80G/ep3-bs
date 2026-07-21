@@ -15,7 +15,11 @@ $this->setup(array(
 
     <div class="separator-small"></div>
 
-    <?php if ($this->registrationClosed): ?>
+    <?php if ($this->genderMismatch): ?>
+
+        <p><?= $this->t('This category is not open to your gender.') ?></p>
+
+    <?php elseif ($this->registrationClosed): ?>
 
         <p><?= $this->t('Registration for this championship is currently closed.') ?></p>
 

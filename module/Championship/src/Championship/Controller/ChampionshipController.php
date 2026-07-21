@@ -27,13 +27,19 @@ class ChampionshipController extends AbstractActionController
 
         $championships = $championshipManager->getActive();
 
+        $allowedGenders = $this->championshipAllowedCategoryGenders($user);
+
         $categoriesByChampionship = array();
 
         foreach ($championships as $championship) {
             $categoriesByChampionship[$championship->need('cid')] = array_filter(
                 $categoryManager->getByChampionship($championship),
-                function ($category) {
-                    return $category->get('status') == 'enabled';
+                function ($category) use ($allowedGenders) {
+                    if ($category->get('status') != 'enabled') {
+                        return false;
+                    }
+
+                    return ! $allowedGenders || in_array($category->need('gender'), $allowedGenders);
                 }
             );
         }
@@ -160,12 +166,26 @@ class ChampionshipController extends AbstractActionController
         $category = $categoryManager->get($catid);
         $championship = $championshipManager->get($category->need('cid'));
 
+        $allowedGenders = $this->championshipAllowedCategoryGenders($user);
+
+        if ($allowedGenders && ! in_array($category->need('gender'), $allowedGenders)) {
+            return array(
+                'category' => $category,
+                'championship' => $championship,
+                'alreadyRegistered' => false,
+                'registrationClosed' => false,
+                'genderMismatch' => true,
+                'registrationForm' => null,
+            );
+        }
+
         if ($championship->get('status') != 'open') {
             return array(
                 'category' => $category,
                 'championship' => $championship,
                 'alreadyRegistered' => false,
                 'registrationClosed' => true,
+                'genderMismatch' => false,
                 'registrationForm' => null,
             );
         }
@@ -176,6 +196,7 @@ class ChampionshipController extends AbstractActionController
                 'championship' => $championship,
                 'alreadyRegistered' => true,
                 'registrationClosed' => false,
+                'genderMismatch' => false,
                 'registrationForm' => null,
             );
         }
@@ -239,6 +260,7 @@ class ChampionshipController extends AbstractActionController
             'championship' => $championship,
             'alreadyRegistered' => false,
             'registrationClosed' => false,
+            'genderMismatch' => false,
             'registrationForm' => $registrationForm,
         );
     }
@@ -419,6 +441,28 @@ class ChampionshipController extends AbstractActionController
         $opponentPid = $match->get('participant1_pid') == $myPid ? $match->get('participant2_pid') : $match->get('participant1_pid');
 
         return $opponentPid ? ($participantLabels[$opponentPid] ?? '?') : '— bye —';
+    }
+
+    /**
+     * Gets the category genders the passed user may see/register for, based on their account's gender.
+     *
+     * Men only see men's and mixed categories, women only see women's and mixed categories.
+     * Accounts without a personal gender (e.g. family/firm accounts, or none set) are not restricted.
+     *
+     * @param \User\Entity\User $user
+     * @return array|null      null means no restriction (all genders allowed)
+     */
+    protected function championshipAllowedCategoryGenders($user)
+    {
+        $gender = $user->getMeta('gender');
+
+        if ($gender == 'male') {
+            return array('men', 'mixed');
+        } else if ($gender == 'female') {
+            return array('women', 'mixed');
+        }
+
+        return null;
     }
 
 }
