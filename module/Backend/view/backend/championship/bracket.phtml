@@ -140,15 +140,15 @@ $participantLabel = function ($pid) use ($participantLabels) {
                             <?php if ($sets): ?>
                                 <table style="border-collapse: collapse; width: 100%;">
                                     <tr>
-                                        <td style="text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
+                                        <td style="padding: 0; text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
                                         <?php foreach ($sets as $set): ?>
-                                            <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant1') ?></td>
+                                            <td style="padding: 0 0 0 8px; text-align: right;"><?= $set->need('score_participant1') ?></td>
                                         <?php endforeach; ?>
                                     </tr>
                                     <tr>
-                                        <td style="text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
+                                        <td style="padding: 0; text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
                                         <?php foreach ($sets as $set): ?>
-                                            <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant2') ?></td>
+                                            <td style="padding: 0 0 0 8px; text-align: right;"><?= $set->need('score_participant2') ?></td>
                                         <?php endforeach; ?>
                                     </tr>
                                 </table>
