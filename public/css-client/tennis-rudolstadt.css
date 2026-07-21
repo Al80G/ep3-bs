@@ -238,12 +238,7 @@ body.tennis-rudolstadt > div.panel:first-child {
   .tennis-rudolstadt form#bsf table td,
   .tennis-rudolstadt form#esf table td,
   .tennis-rudolstadt form#cf table td,
-  .tennis-rudolstadt form#ef table td,
-  .tennis-rudolstadt form#chf table td,
-  .tennis-rudolstadt form#caf table td,
-  .tennis-rudolstadt form#gf table td,
-  .tennis-rudolstadt form#mf table td,
-  .tennis-rudolstadt form#mrf table td
+  .tennis-rudolstadt form#ef table td
   {
     display: block;
   }
@@ -258,12 +253,7 @@ body.tennis-rudolstadt > div.panel:first-child {
   .tennis-rudolstadt form#bsf table td.default-form-label-row,
   .tennis-rudolstadt form#esf table td.default-form-label-row,
   .tennis-rudolstadt form#cf table td.default-form-label-row,
-  .tennis-rudolstadt form#ef table td.default-form-label-row,
-  .tennis-rudolstadt form#chf table td.default-form-label-row,
-  .tennis-rudolstadt form#caf table td.default-form-label-row,
-  .tennis-rudolstadt form#gf table td.default-form-label-row,
-  .tennis-rudolstadt form#mf table td.default-form-label-row,
-  .tennis-rudolstadt form#mrf table td.default-form-label-row
+  .tennis-rudolstadt form#ef table td.default-form-label-row
   {
     text-align: left;
   }

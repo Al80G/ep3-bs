@@ -35,28 +35,30 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table championship-table">
-            <?= $this->formRowDefault($form, 'chf-name') ?>
-            <?= $this->formRowDefault($form, 'chf-status') ?>
-            <?= $this->formRowDefault($form, 'chf-registration-start') ?>
-            <?= $this->formRowDefault($form, 'chf-registration-end') ?>
+        <div style="overflow-x: auto;">
+            <table class="default-table championship-table">
+                <?= $this->formRowDefault($form, 'chf-name') ?>
+                <?= $this->formRowDefault($form, 'chf-status') ?>
+                <?= $this->formRowDefault($form, 'chf-registration-start') ?>
+                <?= $this->formRowDefault($form, 'chf-registration-end') ?>
 
-            <tr>
-                <td>&nbsp;</td>
+                <tr>
+                    <td>&nbsp;</td>
 
-                <td>
-                    <?= $this->formElement($form->get('chf-submit')) ?>
+                    <td>
+                        <?= $this->formElement($form->get('chf-submit')) ?>
 
-                    <?php if ($this->championship): ?>
-                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+                        <?php if ($this->championship): ?>
+                            <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
 
-                        <a href="<?= $this->url('backend/championship/delete', ['cid' => $cid]) ?>" class="default-button">
-                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                        </a>
-                    <?php endif; ?>
-                </td>
-            </tr>
-        </table>
+                            <a href="<?= $this->url('backend/championship/delete', ['cid' => $cid]) ?>" class="default-button">
+                                <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
         <?= $this->form()->closeTag() ?>
     </div>

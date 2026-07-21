@@ -37,44 +37,46 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table championship-table">
-            <?= $this->formRowDefault($form, 'gf-name') ?>
+        <div style="overflow-x: auto;">
+            <table class="default-table championship-table">
+                <?= $this->formRowDefault($form, 'gf-name') ?>
 
-            <tr>
-                <td class="default-form-label-row">
-                    <?= $this->formLabel($form->get('gf-members')) ?>
-                    <br>
-                    <span class="gray"><?= sprintf($this->t('Max. %d members'), $this->category->get('group_size_max', 6)) ?></span>
-                </td>
-                <td>
-                    <?php $this->formMultiCheckbox()->setSeparator('<br>'); ?>
-                    <?= $this->formMultiCheckbox($form->get('gf-members')) ?>
+                <tr>
+                    <td class="default-form-label-row">
+                        <?= $this->formLabel($form->get('gf-members')) ?>
+                        <br>
+                        <span class="gray"><?= sprintf($this->t('Max. %d members'), $this->category->get('group_size_max', 6)) ?></span>
+                    </td>
+                    <td>
+                        <?php $this->formMultiCheckbox()->setSeparator('<br>'); ?>
+                        <?= $this->formMultiCheckbox($form->get('gf-members')) ?>
 
-                    <?= $this->formElementErrors($form->get('gf-members')) ?>
-                    <?= $this->formElementNotes($form->get('gf-members')) ?>
+                        <?= $this->formElementErrors($form->get('gf-members')) ?>
+                        <?= $this->formElementNotes($form->get('gf-members')) ?>
 
-                    <?php if (! $form->get('gf-members')->getValueOptions()): ?>
-                        <p class="gray"><?= $this->t('No unassigned participants are left for this category.') ?></p>
-                    <?php endif; ?>
-                </td>
-            </tr>
+                        <?php if (! $form->get('gf-members')->getValueOptions()): ?>
+                            <p class="gray"><?= $this->t('No unassigned participants are left for this category.') ?></p>
+                        <?php endif; ?>
+                    </td>
+                </tr>
 
-            <tr>
-                <td>&nbsp;</td>
+                <tr>
+                    <td>&nbsp;</td>
 
-                <td>
-                    <?= $this->formElement($form->get('gf-submit')) ?>
+                    <td>
+                        <?= $this->formElement($form->get('gf-submit')) ?>
 
-                    <?php if ($this->group): ?>
-                        <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
+                        <?php if ($this->group): ?>
+                            <span class="gray" style="margin: 0 8px;"><?= $this->t('or') ?></span>
 
-                        <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $gid]) ?>" class="default-button">
-                            <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                        </a>
-                    <?php endif; ?>
-                </td>
-            </tr>
-        </table>
+                            <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $gid]) ?>" class="default-button">
+                                <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
         <?= $this->form()->closeTag() ?>
     </div>
