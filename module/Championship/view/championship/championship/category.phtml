@@ -22,6 +22,8 @@ $editableMatchIds = $this->editableMatchIds;
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->escapeHtml($this->championship->need('name')) ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
 
@@ -36,7 +38,7 @@ $editableMatchIds = $this->editableMatchIds;
         <?php $standings = $this->standingsByGroup[$group->need('gid')]; ?>
 
         <?php if ($standings): ?>
-            <table class="default-table">
+            <table class="default-table championship-table">
                 <tr>
                     <th><?= $this->t('Participant') ?></th>
                     <th><?= $this->t('Played') ?></th>

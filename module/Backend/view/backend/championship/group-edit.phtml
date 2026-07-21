@@ -18,6 +18,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Group') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
 
@@ -35,7 +37,7 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table">
+        <table class="default-table championship-table">
             <?= $this->formRowDefault($form, 'gf-name') ?>
 
             <tr>

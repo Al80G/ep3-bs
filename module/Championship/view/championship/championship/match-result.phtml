@@ -10,6 +10,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Enter result') ?>: <?= $this->escapeHtml($this->match->need('round_name')) ?></h1>
 
@@ -35,7 +37,7 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table">
+        <table class="default-table championship-table">
             <?php foreach ([1, 2, 3] as $setNumber): ?>
                 <tr>
                     <td><?= sprintf($this->t('Set %d'), $setNumber) ?></td>

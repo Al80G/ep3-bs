@@ -14,6 +14,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Championship-Administration') ?></h1>
 
@@ -27,7 +29,7 @@ $this->setup(array(
 
         <?php if ($this->championships): ?>
 
-            <table class="default-table">
+            <table class="default-table championship-table">
                 <tr>
                     <th><?= $this->t('Name') ?></th>
                     <th><?= $this->t('Status') ?></th>

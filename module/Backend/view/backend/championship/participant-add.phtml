@@ -12,6 +12,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Add participant') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
 
@@ -31,7 +33,7 @@ $this->setup(array(
 
         <?= $this->formElement($form->get('pf-catid')) ?>
 
-        <table class="default-table">
+        <table class="default-table championship-table">
             <?= $this->formRowDefault($form, 'pf-uid') ?>
 
             <?php if ($form->has('pf-partner-uid')): ?>

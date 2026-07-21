@@ -10,6 +10,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('My registrations') ?></h1>
 
@@ -45,7 +47,7 @@ $this->setup(array(
             <?php if (! $registration['matches']): ?>
                 <p class="gray"><?= $this->t('No matches scheduled yet.') ?></p>
             <?php else: ?>
-                <table class="default-table">
+                <table class="default-table championship-table">
                     <tr>
                         <th><?= $this->t('Round') ?></th>
                         <th><?= $this->t('Opponent') ?></th>

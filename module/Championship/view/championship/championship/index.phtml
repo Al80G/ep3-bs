@@ -11,6 +11,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Championship') ?></h1>
 
@@ -33,7 +35,7 @@ $this->setup(array(
             <?php if (! $categories): ?>
                 <p class="gray"><?= $this->t('No categories have been announced yet.') ?></p>
             <?php else: ?>
-                <table class="default-table">
+                <table class="default-table championship-table">
                     <tr>
                         <th><?= $this->t('Category') ?></th>
                         <th></th>

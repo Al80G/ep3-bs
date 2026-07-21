@@ -18,6 +18,8 @@ $participantLabel = function ($pid) use ($participantLabels) {
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Bracket') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
 
@@ -32,7 +34,7 @@ $participantLabel = function ($pid) use ($participantLabels) {
         <?php $standings = $this->standingsByGroup[$group->need('gid')]; ?>
 
         <?php if ($standings): ?>
-            <table class="default-table">
+            <table class="default-table championship-table">
                 <tr>
                     <th><?= $this->t('Participant') ?></th>
                     <th><?= $this->t('Played') ?></th>

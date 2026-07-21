@@ -16,6 +16,8 @@ $this->setup(array(
 
 ?>
 
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
 <div>
     <h1><?= $this->t('Championship-Administration') ?></h1>
 
@@ -33,7 +35,7 @@ $this->setup(array(
 
         <?= $this->form()->openTag($form) ?>
 
-        <table class="default-table">
+        <table class="default-table championship-table">
             <?= $this->formRowDefault($form, 'chf-name') ?>
             <?= $this->formRowDefault($form, 'chf-status') ?>
             <?= $this->formRowDefault($form, 'chf-registration-start') ?>
@@ -69,7 +71,7 @@ $this->setup(array(
             <div class="separator-small"></div>
 
             <?php if ($this->categories): ?>
-                <table class="default-table">
+                <table class="default-table championship-table">
                     <tr>
                         <th><?= $this->t('Name') ?></th>
                         <th><?= $this->t('Discipline') ?></th>
