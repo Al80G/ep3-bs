@@ -75,44 +75,46 @@ $this->setup(array(
             <div class="separator-small"></div>
 
             <?php if ($this->groups): ?>
-                <table class="default-table championship-table">
-                    <tr>
-                        <th><?= $this->t('Name') ?></th>
-                        <th><?= $this->t('Members') ?></th>
-                        <th><?= $this->t('Matches') ?></th>
-                        <th></th>
-                    </tr>
-
-                    <?php foreach ($this->groups as $group): ?>
+                <div style="overflow-x: auto;">
+                    <table class="default-table championship-table">
                         <tr>
-                            <td><?= $this->escapeHtml($group->need('name')) ?></td>
-                            <td><?= $group->getExtra('memberCount', 0) ?></td>
-                            <td>
-                                <?php if ($group->getExtra('memberCount', 0) < 2): ?>
-                                    <span class="gray"><?= $this->t('Not enough members') ?></span>
-                                <?php elseif ($group->getExtra('matchesGenerated')): ?>
-                                    <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray"
-                                        onclick="return confirm('<?= $this->t('This deletes the current (not yet played) group matches and regenerates them for the current members. Continue?') ?>');">
-                                        <span class="symbolic symbolic-reload"><?= $this->t('Regenerate matches') ?></span>
-                                    </a>
-                                <?php else: ?>
-                                    <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
-                                        <span class="symbolic symbolic-plus"><?= $this->t('Generate matches') ?></span>
-                                    </a>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="<?= $this->url('backend/championship/group-edit', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
-                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
-                                </a>
-                                &nbsp;
-                                <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
-                                    <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
-                                </a>
-                            </td>
+                            <th><?= $this->t('Name') ?></th>
+                            <th><?= $this->t('Members') ?></th>
+                            <th><?= $this->t('Matches') ?></th>
+                            <th></th>
                         </tr>
-                    <?php endforeach; ?>
-                </table>
+
+                        <?php foreach ($this->groups as $group): ?>
+                            <tr>
+                                <td><?= $this->escapeHtml($group->need('name')) ?></td>
+                                <td><?= $group->getExtra('memberCount', 0) ?></td>
+                                <td>
+                                    <?php if ($group->getExtra('memberCount', 0) < 2): ?>
+                                        <span class="gray"><?= $this->t('Not enough members') ?></span>
+                                    <?php elseif ($group->getExtra('matchesGenerated')): ?>
+                                        <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray"
+                                            onclick="return confirm('<?= $this->t('This deletes the current (not yet played) group matches and regenerates them for the current members. Continue?') ?>');">
+                                            <span class="symbolic symbolic-reload"><?= $this->t('Regenerate matches') ?></span>
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                            <span class="symbolic symbolic-plus"><?= $this->t('Generate matches') ?></span>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="<?= $this->url('backend/championship/group-edit', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                    </a>
+                                    &nbsp;
+                                    <a href="<?= $this->url('backend/championship/group-delete', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-cross"><?= $this->t('Delete') ?></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
             <?php endif; ?>
 
             <p class="centered-text" style="margin-top: 16px;"><a href="<?= $this->url('backend/championship/group-edit', [], ['query' => ['catid' => $catid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('New group') ?></span></a></p>
