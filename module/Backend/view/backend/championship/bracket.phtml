@@ -187,19 +187,17 @@ $participantLabel = function ($pid) use ($participantLabels) {
             <button type="submit" name="delete" value="1" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage without generating a new one. Continue?') ?>');">
                 <span class="symbolic symbolic-cross"><?= $this->t('Delete bracket') ?></span>
             </button>
+
+            &nbsp;
+
+            <a href="<?= $this->url('backend/championship/notify-bracket', ['catid' => $catid]) ?>" class="default-button"
+                onclick="return confirm('<?= $this->t('Notify all registered participants of this category that the knock-out stage is set?') ?>');">
+                <span class="symbolic symbolic-email"><?= $this->t('Notify participants: knock-out stage set') ?></span>
+            </a>
         <?php else: ?>
             <button type="submit" class="default-button">
                 <span class="symbolic symbolic-plus"><?= $this->t('Generate bracket') ?></span>
             </button>
         <?php endif; ?>
     </form>
-
-    <?php if ($this->koGenerated): ?>
-        <p class="centered-text">
-            <a href="<?= $this->url('backend/championship/notify-bracket', ['catid' => $catid]) ?>" class="default-button"
-                onclick="return confirm('<?= $this->t('Notify all registered participants of this category that the knock-out stage is set?') ?>');">
-                <span class="symbolic symbolic-email"><?= $this->t('Notify participants: knock-out stage set') ?></span>
-            </a>
-        </p>
-    <?php endif; ?>
 </div>
