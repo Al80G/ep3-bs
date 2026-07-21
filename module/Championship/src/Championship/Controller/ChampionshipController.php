@@ -204,7 +204,7 @@ class ChampionshipController extends AbstractActionController
         $registrationForm = $formElementManager->get('Championship\Form\RegistrationForm');
 
         $isDouble = $category->need('discipline') == 'double';
-        $isMixed = $category->need('gender') == 'mixed';
+        $categoryGender = $category->need('gender');
 
         if ($isDouble) {
             $alreadyTeamedUpUids = array();
@@ -218,7 +218,12 @@ class ChampionshipController extends AbstractActionController
             }
 
             $ownGender = $user->getMeta('gender');
-            $oppositeGender = $ownGender == 'male' ? 'female' : ($ownGender == 'female' ? 'male' : null);
+
+            if ($categoryGender == 'mixed') {
+                $requiredPartnerGender = $ownGender == 'male' ? 'female' : ($ownGender == 'female' ? 'male' : null);
+            } else {
+                $requiredPartnerGender = $ownGender ?: null;
+            }
 
             $partnerOptions = array();
 
@@ -229,7 +234,7 @@ class ChampionshipController extends AbstractActionController
                     continue;
                 }
 
-                if ($isMixed && $oppositeGender && $candidate->getMeta('gender') != $oppositeGender) {
+                if ($requiredPartnerGender && $candidate->getMeta('gender') != $requiredPartnerGender) {
                     continue;
                 }
 
@@ -251,8 +256,8 @@ class ChampionshipController extends AbstractActionController
 
                 if ($isDouble && ! $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
-                } else if ($isDouble && ! $this->championshipIsValidMixedPair($category, $user->need('uid'), $partnerUid, $userManager)) {
-                    $this->flashMessenger()->addErrorMessage('A mixed pair requires one man and one woman');
+                } else if ($isDouble && ! $this->championshipIsValidPairGender($category, $user->need('uid'), $partnerUid, $userManager)) {
+                    $this->flashMessenger()->addErrorMessage($this->championshipPairGenderErrorMessage($category));
                 } else {
                     try {
                         $participantManager->register($category, $user->need('uid'), $partnerUid);
@@ -524,9 +529,10 @@ class ChampionshipController extends AbstractActionController
     }
 
     /**
-     * Whether the passed pair is valid for the given category: for "mixed" categories, one of the
-     * two players must be male and the other female. Any other category (or unknown genders,
-     * so that accounts without a gender set don't get blocked outright) is not restricted.
+     * Whether the passed pair matches the given category's gender: "mixed" requires one man and
+     * one woman, "men"/"women" requires both players to be of that gender. Unknown genders on
+     * either side (e.g. family/firm accounts) are not restricted, so misconfigured accounts don't
+     * get blocked outright.
      *
      * @param \Championship\Entity\Category $category
      * @param int $uid
@@ -534,12 +540,8 @@ class ChampionshipController extends AbstractActionController
      * @param \User\Manager\UserManager $userManager
      * @return boolean
      */
-    protected function championshipIsValidMixedPair($category, $uid, $partnerUid, $userManager)
+    protected function championshipIsValidPairGender($category, $uid, $partnerUid, $userManager)
     {
-        if ($category->need('gender') != 'mixed') {
-            return true;
-        }
-
         $gender1 = $userManager->get($uid)->getMeta('gender');
         $gender2 = $userManager->get($partnerUid)->getMeta('gender');
 
@@ -547,7 +549,36 @@ class ChampionshipController extends AbstractActionController
             return true;
         }
 
-        return ($gender1 == 'male' && $gender2 == 'female') || ($gender1 == 'female' && $gender2 == 'male');
+        switch ($category->need('gender')) {
+            case 'mixed':
+                return ($gender1 == 'male' && $gender2 == 'female') || ($gender1 == 'female' && $gender2 == 'male');
+            case 'men':
+                return $gender1 == 'male' && $gender2 == 'male';
+            case 'women':
+                return $gender1 == 'female' && $gender2 == 'female';
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Gets the error message to show when a pair does not match a category's gender requirement.
+     *
+     * @param \Championship\Entity\Category $category
+     * @return string
+     */
+    protected function championshipPairGenderErrorMessage($category)
+    {
+        switch ($category->need('gender')) {
+            case 'mixed':
+                return 'A mixed pair requires one man and one woman';
+            case 'men':
+                return 'This category requires two men';
+            case 'women':
+                return 'This category requires two women';
+            default:
+                return 'Invalid pair for this category';
+        }
     }
 
 }
