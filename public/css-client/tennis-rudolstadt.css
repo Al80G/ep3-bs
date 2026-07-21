@@ -163,6 +163,9 @@ body.tennis-rudolstadt > div.panel:first-child {
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-config {
     padding-left: 12px;
   }
+  .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-trophy {
+    padding-left: 12px;
+  }
 }
 @media (min-width: 700px) {
   /*  

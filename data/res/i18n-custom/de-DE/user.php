@@ -266,7 +266,7 @@ return array(
     'This was an automated message from the system.' => 'Diese Nachricht wurde automatisch gesendet.',
 	'Originally sent to %s (%s).' => 'Ursprünglich gesendet an %s (%s).',
     'Sincerely' => 'Viele Grüße',
-    'Your' => 'Ihr',
+    'Your' => 'Dein',
     'team from' => 'Team vom',
     'other players' => 'angegebene Mitspieler',
     'Kosten' => 'costs',

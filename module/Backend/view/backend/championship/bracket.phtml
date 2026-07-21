@@ -1,0 +1,203 @@
+<?php
+
+$catid = $this->category->need('catid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Category' => $this->url('backend/championship/category-edit', ['catid' => $catid]),
+    ),
+));
+
+$participantLabels = $this->participantLabels;
+
+$participantLabel = function ($pid) use ($participantLabels) {
+    return $pid ? ($participantLabels[$pid] ?? '?') : '— bye —';
+};
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Bracket') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <?php foreach ($this->groups as $group): ?>
+
+        <h2><?= $this->escapeHtml($group->need('name')) ?></h2>
+
+        <div class="separator-small"></div>
+
+        <?php $standings = $this->standingsByGroup[$group->need('gid')]; ?>
+
+        <?php if ($standings): ?>
+            <table class="default-table championship-table">
+                <tr>
+                    <th><?= $this->t('Participant') ?></th>
+                    <th><?= $this->t('Played') ?></th>
+                    <th><?= $this->t('Wins') ?></th>
+                    <th><?= $this->t('Losses') ?></th>
+                    <th><?= $this->t('Sets') ?></th>
+                    <th><?= $this->t('Diff') ?></th>
+                    <th><?= $this->t('Games') ?></th>
+                    <th><?= $this->t('Diff') ?></th>
+                </tr>
+
+                <?php foreach ($standings as $row): ?>
+                    <tr>
+                        <td><?= $this->escapeHtml($participantLabel($row['pid'])) ?></td>
+                        <td><?= $row['played'] ?></td>
+                        <td><?= $row['wins'] ?></td>
+                        <td><?= $row['losses'] ?></td>
+                        <td><?= $row['sets_won'] ?>:<?= $row['sets_lost'] ?></td>
+                        <td><?= $row['set_diff'] ?></td>
+                        <td><?= $row['games_won'] ?>:<?= $row['games_lost'] ?></td>
+                        <td><?= $row['game_diff'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No members in this group yet.') ?></p>
+        <?php endif; ?>
+
+        <div class="separator-small"></div>
+
+        <?php $groupMatches = $this->groupMatchesByGroup[$group->need('gid')]; ?>
+
+        <?php if ($groupMatches): ?>
+            <table class="default-table championship-table">
+                <tr>
+                    <th><?= $this->t('Participant 1') ?></th>
+                    <th><?= $this->t('Participant 2') ?></th>
+                    <th><?= $this->t('Result') ?></th>
+                    <th></th>
+                </tr>
+
+                <?php foreach ($groupMatches as $match): ?>
+                    <tr>
+                        <td<?php if ($match->get('winner_pid') && $match->get('winner_pid') == $match->get('participant1_pid')): ?> style="color: green; font-weight: bold;"<?php endif; ?>>
+                            <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
+                        </td>
+                        <td<?php if ($match->get('winner_pid') && $match->get('winner_pid') == $match->get('participant2_pid')): ?> style="color: green; font-weight: bold;"<?php endif; ?>>
+                            <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
+                        </td>
+                        <td>
+                            <?php if ($match->need('status') == 'walkover'): ?>
+                                <span class="gray"><?= $this->t('Walkover') ?></span>
+                            <?php elseif ($match->isPlayed()): ?>
+                                <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
+                            <?php else: ?>
+                                <span class="gray"><?= $this->t('not yet played') ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href="<?= $this->url('backend/championship/match-edit', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No matches yet.') ?></p>
+        <?php endif; ?>
+
+        <div class="separator separator-line"></div>
+
+    <?php endforeach; ?>
+
+    <h2><?= $this->t('Knock-out stage') ?></h2>
+
+    <div class="separator-small"></div>
+
+    <?php if (! $this->koGenerated): ?>
+
+        <p><?= $this->t('The knock-out stage has not been generated yet.') ?></p>
+
+    <?php else: ?>
+
+        <?php
+        $roundsByNumber = array();
+
+        foreach ($this->koMatches as $match) {
+            $roundsByNumber[$match->need('round_number')][] = $match;
+        }
+
+        ksort($roundsByNumber);
+        ?>
+
+        <div style="white-space: nowrap; overflow-x: auto; text-align: center;">
+            <?php foreach ($roundsByNumber as $roundNumber => $matches): ?>
+                <div style="display: inline-block; vertical-align: top; margin-right: 32px; min-width: 220px; text-align: left;">
+                    <h3><?= $this->escapeHtml($this->t($matches[0]->need('round_name'))) ?></h3>
+
+                    <?php foreach ($matches as $match): ?>
+                        <?php $sets = $match->getExtra('sets', array()); ?>
+                        <div class="default-table" style="margin-bottom: 12px; padding: 8px; border: 1px solid #CCC;">
+                            <?php if ($sets): ?>
+                                <table style="border-collapse: collapse; width: 100%;">
+                                    <tr>
+                                        <td style="padding: 0; text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
+                                        <?php foreach ($sets as $set): ?>
+                                            <td style="padding: 0 0 0 8px; text-align: right;"><?= $set->need('score_participant1') ?></td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0; text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
+                                        <?php foreach ($sets as $set): ?>
+                                            <td style="padding: 0 0 0 8px; text-align: right;"><?= $set->need('score_participant2') ?></td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                </table>
+                            <?php else: ?>
+                                <div><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></div>
+                                <div><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></div>
+                            <?php endif; ?>
+
+                            <?php if ($match->isPlayed()): ?>
+                                <div class="gray"><?= $this->t('Winner') ?>: <b><?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?></b></div>
+                            <?php endif; ?>
+
+                            <div>
+                                <a href="<?= $this->url('backend/championship/match-edit', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+    <?php endif; ?>
+
+    <div class="separator separator-line"></div>
+
+    <form method="post" action="<?= $this->url('backend/championship/bracket', ['catid' => $catid]) ?>">
+        <?php if ($this->koGenerated): ?>
+            <button type="submit" name="regenerate" value="1" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage and regenerates it from the current group standings. Continue?') ?>');">
+                <span class="symbolic symbolic-reload"><?= $this->t('Regenerate bracket') ?></span>
+            </button>
+
+            &nbsp;
+
+            <button type="submit" name="delete" value="1" class="default-button" onclick="return confirm('<?= $this->t('This deletes the current (not yet played) knock-out stage without generating a new one. Continue?') ?>');">
+                <span class="symbolic symbolic-cross"><?= $this->t('Delete bracket') ?></span>
+            </button>
+
+            &nbsp;
+
+            <a href="<?= $this->url('backend/championship/notify-bracket', ['catid' => $catid]) ?>" class="default-button"
+                onclick="return confirm('<?= $this->t('Notify all registered participants of this category that the knock-out stage is set?') ?>');">
+                <span class="symbolic symbolic-email"><?= $this->t('Notify participants: knock-out stage set') ?></span>
+            </a>
+        <?php else: ?>
+            <button type="submit" class="default-button">
+                <span class="symbolic symbolic-plus"><?= $this->t('Generate bracket') ?></span>
+            </button>
+        <?php endif; ?>
+    </form>
+</div>

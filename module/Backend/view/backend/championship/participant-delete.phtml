@@ -1,0 +1,42 @@
+<?php
+
+$catid = $this->participant->need('catid');
+
+$backUrl = $this->url('backend/championship/category-edit', ['catid' => $catid]);
+
+$this->setup(array(
+    'title' => 'Remove this participant',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Category' => $backUrl,
+    ),
+));
+
+?>
+
+<div class="padded centered-text">
+
+    <?php if ($this->hasMatches): ?>
+
+        <p><?= sprintf($this->t('%s already has matches in this category.'), '<b>' . $this->escapeHtml($this->participant->getExtra('label')) . '</b>') ?></p>
+        <p><?= $this->t('Please remove or reassign those matches first (via the bracket/group pages) before removing this participant.') ?></p>
+
+        <p><a href="<?= $backUrl ?>" class="default-button"><?= $this->t('Back') ?></a></p>
+
+    <?php else: ?>
+
+        <p><span class="symbolic symbolic-warning"><?= sprintf($this->t('Are you sure you want to remove %s from this category?'), '<b>' . $this->escapeHtml($this->participant->getExtra('label')) . '</b>') ?></span></p>
+
+        <p class="no-wrap">
+            <a href="<?= $this->url('backend/championship/participant-delete', ['pid' => $this->participant->need('pid')], ['query' => ['confirmed' => 'true']]) ?>" class="default-button">
+                <span class="symbolic symbolic-cross"><?= $this->t('Yes, remove this participant') ?></span>
+            </a>
+
+            &nbsp;
+
+            <a href="<?= $backUrl ?>" class="default-button"><?= $this->t('No, go back') ?></a>
+        </p>
+
+    <?php endif; ?>
+
+</div>

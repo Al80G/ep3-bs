@@ -1,0 +1,94 @@
+<?php
+
+$this->setup(array(
+    'title' => 'My registrations',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Championship' => $this->url('championship'),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('My registrations') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <?php if (! $this->registrations): ?>
+
+        <p><?= $this->t('You are not registered for any championship category yet.') ?></p>
+
+        <p><a href="<?= $this->url('championship') ?>" class="default-button"><?= $this->t('Championship') ?></a></p>
+
+    <?php else: ?>
+
+        <?php foreach ($this->registrations as $registration): ?>
+
+            <h2>
+                <?= $this->escapeHtml($registration['championship']->need('name')) ?>:
+                <?= $this->escapeHtml($registration['category']->need('name')) ?>
+            </h2>
+
+            <div class="separator-small"></div>
+
+            <?php if ($registration['partnerLabel']): ?>
+                <p><?= sprintf($this->t('Partner: %s'), $this->escapeHtml($registration['partnerLabel'])) ?></p>
+            <?php endif; ?>
+
+            <p>
+                <a href="<?= $this->url('championship/withdraw', ['pid' => $registration['participant']->need('pid')]) ?>" class="unlined gray">
+                    <span class="symbolic symbolic-cross"><?= $this->t('Withdraw') ?></span>
+                </a>
+            </p>
+
+            <?php if (! $registration['matches']): ?>
+                <p class="gray"><?= $this->t('No matches scheduled yet.') ?></p>
+            <?php else: ?>
+                <table class="default-table championship-table">
+                    <tr>
+                        <th><?= $this->t('Round') ?></th>
+                        <th><?= $this->t('Opponent') ?></th>
+                        <th><?= $this->t('Result') ?></th>
+                        <th></th>
+                    </tr>
+
+                    <?php foreach ($registration['matches'] as $matchRow): ?>
+                        <?php $match = $matchRow['match']; ?>
+                        <tr>
+                            <td><?= $this->escapeHtml($this->t($match->need('round_name'))) ?></td>
+                            <td><?= $this->escapeHtml($matchRow['opponentLabel']) ?></td>
+                            <td>
+                                <?php if ($match->need('status') == 'walkover'): ?>
+                                    <span class="gray"><?= $this->t('Walkover') ?></span>
+                                <?php elseif ($match->isPlayed()): ?>
+                                    <?= $this->escapeHtml($match->getExtra('setsLabel')) ?>
+                                <?php else: ?>
+                                    <span class="gray"><?= $this->t('not yet played') ?></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="<?= $this->url('championship/category', ['catid' => $registration['category']->need('catid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-date"><?= $this->t('View') ?></span>
+                                </a>
+
+                                <?php if ($matchRow['editable']): ?>
+                                    &nbsp;
+                                    <a href="<?= $this->url('championship/match-result', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-edit"><?= $this->t('Enter result') ?></span>
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
+
+            <div class="separator separator-line"></div>
+
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+</div>

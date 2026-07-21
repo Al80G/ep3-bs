@@ -376,3 +376,122 @@ ALTER TABLE bs_squares_pricing ADD COLUMN member INTEGER NOT NULL DEFAULT 0;
 
 CREATE EVENT remove_unpaid_bookings ON SCHEDULE EVERY 15 MINUTE ON COMPLETION PRESERVE DO delete from bs_bookings where `status` = 'single' and `status_billing` = 'pending' and created < (NOW() - INTERVAL 3 HOUR) and bid in (select bid from bs_bookings_meta where `key` = 'directpay' and `value` = 'true');
 
+--- changes for Championship module (Vereinsmeisterschaft)
+
+CREATE TABLE IF NOT EXISTS `bs_championships` (
+  `cid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `status` varchar(64) NOT NULL DEFAULT 'draft' COMMENT 'draft|open|running|finished',
+  `datetime_registration_start` datetime DEFAULT NULL,
+  `datetime_registration_end` datetime DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_categories` (
+  `catid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` int(10) unsigned NOT NULL,
+  `discipline` varchar(64) NOT NULL COMMENT 'single|double',
+  `gender` varchar(64) NOT NULL COMMENT 'men|women|mixed',
+  `name` varchar(128) NOT NULL,
+  `group_size_max` tinyint(3) unsigned NOT NULL DEFAULT 6,
+  `advance_per_group` tinyint(3) unsigned NOT NULL DEFAULT 2,
+  `status` varchar(64) NOT NULL DEFAULT 'enabled' COMMENT 'disabled|enabled',
+  PRIMARY KEY (`catid`),
+  KEY `cid` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_participants` (
+  `pid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `catid` int(10) unsigned NOT NULL,
+  `uid` int(10) unsigned NOT NULL,
+  `partner_uid` int(10) unsigned DEFAULT NULL,
+  `status` varchar(64) NOT NULL DEFAULT 'registered' COMMENT 'registered|withdrawn',
+  `seed` int(10) unsigned DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`pid`),
+  KEY `catid` (`catid`),
+  KEY `uid` (`uid`),
+  KEY `partner_uid` (`partner_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_groups` (
+  `gid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `catid` int(10) unsigned NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`gid`),
+  KEY `catid` (`catid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_group_members` (
+  `gmid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gid` int(10) unsigned NOT NULL,
+  `pid` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`gmid`),
+  KEY `gid` (`gid`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_matches` (
+  `mid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `catid` int(10) unsigned NOT NULL,
+  `gid` int(10) unsigned DEFAULT NULL,
+  `round_type` varchar(64) NOT NULL COMMENT 'group|ko',
+  `round_name` varchar(128) NOT NULL,
+  `round_number` int(10) unsigned NOT NULL DEFAULT 1,
+  `participant1_pid` int(10) unsigned DEFAULT NULL,
+  `participant2_pid` int(10) unsigned DEFAULT NULL,
+  `next_match_id` int(10) unsigned DEFAULT NULL,
+  `next_match_slot` tinyint(3) unsigned DEFAULT NULL,
+  `status` varchar(64) NOT NULL DEFAULT 'pending' COMMENT 'pending|scheduled|played|walkover',
+  `winner_pid` int(10) unsigned DEFAULT NULL,
+  `entered_by_uid` int(10) unsigned DEFAULT NULL,
+  `entered_at` datetime DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`mid`),
+  KEY `catid` (`catid`),
+  KEY `gid` (`gid`),
+  KEY `participant1_pid` (`participant1_pid`),
+  KEY `participant2_pid` (`participant2_pid`),
+  KEY `next_match_id` (`next_match_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `bs_championship_match_sets` (
+  `msid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `mid` int(10) unsigned NOT NULL,
+  `set_number` tinyint(3) unsigned NOT NULL,
+  `score_participant1` tinyint(3) unsigned NOT NULL,
+  `score_participant2` tinyint(3) unsigned NOT NULL,
+  `tiebreak_participant1` tinyint(3) unsigned DEFAULT NULL,
+  `tiebreak_participant2` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`msid`),
+  KEY `mid` (`mid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `bs_championship_categories`
+  ADD CONSTRAINT `bs_championship_categories_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `bs_championships` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `bs_championship_participants`
+  ADD CONSTRAINT `bs_championship_participants_ibfk_1` FOREIGN KEY (`catid`) REFERENCES `bs_championship_categories` (`catid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `bs_championship_participants_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `bs_users` (`uid`),
+  ADD CONSTRAINT `bs_championship_participants_ibfk_3` FOREIGN KEY (`partner_uid`) REFERENCES `bs_users` (`uid`);
+
+ALTER TABLE `bs_championship_groups`
+  ADD CONSTRAINT `bs_championship_groups_ibfk_1` FOREIGN KEY (`catid`) REFERENCES `bs_championship_categories` (`catid`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `bs_championship_group_members`
+  ADD CONSTRAINT `bs_championship_group_members_ibfk_1` FOREIGN KEY (`gid`) REFERENCES `bs_championship_groups` (`gid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `bs_championship_group_members_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `bs_championship_participants` (`pid`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `bs_championship_matches`
+  ADD CONSTRAINT `bs_championship_matches_ibfk_1` FOREIGN KEY (`catid`) REFERENCES `bs_championship_categories` (`catid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `bs_championship_matches_ibfk_2` FOREIGN KEY (`gid`) REFERENCES `bs_championship_groups` (`gid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `bs_championship_matches_ibfk_3` FOREIGN KEY (`participant1_pid`) REFERENCES `bs_championship_participants` (`pid`),
+  ADD CONSTRAINT `bs_championship_matches_ibfk_4` FOREIGN KEY (`participant2_pid`) REFERENCES `bs_championship_participants` (`pid`),
+  ADD CONSTRAINT `bs_championship_matches_ibfk_5` FOREIGN KEY (`winner_pid`) REFERENCES `bs_championship_participants` (`pid`),
+  ADD CONSTRAINT `bs_championship_matches_ibfk_6` FOREIGN KEY (`next_match_id`) REFERENCES `bs_championship_matches` (`mid`);
+
+ALTER TABLE `bs_championship_match_sets`
+  ADD CONSTRAINT `bs_championship_match_sets_ibfk_1` FOREIGN KEY (`mid`) REFERENCES `bs_championship_matches` (`mid`) ON DELETE CASCADE ON UPDATE CASCADE;
+

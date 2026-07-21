@@ -1,0 +1,74 @@
+<?php
+
+$this->setup(array(
+    'title' => 'Championship',
+    'panel' => 'centered-panel large-sized',
+    'back' => true,
+    'links' => array(
+        'My registrations' => $this->url('championship/my'),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Championship') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <?php if (! $this->championships): ?>
+
+        <p><?= $this->t('There is currently no championship open for registration.') ?></p>
+
+    <?php else: ?>
+
+        <?php foreach ($this->championships as $championship): ?>
+
+            <h2><?= $this->escapeHtml($championship->need('name')) ?></h2>
+
+            <div class="separator-small"></div>
+
+            <?php $categories = $this->categoriesByChampionship[$championship->need('cid')]; ?>
+
+            <?php if (! $categories): ?>
+                <p class="gray"><?= $this->t('No categories have been announced yet.') ?></p>
+            <?php else: ?>
+                <table class="default-table championship-table">
+                    <tr>
+                        <th><?= $this->t('Category') ?></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    <?php foreach ($categories as $category): ?>
+                        <tr>
+                            <td><?= $this->escapeHtml($category->need('name')) ?></td>
+                            <td>
+                                <a href="<?= $this->url('championship/category', ['catid' => $category->need('catid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-date"><?= $this->t('Groups & bracket') ?></span>
+                                </a>
+                            </td>
+                            <td>
+                                <?php if (in_array($category->need('catid'), $this->registeredCatids)): ?>
+                                    <span class="gray"><?= $this->t('You are registered') ?></span>
+                                <?php elseif ($championship->need('status') == 'open'): ?>
+                                    <a href="<?= $this->url('championship/register', [], ['query' => ['catid' => $category->need('catid')]]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-plus"><?= $this->t('Register') ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="gray"><?= $this->t('Registration closed') ?></span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
+
+            <div class="separator separator-line"></div>
+
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+</div>

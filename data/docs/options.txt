@@ -33,6 +33,7 @@ Options:
 - service.pricing.visibility                public|private|never
 - service.pricing.payment                   none|invoice|paypal|invoice,paypal
 - service.status-values.billing             (optional)
+- service.championship.enabled              (optional) true|false
 
 - subject.help                              HTML
 - subject.about                             HTML

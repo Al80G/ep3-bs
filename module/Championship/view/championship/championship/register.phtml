@@ -1,0 +1,68 @@
+<?php
+
+$this->setup(array(
+    'title' => 'Championship registration',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Championship' => $this->url('championship'),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Registration') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <?php if ($this->genderMismatch): ?>
+
+        <p><?= $this->t('This category is not open to your gender.') ?></p>
+
+    <?php elseif ($this->registrationClosed): ?>
+
+        <p><?= $this->t('Registration for this championship is currently closed.') ?></p>
+
+    <?php elseif ($this->alreadyRegistered): ?>
+
+        <p><?= $this->t('You are already registered for this category.') ?></p>
+
+        <p><a href="<?= $this->url('championship/my') ?>" class="default-button"><?= $this->t('My registrations') ?></a></p>
+
+    <?php else: ?>
+
+        <div class="padded">
+            <?php
+
+            $form = $this->registrationForm;
+            $form->setAttribute('method', 'post');
+            $form->setAttribute('action', $this->url('championship/register', [], ['query' => ['catid' => $this->category->need('catid')]]));
+            $form->prepare();
+
+            ?>
+
+            <?= $this->form()->openTag($form) ?>
+
+            <?= $this->formElement($form->get('rf-catid')) ?>
+
+            <table class="default-table championship-table">
+                <?php if ($form->has('rf-partner-uid')): ?>
+                    <?= $this->formRowDefault($form, 'rf-partner-uid') ?>
+                <?php endif; ?>
+
+                <tr>
+                    <td>&nbsp;</td>
+
+                    <td>
+                        <?= $this->formElement($form->get('rf-submit')) ?>
+                    </td>
+                </tr>
+            </table>
+
+            <?= $this->form()->closeTag() ?>
+        </div>
+
+    <?php endif; ?>
+</div>

@@ -20,6 +20,16 @@
 
         <?php endif; ?>
 
+        <?php if ($this->option('service.championship.enabled') == 'true' || $this->user->can('admin.championship')): ?>
+
+            <td class="responsive-pass-up never-hide-table-cell" style="padding-right: 12px;">
+                <a href="<?= $this->url('championship') ?>" class="default-button">
+                    <span class="symbolic symbolic-trophy">&nbsp;<span class="symbolic-label"><?= $this->t('Championship') ?></span></span>
+                </a>
+            </td>
+
+        <?php endif; ?>
+
         <td>
             <a href="<?= $this->url('user/bookings') ?>" class="default-button" data-tooltip="<?= $this->userLastBookings($this->user) ?>">
                 <span class="symbolic symbolic-booking">&nbsp;<span class="symbolic-label"><?= $this->t('My bookings') ?></span></span>

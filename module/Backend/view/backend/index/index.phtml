@@ -53,6 +53,13 @@ $this->setup(array(
         <a href="<?= $this->url('backend/event/stats') ?>" class="unlined gray"><span class="symbolic symbolic-stats"><?= $this->t('Statistic') ?></span></a>
     </div>
 
+    <div style="margin-bottom: 8px;">
+        <a href="<?= $this->url('backend/championship') ?>" class="default-button" style="width: 150px; text-align: left;"><span class="symbolic symbolic-trophy"><?= $this->t('Championship') ?></span></a>
+        <span class="no-ajax gray" style="margin-left: 16px;">
+            <?= $this->t('Manage the club championship (Vereinsmeisterschaft)') ?>
+        </span>
+    </div>
+
     <div>
         <a href="<?= $this->url('backend/config') ?>" class="default-button" style="width: 150px; text-align: left;"><span class="symbolic symbolic-config"><?= $this->t('Configuration') ?></span></a>
         <span class="no-ajax gray" style="margin-left: 16px;">

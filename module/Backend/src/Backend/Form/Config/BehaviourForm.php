@@ -175,6 +175,20 @@ class BehaviourForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'cf-championship-enabled',
+            'type' => 'Checkbox',
+            'attributes' => array(
+                'id' => 'cf-championship-enabled',
+            ),
+            'options' => array(
+                'label' => 'Show the championship menu item to members',
+                'checked_value' => 'true',
+                'unchecked_value' => 'false',
+                'notes' => 'Enables the club championship (Vereinsmeisterschaft) feature for members',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'cf-submit',
             'type' => 'Submit',
             'attributes' => array(

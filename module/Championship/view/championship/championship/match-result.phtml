@@ -1,0 +1,65 @@
+<?php
+
+$this->setup(array(
+    'title' => 'Enter match result',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Championship' => $this->url('championship/category', ['catid' => $this->category->need('catid')]),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Enter result') ?>: <?= $this->escapeHtml($this->t($this->match->need('round_name'))) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <p>
+        <?= $this->escapeHtml($this->participant1Label) ?>
+        &ndash;
+        <?= $this->escapeHtml($this->participant2Label) ?>
+    </p>
+
+    <div class="separator separator-line"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->matchResultForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('championship/match-result', ['mid' => $this->match->need('mid')]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <table class="default-table championship-table">
+            <?php foreach ([1, 2, 3] as $setNumber): ?>
+                <tr>
+                    <td><?= sprintf($this->t('Set %d'), $setNumber) ?></td>
+                    <td>
+                        <?= $this->formElement($form->get('mrf-set' . $setNumber . '-p1')) ?>
+                        :
+                        <?= $this->formElement($form->get('mrf-set' . $setNumber . '-p2')) ?>
+                        <?= $this->formElementErrors($form->get('mrf-set' . $setNumber . '-p1')) ?>
+                        <?= $this->formElementErrors($form->get('mrf-set' . $setNumber . '-p2')) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('mrf-submit')) ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+</div>

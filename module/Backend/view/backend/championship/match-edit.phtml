@@ -1,0 +1,68 @@
+<?php
+
+$catid = $this->category->need('catid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Bracket' => $this->url('backend/championship/bracket', ['catid' => $catid]),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Match') ?>: <?= $this->escapeHtml($this->t($this->match->need('round_name'))) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->matchForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/match-edit', ['mid' => $this->match->need('mid')]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <table class="default-table championship-table">
+            <?= $this->formRowDefault($form, 'mf-participant1') ?>
+            <?= $this->formRowDefault($form, 'mf-participant2') ?>
+
+            <tr>
+                <td colspan="2"><b><?= $this->t('Set scores') ?></b></td>
+            </tr>
+
+            <?php foreach ([1, 2, 3] as $setNumber): ?>
+                <tr>
+                    <td><?= sprintf($this->t('Set %d'), $setNumber) ?></td>
+                    <td>
+                        <?= $this->formElement($form->get('mf-set' . $setNumber . '-p1')) ?>
+                        :
+                        <?= $this->formElement($form->get('mf-set' . $setNumber . '-p2')) ?>
+                        <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p1')) ?>
+                        <?= $this->formElementErrors($form->get('mf-set' . $setNumber . '-p2')) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+
+            <?= $this->formRowDefault($form, 'mf-walkover-winner') ?>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('mf-submit')) ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+</div>
