@@ -61,24 +61,39 @@ $participantLabel = function ($pid) use ($participantLabels) {
 
         <div class="separator-small"></div>
 
-        <?php foreach ($this->groupMatchesByGroup[$group->need('gid')] as $match): ?>
-            <p>
-                <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
-                &ndash;
-                <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
+        <?php $groupMatches = $this->groupMatchesByGroup[$group->need('gid')]; ?>
 
-                <?php if ($match->isPlayed()): ?>
-                    <b>(<?= $this->t(ucfirst($match->need('status'))) ?>, <?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?> <?= $this->t('won') ?>)</b>
-                <?php else: ?>
-                    <span class="gray"><?= $this->t('not yet played') ?></span>
-                <?php endif; ?>
+        <?php if ($groupMatches): ?>
+            <table class="default-table championship-table">
+                <tr>
+                    <th><?= $this->t('Participant 1') ?></th>
+                    <th><?= $this->t('Participant 2') ?></th>
+                    <th><?= $this->t('Result') ?></th>
+                    <th></th>
+                </tr>
 
-                &nbsp;
-                <a href="<?= $this->url('backend/championship/match-edit', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
-                    <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
-                </a>
-            </p>
-        <?php endforeach; ?>
+                <?php foreach ($groupMatches as $match): ?>
+                    <tr>
+                        <td><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
+                        <td><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
+                        <td>
+                            <?php if ($match->isPlayed()): ?>
+                                <b><?= $this->t(ucfirst($match->need('status'))) ?>, <?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?> <?= $this->t('won') ?></b>
+                            <?php else: ?>
+                                <span class="gray"><?= $this->t('not yet played') ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href="<?= $this->url('backend/championship/match-edit', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No matches yet.') ?></p>
+        <?php endif; ?>
 
         <div class="separator separator-line"></div>
 

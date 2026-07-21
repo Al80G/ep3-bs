@@ -63,23 +63,45 @@ $editableMatchIds = $this->editableMatchIds;
 
         <div class="separator-small"></div>
 
-        <?php foreach ($this->groupMatchesByGroup[$group->need('gid')] as $match): ?>
-            <p>
-                <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
-                &ndash;
-                <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
+        <?php $groupMatches = $this->groupMatchesByGroup[$group->need('gid')]; ?>
 
-                <?php if ($match->isPlayed()): ?>
-                    <b>(<?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?> <?= $this->t('won') ?>)</b>
-                <?php elseif (in_array($match->need('mid'), $editableMatchIds)): ?>
-                    <a href="<?= $this->url('championship/match-result', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
-                        <span class="symbolic symbolic-edit"><?= $this->t('Enter result') ?></span>
-                    </a>
-                <?php else: ?>
-                    <span class="gray"><?= $this->t('not yet played') ?></span>
-                <?php endif; ?>
-            </p>
-        <?php endforeach; ?>
+        <?php if ($groupMatches): ?>
+            <table class="default-table championship-table">
+                <tr>
+                    <th><?= $this->t('Participant 1') ?></th>
+                    <th><?= $this->t('Participant 2') ?></th>
+                    <th><?= $this->t('Result') ?></th>
+                    <th></th>
+                </tr>
+
+                <?php foreach ($groupMatches as $match): ?>
+                    <tr>
+                        <td<?php if ($match->get('participant1_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
+                            <?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?>
+                        </td>
+                        <td<?php if ($match->get('participant2_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
+                            <?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?>
+                        </td>
+                        <td>
+                            <?php if ($match->isPlayed()): ?>
+                                <b><?= $this->escapeHtml($participantLabel($match->get('winner_pid'))) ?> <?= $this->t('won') ?></b>
+                            <?php else: ?>
+                                <span class="gray"><?= $this->t('not yet played') ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if (! $match->isPlayed() && in_array($match->need('mid'), $editableMatchIds)): ?>
+                                <a href="<?= $this->url('championship/match-result', ['mid' => $match->need('mid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-edit"><?= $this->t('Enter result') ?></span>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No matches yet.') ?></p>
+        <?php endif; ?>
 
         <div class="separator separator-line"></div>
 
