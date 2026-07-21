@@ -1,6 +1,12 @@
 <style>
     .championship-table { border-collapse: collapse; }
+
     .championship-table th,
     .championship-table td { padding: 8px 16px; border: solid 1px #CCC; }
-    .championship-table th { padding-bottom: 14px; }
+
+    .championship-table th { padding: 8px; }
+
+    /* Override the default-table rules that zero out the last row/column's padding */
+    .championship-table tr:last-child > td { padding-bottom: 8px; }
+    .championship-table td:last-child { padding-right: 16px; }
 </style>
