@@ -90,20 +90,6 @@ class BehaviourForm extends Form
         ));
 
         $this->add(array(
-            'name' => 'cf-championship-enabled',
-            'type' => 'Checkbox',
-            'attributes' => array(
-                'id' => 'cf-championship-enabled',
-            ),
-            'options' => array(
-                'label' => 'Show the championship menu item to members',
-                'checked_value' => 'true',
-                'unchecked_value' => 'false',
-                'notes' => 'Enables the club championship (Vereinsmeisterschaft) feature for members',
-            ),
-        ));
-
-        $this->add(array(
             'name' => 'cf-calendar-days',
             'type' => 'Select',
             'attributes' => array(
@@ -185,6 +171,20 @@ class BehaviourForm extends Form
             'options' => array(
                 'label' => 'Gleichzeitige Buchungen nicht erlauben',
                 'notes' => 'Verhindert, dass normale Benutzer parallel auf mehreren Plätzen buchen (gilt nicht für Admins)',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'cf-championship-enabled',
+            'type' => 'Checkbox',
+            'attributes' => array(
+                'id' => 'cf-championship-enabled',
+            ),
+            'options' => array(
+                'label' => 'Show the championship menu item to members',
+                'checked_value' => 'true',
+                'unchecked_value' => 'false',
+                'notes' => 'Enables the club championship (Vereinsmeisterschaft) feature for members',
             ),
         ));
 
