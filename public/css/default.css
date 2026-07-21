@@ -450,6 +450,7 @@ a.squarebox-primary-close-link:hover {
 .symbolic-reload { padding-left: 22px; background-image: url(../imgs/icons/reload.png); }
 .symbolic-info { padding-left: 22px; background-image: url(../imgs/icons/info.png); }
 .symbolic-edit { padding-left: 20px; background-image: url(../imgs/icons/edit.png); }
+.symbolic-trophy { padding-left: 20px; background-image: url(../imgs/icons/trophy.png); }
 
 .symbolic { display: inline-block; min-height: 16px; background-repeat: no-repeat; background-position: left center; }
 p.symbolic { display: block; }
