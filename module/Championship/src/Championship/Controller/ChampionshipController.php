@@ -204,6 +204,7 @@ class ChampionshipController extends AbstractActionController
         $registrationForm = $formElementManager->get('Championship\Form\RegistrationForm');
 
         $isDouble = $category->need('discipline') == 'double';
+        $isMixed = $category->need('gender') == 'mixed';
 
         if ($isDouble) {
             $alreadyTeamedUpUids = array();
@@ -216,12 +217,19 @@ class ChampionshipController extends AbstractActionController
                 }
             }
 
+            $ownGender = $user->getMeta('gender');
+            $oppositeGender = $ownGender == 'male' ? 'female' : ($ownGender == 'female' ? 'male' : null);
+
             $partnerOptions = array();
 
             foreach ($userManager->getBy(array('status' => array('enabled', 'assist', 'admin')), 'alias ASC') as $candidate) {
                 $candidateUid = $candidate->need('uid');
 
                 if ($candidateUid == $user->need('uid') || in_array($candidateUid, $alreadyTeamedUpUids)) {
+                    continue;
+                }
+
+                if ($isMixed && $oppositeGender && $candidate->getMeta('gender') != $oppositeGender) {
                     continue;
                 }
 
@@ -243,6 +251,8 @@ class ChampionshipController extends AbstractActionController
 
                 if ($isDouble && ! $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
+                } else if ($isDouble && ! $this->championshipIsValidMixedPair($category, $user->need('uid'), $partnerUid, $userManager)) {
+                    $this->flashMessenger()->addErrorMessage('A mixed pair requires one man and one woman');
                 } else {
                     try {
                         $participantManager->register($category, $user->need('uid'), $partnerUid);
@@ -266,6 +276,50 @@ class ChampionshipController extends AbstractActionController
             'registrationClosed' => false,
             'genderMismatch' => false,
             'registrationForm' => $registrationForm,
+        );
+    }
+
+    public function withdrawAction()
+    {
+        $serviceManager = @$this->getServiceLocator();
+        $userSessionManager = $serviceManager->get('User\Manager\UserSessionManager');
+
+        $user = $userSessionManager->getSessionUser();
+
+        if (! $user) {
+            $this->redirectBack()->setOrigin('championship/my');
+
+            return $this->redirect()->toRoute('user/login');
+        }
+
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $matchManager = $serviceManager->get('Championship\Manager\FixtureManager');
+
+        $pid = $this->params()->fromRoute('pid');
+
+        $participant = $participantManager->get($pid);
+
+        if (! $participant->hasPlayer($user->need('uid'))) {
+            throw new RuntimeException('You are not allowed to withdraw this registration');
+        }
+
+        $category = $categoryManager->get($participant->need('catid'));
+
+        $hasMatches = (bool) $matchManager->getByParticipant($category, $participant->need('pid'));
+
+        if (! $hasMatches && $this->params()->fromQuery('confirmed') == 'true') {
+            $participantManager->delete($participant);
+
+            $this->flashMessenger()->addSuccessMessage('You have been withdrawn from this category');
+
+            return $this->redirect()->toRoute('championship/my');
+        }
+
+        return array(
+            'category' => $category,
+            'participant' => $participant,
+            'hasMatches' => $hasMatches,
         );
     }
 
@@ -467,6 +521,33 @@ class ChampionshipController extends AbstractActionController
         }
 
         return null;
+    }
+
+    /**
+     * Whether the passed pair is valid for the given category: for "mixed" categories, one of the
+     * two players must be male and the other female. Any other category (or unknown genders,
+     * so that accounts without a gender set don't get blocked outright) is not restricted.
+     *
+     * @param \Championship\Entity\Category $category
+     * @param int $uid
+     * @param int $partnerUid
+     * @param \User\Manager\UserManager $userManager
+     * @return boolean
+     */
+    protected function championshipIsValidMixedPair($category, $uid, $partnerUid, $userManager)
+    {
+        if ($category->need('gender') != 'mixed') {
+            return true;
+        }
+
+        $gender1 = $userManager->get($uid)->getMeta('gender');
+        $gender2 = $userManager->get($partnerUid)->getMeta('gender');
+
+        if (! ($gender1 && $gender2)) {
+            return true;
+        }
+
+        return ($gender1 == 'male' && $gender2 == 'female') || ($gender1 == 'female' && $gender2 == 'male');
     }
 
 }

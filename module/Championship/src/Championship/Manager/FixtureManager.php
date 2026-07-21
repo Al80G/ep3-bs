@@ -85,6 +85,33 @@ class FixtureManager extends AbstractManager
     }
 
     /**
+     * Regenerates the round-robin group stage matches for a group, replacing any existing
+     * (not yet played) matches with a fresh set for the passed (current) group members.
+     *
+     * @param int|Category $category
+     * @param Group $group
+     * @param array $participantPids
+     * @return array
+     * @throws RuntimeException
+     */
+    public function regenerateGroupMatches($category, Group $group, array $participantPids)
+    {
+        $existingMatches = $this->getByGroup($group);
+
+        foreach ($existingMatches as $match) {
+            if ($match->isPlayed()) {
+                throw new RuntimeException('Group matches cannot be regenerated once matches have been played');
+            }
+        }
+
+        foreach ($existingMatches as $match) {
+            $this->delete($match);
+        }
+
+        return $this->generateGroupMatches($category, $group, $participantPids);
+    }
+
+    /**
      * Creates a knock-out stage match. Either participant may be left empty (still waiting for
      * a previous round's winner); $nextMatchId/$nextMatchSlot link the winner into the following round.
      *

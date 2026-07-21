@@ -56,6 +56,18 @@ return array(
                             ),
                         ),
                     ),
+                    'withdraw' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/withdraw/:pid',
+                            'defaults' => array(
+                                'action' => 'withdraw',
+                            ),
+                            'constraints' => array(
+                                'pid' => '[0-9]+',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),

@@ -1,0 +1,42 @@
+<?php
+
+$backUrl = $this->url('championship/my');
+
+$this->setup(array(
+    'title' => 'Withdraw registration',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'My registrations' => $backUrl,
+    ),
+));
+
+?>
+
+<div class="padded centered-text">
+    <h1><?= $this->t('Withdraw') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <?php if ($this->hasMatches): ?>
+
+        <p><?= $this->t('You already have matches scheduled for this category.') ?></p>
+        <p><?= $this->t('Please contact the club administration if you need to withdraw.') ?></p>
+
+        <p><a href="<?= $backUrl ?>" class="default-button"><?= $this->t('Back') ?></a></p>
+
+    <?php else: ?>
+
+        <p><span class="symbolic symbolic-warning"><?= $this->t('Are you sure you want to withdraw from this category?') ?></span></p>
+
+        <p class="no-wrap">
+            <a href="<?= $this->url('championship/withdraw', ['pid' => $this->participant->need('pid')], ['query' => ['confirmed' => 'true']]) ?>" class="default-button">
+                <span class="symbolic symbolic-cross"><?= $this->t('Yes, withdraw') ?></span>
+            </a>
+
+            &nbsp;
+
+            <a href="<?= $backUrl ?>" class="default-button"><?= $this->t('No, go back') ?></a>
+        </p>
+
+    <?php endif; ?>
+</div>

@@ -15,17 +15,28 @@ $this->setup(array(
 ?>
 
 <div class="padded centered-text">
-    <p><span class="symbolic symbolic-warning"><?= sprintf($this->t('Are you sure you want to remove %s from this category?'), '<b>' . $this->escapeHtml($this->participant->getExtra('label')) . '</b>') ?></span></p>
 
-    <p><?= $this->t('This also deletes all group/match results this participant is part of.') ?></p>
+    <?php if ($this->hasMatches): ?>
 
-    <p class="no-wrap">
-        <a href="<?= $this->url('backend/championship/participant-delete', ['pid' => $this->participant->need('pid')], ['query' => ['confirmed' => 'true']]) ?>" class="default-button">
-            <span class="symbolic symbolic-cross"><?= $this->t('Yes, remove this participant') ?></span>
-        </a>
+        <p><?= sprintf($this->t('%s already has matches in this category.'), '<b>' . $this->escapeHtml($this->participant->getExtra('label')) . '</b>') ?></p>
+        <p><?= $this->t('Please remove or reassign those matches first (via the bracket/group pages) before removing this participant.') ?></p>
 
-        &nbsp;
+        <p><a href="<?= $backUrl ?>" class="default-button"><?= $this->t('Back') ?></a></p>
 
-        <a href="<?= $backUrl ?>" class="default-button"><?= $this->t('No, go back') ?></a>
-    </p>
+    <?php else: ?>
+
+        <p><span class="symbolic symbolic-warning"><?= sprintf($this->t('Are you sure you want to remove %s from this category?'), '<b>' . $this->escapeHtml($this->participant->getExtra('label')) . '</b>') ?></span></p>
+
+        <p class="no-wrap">
+            <a href="<?= $this->url('backend/championship/participant-delete', ['pid' => $this->participant->need('pid')], ['query' => ['confirmed' => 'true']]) ?>" class="default-button">
+                <span class="symbolic symbolic-cross"><?= $this->t('Yes, remove this participant') ?></span>
+            </a>
+
+            &nbsp;
+
+            <a href="<?= $backUrl ?>" class="default-button"><?= $this->t('No, go back') ?></a>
+        </p>
+
+    <?php endif; ?>
+
 </div>

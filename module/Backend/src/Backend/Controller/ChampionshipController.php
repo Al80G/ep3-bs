@@ -389,17 +389,23 @@ class ChampionshipController extends AbstractActionController
         $group = $groupManager->get($gid);
         $category = $categoryManager->get($group->need('catid'));
 
-        if ($matchManager->getByGroup($group)) {
-            $this->flashMessenger()->addErrorMessage('Matches have already been generated for this group');
+        $memberPids = $groupManager->getMemberPids($group);
+
+        if (count($memberPids) < 2) {
+            $this->flashMessenger()->addErrorMessage('A group needs at least two members to generate matches');
         } else {
-            $memberPids = $groupManager->getMemberPids($group);
+            try {
+                if ($matchManager->getByGroup($group)) {
+                    $matchManager->regenerateGroupMatches($category, $group, $memberPids);
 
-            if (count($memberPids) < 2) {
-                $this->flashMessenger()->addErrorMessage('A group needs at least two members to generate matches');
-            } else {
-                $matchManager->generateGroupMatches($category, $group, $memberPids);
+                    $this->flashMessenger()->addSuccessMessage('Group matches have been regenerated');
+                } else {
+                    $matchManager->generateGroupMatches($category, $group, $memberPids);
 
-                $this->flashMessenger()->addSuccessMessage('Group matches have been generated');
+                    $this->flashMessenger()->addSuccessMessage('Group matches have been generated');
+                }
+            } catch (RuntimeException $e) {
+                $this->flashMessenger()->addErrorMessage($e->getMessage());
             }
         }
 
@@ -470,6 +476,8 @@ class ChampionshipController extends AbstractActionController
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
                 } else if ($isDouble && $uid == $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Player and partner must be different');
+                } else if ($isDouble && ! $this->championshipIsValidMixedPair($category, $uid, $partnerUid, $userManager)) {
+                    $this->flashMessenger()->addErrorMessage('A mixed pair requires one man and one woman');
                 } else {
                     try {
                         $participantManager->register($category, $uid, $partnerUid);
@@ -498,15 +506,19 @@ class ChampionshipController extends AbstractActionController
 
         $serviceManager = @$this->getServiceLocator();
         $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $matchManager = $serviceManager->get('Championship\Manager\FixtureManager');
         $userManager = $serviceManager->get('User\Manager\UserManager');
 
         $pid = $this->params()->fromRoute('pid');
 
         $participant = $participantManager->get($pid);
 
-        if ($this->params()->fromQuery('confirmed') == 'true') {
-            $catid = $participant->need('catid');
+        $catid = $participant->need('catid');
 
+        $hasMatches = (bool) $matchManager->getByParticipant($catid, $participant->need('pid'));
+
+        if (! $hasMatches && $this->params()->fromQuery('confirmed') == 'true') {
             $participantManager->delete($participant);
 
             $this->flashMessenger()->addSuccessMessage('Participant has been removed');
@@ -517,7 +529,9 @@ class ChampionshipController extends AbstractActionController
         $participant->setExtra('label', $this->championshipParticipantLabel($participant, $userManager));
 
         return array(
+            'category' => $categoryManager->get($catid),
             'participant' => $participant,
+            'hasMatches' => $hasMatches,
         );
     }
 
@@ -690,6 +704,33 @@ class ChampionshipController extends AbstractActionController
         }
 
         return $label;
+    }
+
+    /**
+     * Whether the passed pair is valid for the given category: for "mixed" categories, one of the
+     * two players must be male and the other female. Any other category (or unknown genders,
+     * so that misconfigured accounts don't block a registration) is not restricted.
+     *
+     * @param \Championship\Entity\Category $category
+     * @param int $uid
+     * @param int $partnerUid
+     * @param \User\Manager\UserManager $userManager
+     * @return boolean
+     */
+    protected function championshipIsValidMixedPair($category, $uid, $partnerUid, $userManager)
+    {
+        if ($category->need('gender') != 'mixed') {
+            return true;
+        }
+
+        $gender1 = $userManager->get($uid)->getMeta('gender');
+        $gender2 = $userManager->get($partnerUid)->getMeta('gender');
+
+        if (! ($gender1 && $gender2)) {
+            return true;
+        }
+
+        return ($gender1 == 'male' && $gender2 == 'female') || ($gender1 == 'female' && $gender2 == 'male');
     }
 
 }

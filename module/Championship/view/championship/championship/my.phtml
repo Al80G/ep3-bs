@@ -36,6 +36,12 @@ $this->setup(array(
                 <p><?= sprintf($this->t('Partner: %s'), $this->escapeHtml($registration['partnerLabel'])) ?></p>
             <?php endif; ?>
 
+            <p>
+                <a href="<?= $this->url('championship/withdraw', ['pid' => $registration['participant']->need('pid')]) ?>" class="unlined gray">
+                    <span class="symbolic symbolic-cross"><?= $this->t('Withdraw') ?></span>
+                </a>
+            </p>
+
             <?php if (! $registration['matches']): ?>
                 <p class="gray"><?= $this->t('No matches scheduled yet.') ?></p>
             <?php else: ?>

@@ -86,14 +86,17 @@ $this->setup(array(
                             <td><?= $this->escapeHtml($group->need('name')) ?></td>
                             <td><?= $group->getExtra('memberCount', 0) ?></td>
                             <td>
-                                <?php if ($group->getExtra('matchesGenerated')): ?>
-                                    <span class="gray"><?= $this->t('Generated') ?></span>
-                                <?php elseif ($group->getExtra('memberCount', 0) >= 2): ?>
+                                <?php if ($group->getExtra('memberCount', 0) < 2): ?>
+                                    <span class="gray"><?= $this->t('Not enough members') ?></span>
+                                <?php elseif ($group->getExtra('matchesGenerated')): ?>
+                                    <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray"
+                                        onclick="return confirm('<?= $this->t('This deletes the current (not yet played) group matches and regenerates them for the current members. Continue?') ?>');">
+                                        <span class="symbolic symbolic-reload"><?= $this->t('Regenerate matches') ?></span>
+                                    </a>
+                                <?php else: ?>
                                     <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
                                         <span class="symbolic symbolic-plus"><?= $this->t('Generate matches') ?></span>
                                     </a>
-                                <?php else: ?>
-                                    <span class="gray"><?= $this->t('Not enough members') ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>
