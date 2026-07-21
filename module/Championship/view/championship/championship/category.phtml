@@ -155,15 +155,15 @@ $editableMatchIds = $this->editableMatchIds;
                         <?php $sets = $match->getExtra('sets', array()); ?>
                         <div class="default-table" style="margin-bottom: 12px; padding: 8px; border: 1px solid #CCC;">
                             <?php if ($sets): ?>
-                                <table style="border-collapse: collapse;">
+                                <table style="border-collapse: collapse; width: 100%;">
                                     <tr<?php if ($match->get('participant1_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
-                                        <td><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
+                                        <td style="text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant1_pid'))) ?></td>
                                         <?php foreach ($sets as $set): ?>
                                             <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant1') ?></td>
                                         <?php endforeach; ?>
                                     </tr>
                                     <tr<?php if ($match->get('participant2_pid') == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>>
-                                        <td><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
+                                        <td style="text-align: left;"><?= $this->escapeHtml($participantLabel($match->get('participant2_pid'))) ?></td>
                                         <?php foreach ($sets as $set): ?>
                                             <td style="text-align: right; padding-left: 8px;"><?= $set->need('score_participant2') ?></td>
                                         <?php endforeach; ?>
