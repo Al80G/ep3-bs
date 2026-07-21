@@ -35,6 +35,7 @@ class ParticipantManager extends AbstractManager
      * @param int $partnerUid
      * @return Participant
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function register($category, $uid, $partnerUid = null)
     {
@@ -50,6 +51,14 @@ class ParticipantManager extends AbstractManager
 
         if (! (is_numeric($uid) && $uid > 0)) {
             throw new InvalidArgumentException('User id must be numeric');
+        }
+
+        if ($this->isRegistered($catid, $uid)) {
+            throw new RuntimeException('Player is already registered for this category');
+        }
+
+        if ($partnerUid && $this->isRegistered($catid, $partnerUid)) {
+            throw new RuntimeException('Player is already registered for this category');
         }
 
         $participant = new Participant(array(

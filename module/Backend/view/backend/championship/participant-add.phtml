@@ -1,0 +1,52 @@
+<?php
+
+$catid = $this->category->need('catid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Category' => $this->url('backend/championship/category-edit', ['catid' => $catid]),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Add participant') ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->participantForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/participant-add', [], ['query' => ['catid' => $catid]]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <?= $this->formElement($form->get('pf-catid')) ?>
+
+        <table class="default-table">
+            <?= $this->formRowDefault($form, 'pf-uid') ?>
+
+            <?php if ($form->has('pf-partner-uid')): ?>
+                <?= $this->formRowDefault($form, 'pf-partner-uid') ?>
+            <?php endif; ?>
+
+            <tr>
+                <td>&nbsp;</td>
+
+                <td>
+                    <?= $this->formElement($form->get('pf-submit')) ?>
+                </td>
+            </tr>
+        </table>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+</div>

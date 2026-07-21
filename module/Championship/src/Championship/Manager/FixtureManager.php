@@ -62,6 +62,29 @@ class FixtureManager extends AbstractManager
     }
 
     /**
+     * Generates the round-robin group stage matches for a group (every member plays every other member once).
+     *
+     * @param int|Category $category
+     * @param int|Group $group
+     * @param array $participantPids
+     * @return array
+     */
+    public function generateGroupMatches($category, $group, array $participantPids)
+    {
+        $matches = array();
+
+        $count = count($participantPids);
+
+        for ($i = 0; $i < $count; $i++) {
+            for ($j = $i + 1; $j < $count; $j++) {
+                $matches[] = $this->createGroupMatch($category, $group, $participantPids[$i], $participantPids[$j]);
+            }
+        }
+
+        return $matches;
+    }
+
+    /**
      * Creates a knock-out stage match. Either participant may be left empty (still waiting for
      * a previous round's winner); $nextMatchId/$nextMatchSlot link the winner into the following round.
      *

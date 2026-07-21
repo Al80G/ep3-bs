@@ -77,6 +77,7 @@ $this->setup(array(
                     <tr>
                         <th><?= $this->t('Name') ?></th>
                         <th><?= $this->t('Members') ?></th>
+                        <th><?= $this->t('Matches') ?></th>
                         <th></th>
                     </tr>
 
@@ -84,6 +85,17 @@ $this->setup(array(
                         <tr>
                             <td><?= $this->escapeHtml($group->need('name')) ?></td>
                             <td><?= $group->getExtra('memberCount', 0) ?></td>
+                            <td>
+                                <?php if ($group->getExtra('matchesGenerated')): ?>
+                                    <span class="gray"><?= $this->t('Generated') ?></span>
+                                <?php elseif ($group->getExtra('memberCount', 0) >= 2): ?>
+                                    <a href="<?= $this->url('backend/championship/group-matches-generate', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
+                                        <span class="symbolic symbolic-plus"><?= $this->t('Generate matches') ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="gray"><?= $this->t('Not enough members') ?></span>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <a href="<?= $this->url('backend/championship/group-edit', ['gid' => $group->need('gid')]) ?>" class="unlined gray">
                                     <span class="symbolic symbolic-edit"><?= $this->t('Edit') ?></span>
@@ -111,12 +123,20 @@ $this->setup(array(
             <?php if ($this->participants): ?>
                 <ul>
                     <?php foreach ($this->participants as $participant): ?>
-                        <li><?= $this->escapeHtml($participant->getExtra('label')) ?></li>
+                        <li>
+                            <?= $this->escapeHtml($participant->getExtra('label')) ?>
+                            &nbsp;
+                            <a href="<?= $this->url('backend/championship/participant-delete', ['pid' => $participant->need('pid')]) ?>" class="unlined gray">
+                                <span class="symbolic symbolic-cross"><?= $this->t('Remove') ?></span>
+                            </a>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
             <?php else: ?>
                 <p class="gray"><?= $this->t('No one has registered for this category yet.') ?></p>
             <?php endif; ?>
+
+            <p><a href="<?= $this->url('backend/championship/participant-add', [], ['query' => ['catid' => $catid]]) ?>" class="unlined gray"><span class="symbolic symbolic-plus"><?= $this->t('Add participant') ?></span></a></p>
         </div>
 
         <div class="separator separator-line"></div>

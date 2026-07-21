@@ -317,6 +317,39 @@ return array(
                                     ),
                                 ),
                             ),
+                            'group-matches-generate' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/group-matches-generate/:gid',
+                                    'defaults' => array(
+                                        'action' => 'groupMatchesGenerate',
+                                    ),
+                                    'constraints' => array(
+                                        'gid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
+                            'participant-add' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/participant-add',
+                                    'defaults' => array(
+                                        'action' => 'participantAdd',
+                                    ),
+                                ),
+                            ),
+                            'participant-delete' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/participant-delete/:pid',
+                                    'defaults' => array(
+                                        'action' => 'participantDelete',
+                                    ),
+                                    'constraints' => array(
+                                        'pid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
                             'bracket' => array(
                                 'type' => 'Segment',
                                 'options' => array(

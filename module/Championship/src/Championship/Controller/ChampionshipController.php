@@ -244,11 +244,15 @@ class ChampionshipController extends AbstractActionController
                 if ($isDouble && ! $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
                 } else {
-                    $participantManager->register($category, $user->need('uid'), $partnerUid);
+                    try {
+                        $participantManager->register($category, $user->need('uid'), $partnerUid);
 
-                    $this->flashMessenger()->addSuccessMessage('You have been registered');
+                        $this->flashMessenger()->addSuccessMessage('You have been registered');
 
-                    return $this->redirect()->toRoute('championship/my');
+                        return $this->redirect()->toRoute('championship/my');
+                    } catch (RuntimeException $e) {
+                        $this->flashMessenger()->addErrorMessage($e->getMessage());
+                    }
                 }
             }
         } else {

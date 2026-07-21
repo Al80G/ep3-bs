@@ -122,6 +122,7 @@ class ChampionshipController extends AbstractActionController
         $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
         $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
         $groupManager = $serviceManager->get('Championship\Manager\GroupManager');
+        $matchManager = $serviceManager->get('Championship\Manager\FixtureManager');
         $bracketService = $serviceManager->get('Championship\Service\BracketService');
         $userManager = $serviceManager->get('User\Manager\UserManager');
         $formElementManager = $serviceManager->get('FormElementManager');
@@ -202,6 +203,7 @@ class ChampionshipController extends AbstractActionController
 
             foreach ($groups as $group) {
                 $group->setExtra('memberCount', count($groupManager->getMemberPids($group)));
+                $group->setExtra('matchesGenerated', (bool) $matchManager->getByGroup($group));
             }
         }
 
@@ -370,6 +372,152 @@ class ChampionshipController extends AbstractActionController
 
         return array(
             'group' => $group,
+        );
+    }
+
+    public function groupMatchesGenerateAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $groupManager = $serviceManager->get('Championship\Manager\GroupManager');
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $matchManager = $serviceManager->get('Championship\Manager\FixtureManager');
+
+        $gid = $this->params()->fromRoute('gid');
+
+        $group = $groupManager->get($gid);
+        $category = $categoryManager->get($group->need('catid'));
+
+        if ($matchManager->getByGroup($group)) {
+            $this->flashMessenger()->addErrorMessage('Matches have already been generated for this group');
+        } else {
+            $memberPids = $groupManager->getMemberPids($group);
+
+            if (count($memberPids) < 2) {
+                $this->flashMessenger()->addErrorMessage('A group needs at least two members to generate matches');
+            } else {
+                $matchManager->generateGroupMatches($category, $group, $memberPids);
+
+                $this->flashMessenger()->addSuccessMessage('Group matches have been generated');
+            }
+        }
+
+        return $this->redirect()->toRoute('backend/championship/category-edit', array('catid' => $category->need('catid')));
+    }
+
+    public function participantAddAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+        $formElementManager = $serviceManager->get('FormElementManager');
+
+        $catid = $this->params()->fromQuery('catid') ?: $this->params()->fromPost('pf-catid');
+
+        if (! $catid) {
+            throw new RuntimeException('A category id is required to add a participant');
+        }
+
+        $category = $categoryManager->get($catid);
+
+        $alreadyRegisteredUids = array();
+
+        foreach ($participantManager->getByCategory($category) as $participant) {
+            $alreadyRegisteredUids[] = $participant->need('uid');
+
+            if ($participant->get('partner_uid')) {
+                $alreadyRegisteredUids[] = $participant->get('partner_uid');
+            }
+        }
+
+        $userOptions = array();
+
+        foreach ($userManager->getBy(array('status' => array('enabled', 'assist', 'admin')), 'alias ASC') as $candidate) {
+            $candidateUid = $candidate->need('uid');
+
+            if (in_array($candidateUid, $alreadyRegisteredUids)) {
+                continue;
+            }
+
+            $userOptions[$candidateUid] = $candidate->need('alias');
+        }
+
+        $isDouble = $category->need('discipline') == 'double';
+
+        $participantForm = $formElementManager->get('Backend\Form\Championship\ParticipantForm');
+        $participantForm->setUserOptions($userOptions);
+
+        if ($isDouble) {
+            $participantForm->setPartnerOptions($userOptions);
+        } else {
+            $participantForm->removePartnerField();
+        }
+
+        if ($this->getRequest()->isPost()) {
+            $participantForm->setData($this->params()->fromPost());
+
+            if ($participantForm->isValid()) {
+                $data = $participantForm->getData();
+
+                $uid = $data['pf-uid'];
+                $partnerUid = $isDouble ? ($data['pf-partner-uid'] ?: null) : null;
+
+                if ($isDouble && ! $partnerUid) {
+                    $this->flashMessenger()->addErrorMessage('Please select a partner');
+                } else if ($isDouble && $uid == $partnerUid) {
+                    $this->flashMessenger()->addErrorMessage('Player and partner must be different');
+                } else {
+                    try {
+                        $participantManager->register($category, $uid, $partnerUid);
+
+                        $this->flashMessenger()->addSuccessMessage('Player has been registered');
+
+                        return $this->redirect()->toRoute('backend/championship/category-edit', array('catid' => $catid));
+                    } catch (RuntimeException $e) {
+                        $this->flashMessenger()->addErrorMessage($e->getMessage());
+                    }
+                }
+            }
+        } else {
+            $participantForm->get('pf-catid')->setValue($catid);
+        }
+
+        return array(
+            'category' => $category,
+            'participantForm' => $participantForm,
+        );
+    }
+
+    public function participantDeleteAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+
+        $pid = $this->params()->fromRoute('pid');
+
+        $participant = $participantManager->get($pid);
+
+        if ($this->params()->fromQuery('confirmed') == 'true') {
+            $catid = $participant->need('catid');
+
+            $participantManager->delete($participant);
+
+            $this->flashMessenger()->addSuccessMessage('Participant has been removed');
+
+            return $this->redirect()->toRoute('backend/championship/category-edit', array('catid' => $catid));
+        }
+
+        $participant->setExtra('label', $this->championshipParticipantLabel($participant, $userManager));
+
+        return array(
+            'participant' => $participant,
         );
     }
 
