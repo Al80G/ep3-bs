@@ -127,6 +127,7 @@ class ConfigController extends AbstractActionController
                 $registration = $data['cf-registration'];
                 $registrationMessage = $data['cf-registration-message'];
                 $activation = $data['cf-activation'];
+                $championshipEnabled = $data['cf-championship-enabled'];
                 $calendarDays = $data['cf-calendar-days'];
                 $calendarDayExceptions = $data['cf-calendar-day-exceptions'];
                 $calendarClubExceptions = $data['cf-calendar-club-exceptions'];
@@ -141,6 +142,7 @@ class ConfigController extends AbstractActionController
                 $optionManager->set('service.user.registration', $registration);
                 $optionManager->set('service.user.registration.message', $registrationMessage, $locale);
                 $optionManager->set('service.user.activation', $activation);
+                $optionManager->set('service.championship.enabled', $championshipEnabled);
                 $optionManager->set('service.calendar.days', $calendarDays);
                 $optionManager->set('service.calendar.day-exceptions', $calendarDayExceptions);
                 $optionManager->set('service.calendar.club-exceptions', $calendarClubExceptions);
@@ -160,6 +162,7 @@ class ConfigController extends AbstractActionController
             $behaviourForm->get('cf-registration')->setValue($optionManager->get('service.user.registration', 'false'));
             $behaviourForm->get('cf-registration-message')->setValue($optionManager->get('service.user.registration.message'));
             $behaviourForm->get('cf-activation')->setValue($optionManager->get('service.user.activation', 'email'));
+            $behaviourForm->get('cf-championship-enabled')->setValue($optionManager->get('service.championship.enabled', 'false'));
             $behaviourForm->get('cf-calendar-days')->setValue($optionManager->get('service.calendar.days', '4'));
             $behaviourForm->get('cf-calendar-day-exceptions')->setValue($optionManager->get('service.calendar.day-exceptions'));
             $behaviourForm->get('cf-calendar-club-exceptions')->setValue($optionManager->get('service.calendar.club-exceptions'));

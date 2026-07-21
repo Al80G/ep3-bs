@@ -341,15 +341,6 @@ return array(
                                     ),
                                 ),
                             ),
-                            'config' => array(
-                                'type' => 'Literal',
-                                'options' => array(
-                                    'route' => '/config',
-                                    'defaults' => array(
-                                        'action' => 'config',
-                                    ),
-                                ),
-                            ),
                         ),
                     ),
                     'config' => array(

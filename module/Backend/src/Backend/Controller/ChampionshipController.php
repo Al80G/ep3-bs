@@ -526,37 +526,6 @@ class ChampionshipController extends AbstractActionController
         );
     }
 
-    public function configAction()
-    {
-        $this->authorize('admin.championship');
-
-        $serviceManager = @$this->getServiceLocator();
-        $optionManager = $serviceManager->get('Base\Manager\OptionManager');
-        $formElementManager = $serviceManager->get('FormElementManager');
-
-        $configForm = $formElementManager->get('Backend\Form\Championship\ConfigForm');
-
-        if ($this->getRequest()->isPost()) {
-            $configForm->setData($this->params()->fromPost());
-
-            if ($configForm->isValid()) {
-                $data = $configForm->getData();
-
-                $optionManager->set('service.championship.enabled', $data['ccf-enabled']);
-
-                $this->flashMessenger()->addSuccessMessage('Configuration has been saved');
-            }
-
-            return $this->redirect()->toRoute('backend/championship/config');
-        } else {
-            $configForm->get('ccf-enabled')->setValue($optionManager->get('service.championship.enabled', 'false'));
-        }
-
-        return array(
-            'configForm' => $configForm,
-        );
-    }
-
     /**
      * Builds a human-readable label for a participant (player name, or "player / partner" for pairs).
      *
