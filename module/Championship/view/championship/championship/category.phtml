@@ -29,6 +29,26 @@ $editableMatchIds = $this->editableMatchIds;
 
     <div class="separator-small"></div>
 
+    <?php if (! $this->groups): ?>
+
+        <h2><?= $this->t('Registered participants') ?></h2>
+
+        <div class="separator-small"></div>
+
+        <?php if ($participantLabels): ?>
+            <ul>
+                <?php foreach ($participantLabels as $pid => $label): ?>
+                    <li<?php if ($pid == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>><?= $this->escapeHtml($label) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No one has registered for this category yet.') ?></p>
+        <?php endif; ?>
+
+        <div class="separator separator-line"></div>
+
+    <?php endif; ?>
+
     <?php foreach ($this->groups as $group): ?>
 
         <h2><?= $this->escapeHtml($group->need('name')) ?></h2>
