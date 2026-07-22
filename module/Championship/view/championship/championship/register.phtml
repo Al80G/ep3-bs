@@ -49,13 +49,17 @@ $this->setup(array(
 
             <table class="default-table championship-table">
                 <?php if ($form->has('rf-partner-uid')): ?>
-                    <?= $this->formRowDefault($form, 'rf-partner-uid') ?>
+                    <tr>
+                        <td colspan="2">
+                            <?= $this->formElement($form->get('rf-partner-uid')) ?>
+                            <?= $this->formElementNotes($form->get('rf-partner-uid')) ?>
+                            <?= $this->formElementErrors($form->get('rf-partner-uid')) ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
 
                 <tr>
-                    <td>&nbsp;</td>
-
-                    <td>
+                    <td colspan="2">
                         <?= $this->formElement($form->get('rf-submit')) ?>
                     </td>
                 </tr>

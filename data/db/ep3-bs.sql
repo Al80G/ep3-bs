@@ -384,6 +384,7 @@ CREATE TABLE IF NOT EXISTS `bs_championships` (
   `status` varchar(64) NOT NULL DEFAULT 'draft' COMMENT 'draft|open|running|finished',
   `datetime_registration_start` datetime DEFAULT NULL,
   `datetime_registration_end` datetime DEFAULT NULL,
+  `info_text` varchar(1000) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`cid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -396,6 +397,7 @@ CREATE TABLE IF NOT EXISTS `bs_championship_categories` (
   `name` varchar(128) NOT NULL,
   `group_size_max` tinyint(3) unsigned NOT NULL DEFAULT 6,
   `advance_per_group` tinyint(3) unsigned NOT NULL DEFAULT 2,
+  `admin_assigns_partners` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `status` varchar(64) NOT NULL DEFAULT 'enabled' COMMENT 'disabled|enabled',
   PRIMARY KEY (`catid`),
   KEY `cid` (`cid`)

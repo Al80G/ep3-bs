@@ -29,6 +29,24 @@ Adds a club championship feature (module `Championship`). For an existing instal
   `bs_championship_participants`, `bs_championship_groups`, `bs_championship_group_members`,
   `bs_championship_matches` and `bs_championship_match_sets` tables)
 
+### Admin-assigned partners for doubles categories (added later)
+
+If you already applied the Championship schema above, additionally run:
+
+```sql
+ALTER TABLE `bs_championship_categories`
+  ADD COLUMN `admin_assigns_partners` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `advance_per_group`;
+```
+
+### Info text for the championship overview page (added later)
+
+If you already applied the Championship schema above, additionally run:
+
+```sql
+ALTER TABLE `bs_championships`
+  ADD COLUMN `info_text` varchar(1000) DEFAULT NULL AFTER `datetime_registration_end`;
+```
+
 
 ## Update from 1.8.1 to `1.9.0`
 

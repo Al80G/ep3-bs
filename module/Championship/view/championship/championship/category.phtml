@@ -20,6 +20,15 @@ $participantLabel = function ($pid) use ($participantLabels) {
 $myParticipantPid = $this->myParticipantPid;
 $editableMatchIds = $this->editableMatchIds;
 
+$hasAnyGroupMatches = false;
+
+foreach ($this->groupMatchesByGroup as $groupMatches) {
+    if ($groupMatches) {
+        $hasAnyGroupMatches = true;
+        break;
+    }
+}
+
 ?>
 
 <?= $this->partial('championship/partial/table-style.phtml') ?>
@@ -28,6 +37,26 @@ $editableMatchIds = $this->editableMatchIds;
     <h1><?= $this->escapeHtml($this->championship->need('name')) ?>: <?= $this->escapeHtml($this->category->need('name')) ?></h1>
 
     <div class="separator-small"></div>
+
+    <?php if (! $hasAnyGroupMatches): ?>
+
+        <h2><?= $this->t('Registered participants') ?></h2>
+
+        <div class="separator-small"></div>
+
+        <?php if ($participantLabels): ?>
+            <ul>
+                <?php foreach ($participantLabels as $pid => $label): ?>
+                    <li<?php if ($pid == $myParticipantPid): ?> style="font-weight: bold;"<?php endif; ?>><?= $this->escapeHtml($label) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p class="gray"><?= $this->t('No one has registered for this category yet.') ?></p>
+        <?php endif; ?>
+
+        <div class="separator separator-line"></div>
+
+    <?php endif; ?>
 
     <?php foreach ($this->groups as $group): ?>
 

@@ -34,6 +34,10 @@ return array(
     'Registration open from' => 'Anmeldung geöffnet ab',
     'Registration open until' => 'Anmeldung geöffnet bis',
     'E.g. "Vereinsmeisterschaft 2026"' => 'Z. B. "Vereinsmeisterschaft 2026"',
+    'Info text' => 'Infotext',
+    'Shown to members below the category table on the championship overview page (max. 1000 characters)'
+        => 'Wird Mitgliedern unterhalb der Bewerbstabelle auf der Vereinsmeisterschafts-Übersichtsseite angezeigt (max. 1000 Zeichen)',
+    'Please use at most %max% characters' => 'Bitte verwenden Sie höchstens %max% Zeichen',
     'Are you sure you want to delete this championship?' => 'Möchten Sie diese Vereinsmeisterschaft wirklich löschen?',
     'This also deletes all its categories, registrations, groups and matches.'
         => 'Dabei werden auch alle zugehörigen Bewerbe, Anmeldungen, Gruppen und Spiele gelöscht.',
@@ -154,6 +158,21 @@ return array(
     'You already have matches scheduled for this category.' => 'Für diesen Bewerb sind für Sie bereits Spiele angesetzt.',
     'Please contact the club administration if you need to withdraw.' => 'Bitte wenden Sie sich an die Vereinsverwaltung, falls Sie sich abmelden möchten.',
     'You are not allowed to withdraw this registration' => 'Sie dürfen diese Anmeldung nicht zurückziehen',
+
+    /* Admin-assigned partners */
+
+    'Partners are assigned by the admin' => 'Einteilung durch den Administrator',
+    'Players only register for the category (without picking a partner); you pair them up into teams afterwards'
+        => 'Spieler melden sich nur für den Bewerb an (ohne Partnerauswahl); Sie teilen sie danach in Paare ein',
+    'Assign partner' => 'Partner zuweisen',
+    'no partner yet' => 'noch kein Partner',
+    'This participant already has a partner' => 'Dieser Teilnehmer hat bereits einen Partner',
+    'Invalid partner selection' => 'Ungültige Partnerauswahl',
+    'This participant already has matches scheduled' => 'Für diesen Teilnehmer sind bereits Spiele angesetzt',
+    'Partner has been assigned' => 'Partner wurde zugewiesen',
+    'Invalid participant' => 'Ungültiger Teilnehmer',
+    'Partner is optional here - you can also leave this player unpaired and assign a partner later'
+        => 'Partner ist hier optional - Sie können diesen Spieler auch ohne Partner lassen und später einen zuweisen',
 
     /* Matches / bracket / results */
 

@@ -70,6 +70,20 @@ class EditForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'chf-info-text',
+            'type' => 'Textarea',
+            'attributes' => array(
+                'id' => 'chf-info-text',
+                'class' => 'wysiwyg-editor',
+                'style' => 'width: 500px; height: 120px;',
+            ),
+            'options' => array(
+                'label' => 'Info text',
+                'notes' => 'Shown to members below the category table on the championship overview page (max. 1000 characters)',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'chf-submit',
             'type' => 'Submit',
             'attributes' => array(
@@ -109,6 +123,23 @@ class EditForm extends Form
                 'required' => false,
                 'filters' => array(
                     array('name' => 'StringTrim'),
+                ),
+            ),
+            'chf-info-text' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => 1000,
+                            'messages' => array(
+                                \Zend\Validator\StringLength::TOO_LONG => 'Please use at most %max% characters',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         )));

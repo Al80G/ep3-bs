@@ -1,0 +1,52 @@
+<?php
+
+$catid = $this->category->need('catid');
+
+$this->setup(array(
+    'title' => 'Championship-Administration',
+    'panel' => 'centered-panel',
+    'back' => array(
+        'Category' => $this->url('backend/championship/category-edit', ['catid' => $catid]),
+    ),
+));
+
+?>
+
+<?= $this->partial('championship/partial/table-style.phtml') ?>
+
+<div>
+    <h1><?= $this->t('Assign partner') ?>: <?= $this->escapeHtml($this->participant->getExtra('label')) ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div class="padded">
+        <?php
+
+        $form = $this->participantPairForm;
+        $form->setAttribute('method', 'post');
+        $form->setAttribute('action', $this->url('backend/championship/participant-pair', ['pid' => $this->participant->need('pid')]));
+        $form->prepare();
+
+        ?>
+
+        <?= $this->form()->openTag($form) ?>
+
+        <?= $this->formElement($form->get('ppf-pid')) ?>
+
+        <div style="overflow-x: auto;">
+            <table class="default-table championship-table">
+                <?= $this->formRowDefault($form, 'ppf-partner-pid') ?>
+
+                <tr>
+                    <td>&nbsp;</td>
+
+                    <td>
+                        <?= $this->formElement($form->get('ppf-submit')) ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <?= $this->form()->closeTag() ?>
+    </div>
+</div>
