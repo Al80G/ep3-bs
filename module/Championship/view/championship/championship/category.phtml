@@ -20,6 +20,15 @@ $participantLabel = function ($pid) use ($participantLabels) {
 $myParticipantPid = $this->myParticipantPid;
 $editableMatchIds = $this->editableMatchIds;
 
+$hasAnyGroupMatches = false;
+
+foreach ($this->groupMatchesByGroup as $groupMatches) {
+    if ($groupMatches) {
+        $hasAnyGroupMatches = true;
+        break;
+    }
+}
+
 ?>
 
 <?= $this->partial('championship/partial/table-style.phtml') ?>
@@ -29,7 +38,7 @@ $editableMatchIds = $this->editableMatchIds;
 
     <div class="separator-small"></div>
 
-    <?php if (! $this->groups): ?>
+    <?php if (! $hasAnyGroupMatches): ?>
 
         <h2><?= $this->t('Registered participants') ?></h2>
 
