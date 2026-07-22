@@ -58,6 +58,7 @@ class ChampionshipController extends AbstractActionController
                 $championship->set('status', $data['chf-status']);
                 $championship->set('datetime_registration_start', $registrationStart);
                 $championship->set('datetime_registration_end', $registrationEnd);
+                $championship->set('info_text', $data['chf-info-text'] ?: null);
 
                 $championshipManager->save($championship);
 
@@ -74,6 +75,7 @@ class ChampionshipController extends AbstractActionController
                         ? $this->dateFormat(new DateTime($championship->get('datetime_registration_start')), \IntlDateFormatter::MEDIUM) : '',
                     'chf-registration-end' => $championship->get('datetime_registration_end')
                         ? $this->dateFormat(new DateTime($championship->get('datetime_registration_end')), \IntlDateFormatter::MEDIUM) : '',
+                    'chf-info-text' => $championship->get('info_text'),
                 ));
             } else {
                 $editForm->setData(array(

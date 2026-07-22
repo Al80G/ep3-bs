@@ -14,6 +14,9 @@ $this->setup(array(
     ),
 ));
 
+$this->headScript()->appendFile($this->basePath('js/tinymce/tinymce.min.js'));
+$this->headScript()->appendFile($this->basePath('js/tinymce/tinymce.setup.light.js'));
+
 ?>
 
 <?= $this->partial('championship/partial/table-style.phtml') ?>
@@ -41,6 +44,7 @@ $this->setup(array(
                 <?= $this->formRowDefault($form, 'chf-status') ?>
                 <?= $this->formRowDefault($form, 'chf-registration-start') ?>
                 <?= $this->formRowDefault($form, 'chf-registration-end') ?>
+                <?= $this->formRowDefault($form, 'chf-info-text') ?>
 
                 <tr>
                     <td>&nbsp;</td>

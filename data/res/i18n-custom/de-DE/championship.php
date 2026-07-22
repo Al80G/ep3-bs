@@ -34,6 +34,10 @@ return array(
     'Registration open from' => 'Anmeldung geöffnet ab',
     'Registration open until' => 'Anmeldung geöffnet bis',
     'E.g. "Vereinsmeisterschaft 2026"' => 'Z. B. "Vereinsmeisterschaft 2026"',
+    'Info text' => 'Infotext',
+    'Shown to members below the category table on the championship overview page (max. 500 characters)'
+        => 'Wird Mitgliedern unterhalb der Bewerbstabelle auf der Vereinsmeisterschafts-Übersichtsseite angezeigt (max. 500 Zeichen)',
+    'Please use at most %max% characters' => 'Bitte verwende höchstens %max% Zeichen',
     'Are you sure you want to delete this championship?' => 'Möchten Sie diese Vereinsmeisterschaft wirklich löschen?',
     'This also deletes all its categories, registrations, groups and matches.'
         => 'Dabei werden auch alle zugehörigen Bewerbe, Anmeldungen, Gruppen und Spiele gelöscht.',

@@ -66,6 +66,12 @@ $this->setup(array(
                 </table>
             <?php endif; ?>
 
+            <?php if ($championship->get('info_text')): ?>
+                <div class="separator-small"></div>
+
+                <?= $championship->get('info_text') ?>
+            <?php endif; ?>
+
             <div class="separator separator-line"></div>
 
         <?php endforeach; ?>

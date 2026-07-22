@@ -69,6 +69,7 @@ class ChampionshipManager extends AbstractManager
                 'status' => $championship->get('status', 'draft'),
                 'datetime_registration_start' => $championship->get('datetime_registration_start'),
                 'datetime_registration_end' => $championship->get('datetime_registration_end'),
+                'info_text' => $championship->get('info_text'),
                 'created' => $championship->get('created'),
             ));
 

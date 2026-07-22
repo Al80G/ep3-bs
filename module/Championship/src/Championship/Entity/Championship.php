@@ -12,6 +12,7 @@ class Championship extends AbstractEntity
     protected $status;
     protected $datetime_registration_start;
     protected $datetime_registration_end;
+    protected $info_text;
     protected $created;
 
     /**
