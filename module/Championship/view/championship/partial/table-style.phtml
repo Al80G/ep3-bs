@@ -9,4 +9,13 @@
     /* Override the default-table rules that zero out the last row/column's padding */
     .championship-table tr:last-child > td { padding-bottom: 8px; }
     .championship-table td:last-child { padding-right: 16px; }
+
+    /* Center list blocks as a whole (e.g. in the info text) without centering each line's text */
+    .championship-info-text ul,
+    .championship-info-text ol {
+        display: table;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
 </style>
