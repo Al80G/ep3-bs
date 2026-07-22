@@ -44,7 +44,7 @@ If you already applied the Championship schema above, additionally run:
 
 ```sql
 ALTER TABLE `bs_championships`
-  ADD COLUMN `info_text` varchar(500) DEFAULT NULL AFTER `datetime_registration_end`;
+  ADD COLUMN `info_text` varchar(1000) DEFAULT NULL AFTER `datetime_registration_end`;
 ```
 
 

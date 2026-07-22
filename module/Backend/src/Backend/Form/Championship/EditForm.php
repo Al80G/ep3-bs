@@ -79,7 +79,7 @@ class EditForm extends Form
             ),
             'options' => array(
                 'label' => 'Info text',
-                'notes' => 'Shown to members below the category table on the championship overview page (max. 500 characters)',
+                'notes' => 'Shown to members below the category table on the championship overview page (max. 1000 characters)',
             ),
         ));
 
@@ -134,7 +134,7 @@ class EditForm extends Form
                     array(
                         'name' => 'StringLength',
                         'options' => array(
-                            'max' => 500,
+                            'max' => 1000,
                             'messages' => array(
                                 \Zend\Validator\StringLength::TOO_LONG => 'Please use at most %max% characters',
                             ),
