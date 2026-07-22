@@ -14,6 +14,7 @@ class Category extends AbstractEntity
     protected $name;
     protected $group_size_max;
     protected $advance_per_group;
+    protected $admin_assigns_partners;
     protected $status;
 
     /**

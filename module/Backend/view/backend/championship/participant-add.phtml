@@ -38,6 +38,13 @@ $this->setup(array(
 
             <?php if ($form->has('pf-partner-uid')): ?>
                 <?= $this->formRowDefault($form, 'pf-partner-uid') ?>
+
+                <?php if ($this->adminAssignsPartners): ?>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><span class="gray"><?= $this->t('Partner is optional here - you can also leave this player unpaired and assign a partner later') ?></span></td>
+                    </tr>
+                <?php endif; ?>
             <?php endif; ?>
 
             <tr>

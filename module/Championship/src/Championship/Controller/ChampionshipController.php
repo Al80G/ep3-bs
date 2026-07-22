@@ -215,9 +215,10 @@ class ChampionshipController extends AbstractActionController
         $registrationForm = $formElementManager->get('Championship\Form\RegistrationForm');
 
         $isDouble = $category->need('discipline') == 'double';
+        $adminAssignsPartners = $isDouble && $category->get('admin_assigns_partners');
         $categoryGender = $category->need('gender');
 
-        if ($isDouble) {
+        if ($isDouble && ! $adminAssignsPartners) {
             $alreadyTeamedUpUids = array();
 
             foreach ($participantManager->getByCategory($category) as $participant) {
@@ -263,11 +264,11 @@ class ChampionshipController extends AbstractActionController
             if ($registrationForm->isValid()) {
                 $data = $registrationForm->getData();
 
-                $partnerUid = $isDouble ? ($data['rf-partner-uid'] ?: null) : null;
+                $partnerUid = ($isDouble && ! $adminAssignsPartners) ? ($data['rf-partner-uid'] ?: null) : null;
 
-                if ($isDouble && ! $partnerUid) {
+                if ($isDouble && ! $adminAssignsPartners && ! $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
-                } else if ($isDouble && ! $this->championshipIsValidPairGender($category, $user->need('uid'), $partnerUid, $userManager)) {
+                } else if ($isDouble && ! $adminAssignsPartners && ! $this->championshipIsValidPairGender($category, $user->need('uid'), $partnerUid, $userManager)) {
                     $this->flashMessenger()->addErrorMessage($this->championshipPairGenderErrorMessage($category));
                 } else {
                     try {

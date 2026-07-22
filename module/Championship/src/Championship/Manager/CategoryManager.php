@@ -63,6 +63,7 @@ class CategoryManager extends AbstractManager
                 'name' => $category->need('name'),
                 'group_size_max' => $category->get('group_size_max', 6),
                 'advance_per_group' => $category->get('advance_per_group', 2),
+                'admin_assigns_partners' => $category->get('admin_assigns_partners', 0),
                 'status' => $category->get('status', 'enabled'),
             ));
 

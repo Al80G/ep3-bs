@@ -350,6 +350,18 @@ return array(
                                     ),
                                 ),
                             ),
+                            'participant-pair' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/participant-pair/:pid',
+                                    'defaults' => array(
+                                        'action' => 'participantPair',
+                                    ),
+                                    'constraints' => array(
+                                        'pid' => '[0-9]+',
+                                    ),
+                                ),
+                            ),
                             'notify-groups' => array(
                                 'type' => 'Segment',
                                 'options' => array(

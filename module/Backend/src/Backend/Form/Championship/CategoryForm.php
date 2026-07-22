@@ -84,6 +84,20 @@ class CategoryForm extends Form
         ));
 
         $this->add(array(
+            'name' => 'caf-admin-assigns-partners',
+            'type' => 'Checkbox',
+            'attributes' => array(
+                'id' => 'caf-admin-assigns-partners',
+            ),
+            'options' => array(
+                'label' => 'Partners are assigned by the admin',
+                'checked_value' => 'true',
+                'unchecked_value' => 'false',
+                'notes' => 'Players only register for the category (without picking a partner); you pair them up into teams afterwards',
+            ),
+        ));
+
+        $this->add(array(
             'name' => 'caf-status',
             'type' => 'Select',
             'attributes' => array(

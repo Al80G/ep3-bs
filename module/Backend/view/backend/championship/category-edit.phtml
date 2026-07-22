@@ -44,6 +44,11 @@ $this->setup(array(
                 <?= $this->formRowDefault($form, 'caf-gender') ?>
                 <?= $this->formRowDefault($form, 'caf-group-size-max') ?>
                 <?= $this->formRowDefault($form, 'caf-advance-per-group') ?>
+
+                <tbody id="caf-admin-assigns-partners-wrap">
+                    <?= $this->formRowCheckbox($form, 'caf-admin-assigns-partners') ?>
+                </tbody>
+
                 <?= $this->formRowDefault($form, 'caf-status') ?>
 
                 <tr>
@@ -65,6 +70,20 @@ $this->setup(array(
         </div>
 
         <?= $this->form()->closeTag() ?>
+
+        <script>
+            (function () {
+                var disciplineField = document.getElementById('caf-discipline');
+                var partnersRow = document.getElementById('caf-admin-assigns-partners-wrap');
+
+                function toggle() {
+                    partnersRow.style.display = disciplineField.value === 'double' ? '' : 'none';
+                }
+
+                disciplineField.addEventListener('change', toggle);
+                toggle();
+            })();
+        </script>
     </div>
 
     <?php if ($this->category): ?>
@@ -138,12 +157,27 @@ $this->setup(array(
 
             <div class="separator-small"></div>
 
+            <?php $adminAssignsPartners = $this->category->need('discipline') == 'double' && $this->category->get('admin_assigns_partners'); ?>
+
             <?php if ($this->participants): ?>
                 <ul>
                     <?php foreach ($this->participants as $participant): ?>
                         <li>
                             <?= $this->escapeHtml($participant->getExtra('label')) ?>
+
+                            <?php if ($adminAssignsPartners && ! $participant->get('partner_uid')): ?>
+                                <span class="gray">(<?= $this->t('no partner yet') ?>)</span>
+                            <?php endif; ?>
+
                             &nbsp;
+
+                            <?php if ($adminAssignsPartners && ! $participant->get('partner_uid')): ?>
+                                <a href="<?= $this->url('backend/championship/participant-pair', ['pid' => $participant->need('pid')]) ?>" class="unlined gray">
+                                    <span class="symbolic symbolic-plus"><?= $this->t('Assign partner') ?></span>
+                                </a>
+                                &nbsp;
+                            <?php endif; ?>
+
                             <a href="<?= $this->url('backend/championship/participant-delete', ['pid' => $participant->need('pid')]) ?>" class="unlined gray">
                                 <span class="symbolic symbolic-cross"><?= $this->t('Remove') ?></span>
                             </a>

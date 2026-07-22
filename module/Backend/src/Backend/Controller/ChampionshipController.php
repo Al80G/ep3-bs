@@ -161,6 +161,7 @@ class ChampionshipController extends AbstractActionController
                 $category->set('gender', $data['caf-gender']);
                 $category->set('group_size_max', $data['caf-group-size-max']);
                 $category->set('advance_per_group', $data['caf-advance-per-group']);
+                $category->set('admin_assigns_partners', $data['caf-discipline'] == 'double' && $data['caf-admin-assigns-partners'] == 'true' ? 1 : 0);
                 $category->set('status', $data['caf-status']);
 
                 $categoryManager->save($category);
@@ -177,6 +178,7 @@ class ChampionshipController extends AbstractActionController
                     'caf-gender' => $category->get('gender'),
                     'caf-group-size-max' => $category->get('group_size_max', 6),
                     'caf-advance-per-group' => $category->get('advance_per_group', 2),
+                    'caf-admin-assigns-partners' => $category->get('admin_assigns_partners') ? 'true' : 'false',
                     'caf-status' => $category->get('status', 'enabled'),
                 ));
             } else {
@@ -453,6 +455,7 @@ class ChampionshipController extends AbstractActionController
         }
 
         $isDouble = $category->need('discipline') == 'double';
+        $adminAssignsPartners = $isDouble && $category->get('admin_assigns_partners');
 
         $participantForm = $formElementManager->get('Backend\Form\Championship\ParticipantForm');
         $participantForm->setUserOptions($userOptions);
@@ -472,11 +475,11 @@ class ChampionshipController extends AbstractActionController
                 $uid = $data['pf-uid'];
                 $partnerUid = $isDouble ? ($data['pf-partner-uid'] ?: null) : null;
 
-                if ($isDouble && ! $partnerUid) {
+                if ($isDouble && ! $adminAssignsPartners && ! $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Please select a partner');
-                } else if ($isDouble && $uid == $partnerUid) {
+                } else if ($isDouble && $partnerUid && $uid == $partnerUid) {
                     $this->flashMessenger()->addErrorMessage('Player and partner must be different');
-                } else if ($isDouble && ! $this->championshipIsValidPairGender($category, $uid, $partnerUid, $userManager)) {
+                } else if ($isDouble && $partnerUid && ! $this->championshipIsValidPairGender($category, $uid, $partnerUid, $userManager)) {
                     $this->flashMessenger()->addErrorMessage($this->championshipPairGenderErrorMessage($category));
                 } else {
                     try {
@@ -497,6 +500,7 @@ class ChampionshipController extends AbstractActionController
         return array(
             'category' => $category,
             'participantForm' => $participantForm,
+            'adminAssignsPartners' => $adminAssignsPartners,
         );
     }
 
@@ -532,6 +536,78 @@ class ChampionshipController extends AbstractActionController
             'category' => $categoryManager->get($catid),
             'participant' => $participant,
             'hasMatches' => $hasMatches,
+        );
+    }
+
+    public function participantPairAction()
+    {
+        $this->authorize('admin.championship');
+
+        $serviceManager = @$this->getServiceLocator();
+        $participantManager = $serviceManager->get('Championship\Manager\ParticipantManager');
+        $categoryManager = $serviceManager->get('Championship\Manager\CategoryManager');
+        $matchManager = $serviceManager->get('Championship\Manager\FixtureManager');
+        $userManager = $serviceManager->get('User\Manager\UserManager');
+        $formElementManager = $serviceManager->get('FormElementManager');
+
+        $pid = $this->params()->fromRoute('pid');
+
+        $participant = $participantManager->get($pid);
+        $category = $categoryManager->get($participant->need('catid'));
+
+        if ($participant->get('partner_uid')) {
+            throw new RuntimeException('This participant already has a partner');
+        }
+
+        $candidateOptions = array();
+
+        foreach ($participantManager->getByCategory($category) as $other) {
+            if ($other->need('pid') == $participant->need('pid') || $other->get('partner_uid')) {
+                continue;
+            }
+
+            $candidateOptions[$other->need('pid')] = $this->championshipParticipantLabel($other, $userManager);
+        }
+
+        $participantPairForm = $formElementManager->get('Backend\Form\Championship\ParticipantPairForm');
+        $participantPairForm->setPartnerOptions($candidateOptions);
+
+        if ($this->getRequest()->isPost()) {
+            $participantPairForm->setData($this->params()->fromPost());
+
+            if ($participantPairForm->isValid()) {
+                $data = $participantPairForm->getData();
+
+                $partner = $participantManager->get($data['ppf-partner-pid']);
+
+                if ($partner->need('catid') != $category->need('catid') || $partner->get('partner_uid')) {
+                    $this->flashMessenger()->addErrorMessage('Invalid partner selection');
+                } else if ((bool) $matchManager->getByParticipant($category, $participant->need('pid'))
+                    || (bool) $matchManager->getByParticipant($category, $partner->need('pid'))) {
+                    $this->flashMessenger()->addErrorMessage('This participant already has matches scheduled');
+                } else if (! $this->championshipIsValidPairGender($category, $participant->need('uid'), $partner->need('uid'), $userManager)) {
+                    $this->flashMessenger()->addErrorMessage($this->championshipPairGenderErrorMessage($category));
+                } else {
+                    $participant->set('partner_uid', $partner->need('uid'));
+
+                    $participantManager->save($participant);
+                    $participantManager->delete($partner);
+
+                    $this->flashMessenger()->addSuccessMessage('Partner has been assigned');
+
+                    return $this->redirect()->toRoute('backend/championship/category-edit', array('catid' => $category->need('catid')));
+                }
+            }
+        } else {
+            $participantPairForm->get('ppf-pid')->setValue($pid);
+        }
+
+        $participant->setExtra('label', $this->championshipParticipantLabel($participant, $userManager));
+
+        return array(
+            'category' => $category,
+            'participant' => $participant,
+            'participantPairForm' => $participantPairForm,
         );
     }
 
