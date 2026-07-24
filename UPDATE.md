@@ -44,7 +44,14 @@ If you already applied the Championship schema above, additionally run:
 
 ```sql
 ALTER TABLE `bs_championships`
-  ADD COLUMN `info_text` varchar(1000) DEFAULT NULL AFTER `datetime_registration_end`;
+  ADD COLUMN `info_text` text AFTER `datetime_registration_end`;
+```
+
+If you already ran this migration with an earlier `varchar` version of the column, additionally run:
+
+```sql
+ALTER TABLE `bs_championships`
+  MODIFY COLUMN `info_text` text;
 ```
 
 

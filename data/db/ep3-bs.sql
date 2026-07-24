@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS `bs_championships` (
   `status` varchar(64) NOT NULL DEFAULT 'draft' COMMENT 'draft|open|running|finished',
   `datetime_registration_start` datetime DEFAULT NULL,
   `datetime_registration_end` datetime DEFAULT NULL,
-  `info_text` varchar(1000) DEFAULT NULL,
+  `info_text` text,
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`cid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
