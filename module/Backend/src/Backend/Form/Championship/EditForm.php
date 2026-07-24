@@ -132,11 +132,14 @@ class EditForm extends Form
                 ),
                 'validators' => array(
                     array(
-                        'name' => 'StringLength',
+                        'name' => 'Callback',
                         'options' => array(
-                            'max' => 1000,
+                            'callback' => function ($value) {
+                                return mb_strlen(strip_tags((string) $value)) <= 1000;
+                            },
                             'messages' => array(
-                                \Zend\Validator\StringLength::TOO_LONG => 'Please use at most %max% characters',
+                                \Zend\Validator\Callback::INVALID_VALUE
+                                    => 'Please use at most 1000 characters (HTML formatting tags such as bold or line breaks are not counted)',
                             ),
                         ),
                     ),
