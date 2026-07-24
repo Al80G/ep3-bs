@@ -37,7 +37,8 @@ return array(
     'Info text' => 'Infotext',
     'Shown to members below the category table on the championship overview page (max. 1000 characters)'
         => 'Wird Mitgliedern unterhalb der Bewerbstabelle auf der Vereinsmeisterschafts-Übersichtsseite angezeigt (max. 1000 Zeichen)',
-    'Please use at most %max% characters' => 'Bitte verwenden Sie höchstens %max% Zeichen',
+    'Please use at most 1000 characters (HTML formatting tags such as bold or line breaks are not counted)'
+        => 'Bitte verwenden Sie höchstens 1000 Zeichen (HTML-Formatierungen wie fett oder Zeilenumbrüche zählen nicht mit)',
     'Are you sure you want to delete this championship?' => 'Möchten Sie diese Vereinsmeisterschaft wirklich löschen?',
     'This also deletes all its categories, registrations, groups and matches.'
         => 'Dabei werden auch alle zugehörigen Bewerbe, Anmeldungen, Gruppen und Spiele gelöscht.',
