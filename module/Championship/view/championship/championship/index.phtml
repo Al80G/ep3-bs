@@ -43,6 +43,8 @@ $this->setup(array(
                     </tr>
 
                     <?php foreach ($categories as $category): ?>
+                        <?php $genderMatches = ! $this->allowedGenders || in_array($category->need('gender'), $this->allowedGenders); ?>
+
                         <tr>
                             <td><?= $this->escapeHtml($category->need('name')) ?></td>
                             <td>
@@ -53,10 +55,11 @@ $this->setup(array(
                             <td>
                                 <?php if (in_array($category->need('catid'), $this->registeredCatids)): ?>
                                     <span class="gray"><?= $this->t('You are registered') ?></span>
-                                <?php elseif ($championship->need('status') == 'open'): ?>
+                                <?php elseif ($championship->need('status') == 'open' && $genderMatches): ?>
                                     <a href="<?= $this->url('championship/register', [], ['query' => ['catid' => $category->need('catid')]]) ?>" class="unlined gray">
                                         <span class="symbolic symbolic-plus"><?= $this->t('Register') ?></span>
                                     </a>
+                                <?php elseif ($championship->need('status') == 'open'): ?>
                                 <?php else: ?>
                                     <span class="gray"><?= $this->t('Registration closed') ?></span>
                                 <?php endif; ?>
