@@ -34,12 +34,8 @@ class ChampionshipController extends AbstractActionController
         foreach ($championships as $championship) {
             $categoriesByChampionship[$championship->need('cid')] = array_filter(
                 $categoryManager->getByChampionship($championship),
-                function ($category) use ($allowedGenders) {
-                    if ($category->get('status') != 'enabled') {
-                        return false;
-                    }
-
-                    return ! $allowedGenders || in_array($category->need('gender'), $allowedGenders);
+                function ($category) {
+                    return $category->get('status') == 'enabled';
                 }
             );
         }
@@ -55,6 +51,7 @@ class ChampionshipController extends AbstractActionController
             'championships' => $championships,
             'categoriesByChampionship' => $categoriesByChampionship,
             'registeredCatids' => $registeredCatids,
+            'allowedGenders' => $allowedGenders,
         );
     }
 
